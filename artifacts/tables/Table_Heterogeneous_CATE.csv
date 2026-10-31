@@ -1,0 +1,7 @@
+Phân tầng Đối tượng,Cỡ mẫu (N),Risk(do(T=0)),Risk(do(T=1)),Hiệu ứng CATE,Tỷ lệ Thay đổi (Relative Risk)
+Độ tuổi: Lớn tuổi (> 20 tuổi),1550,38.72%,66.74%,+28.02%,1.72x
+Độ tuổi: Đúng tuổi (<= 20 tuổi),2080,68.55%,84.63%,+16.08%,1.23x
+Tài chính: Đang có Nợ học phí (Debtor = 1),413,19.74%,40.01%,+20.27%,2.03x
+Tài chính: Không nợ học phí (Debtor = 0),3217,60.02%,81.37%,+21.35%,1.36x
+Nhà ở: Ở cùng gia đình (Local),1637,48.33%,74.22%,+25.88%,1.54x
+Nhà ở: Thuê trọ xa nhà (Displaced),1993,61.41%,79.01%,+17.60%,1.29x

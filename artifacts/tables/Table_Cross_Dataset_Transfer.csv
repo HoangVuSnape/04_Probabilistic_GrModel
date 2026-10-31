@@ -1,0 +1,5 @@
+Kịch bản Thực nghiệm,Cỡ mẫu Huấn luyện,Cỡ mẫu Kiểm thử,AUROC,Brier Score,ATE Ước lượng
+Chính quy UCI (Train UCI -> Test UCI),"2,541 SV","1,089 SV",0.8039,0.1761,+0.2153
+Chuyển dịch Thực tế -> Synthetic (Train UCI -> Test Kaggle),"3,630 SV","61,578 SV",0.8537,0.1539,+0.2143
+Chuyển dịch Synthetic -> Thực tế (Train Kaggle -> Test UCI),"61,578 SV","3,630 SV",0.8120,0.1707,+0.3217
+Nội bộ Kaggle (Train Kaggle 70% -> Test Kaggle 30%),"43,104 SV","18,474 SV",0.8546,0.1472,+0.3040

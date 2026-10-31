@@ -24,25 +24,20 @@
 
 ## 2. Lịch trình Hành động Chi tiết 14 Ngày cho Midterm
 
-```mermaid
-gantt
-    title TIẾN ĐỘ 14 NGÀY HOÀN THÀNH MIDTERM
-    dateFormat  YYYY-MM-DD
-    section Giai đoạn 1: Nền tảng (Ngày 1-4)
-    Chốt bài toán & Thẩm định dữ liệu (UCI ID: 697)        :milestone, m1, 2026-10-29, 0d
-    Lập trình pipeline nạp & làm sạch dữ liệu             :task1, 2026-10-29, 2d
-    Cài đặt bài toán Synthetic Benchmark (True ATE=0.30)  :task2, 2026-10-31, 2d
-    section Giai đoạn 2: Baseline & Mô hình Lai (Ngày 5-9)
-    Cài đặt mô hình B0 (pgmpy + DoWhy)                    :task3, 2026-11-02, 2d
-    Cài đặt H1 (Neural CPD) & Bóc tách A1, A3             :task4, 2026-11-04, 3d
-    section Giai đoạn 3: Học cấu trúc & Đối soát (Ngày 10-12)
-    Cài đặt H2 (Gradient DAG + Mask) & Bóc tách A2        :task5, 2026-11-07, 2d
-    Chạy thực nghiệm trên 5 Seeds, xuất Bảng A, B, C       :task6, 2026-11-09, 1d
-    Chạy 2 kiểm thử bác bỏ DoWhy Refutation               :task7, 2026-11-10, 1d
-    section Giai đoạn 4: Hoàn thiện & Diễn tập (Ngày 13-14)
-    Thiết kế Slide thuyết trình & Soát lại Notebook       :task8, 2026-11-11, 1d
-    Diễn tập 6 bước Demo trực tuyến & Nộp bài             :milestone, m2, 2026-11-12, 0d
-```
+| Giai đoạn | Ngày | Công việc | Thời lượng |
+|---|---:|---|---:|
+| 1. Nền tảng | 1 | Chốt bài toán và thẩm định dữ liệu UCI 697 | Mốc |
+| 1. Nền tảng | 1-2 | Lập trình pipeline nạp và làm sạch dữ liệu | 2 ngày |
+| 1. Nền tảng | 3-4 | Cài đặt Synthetic Benchmark, kiểm tra true ATE = 0.30 | 2 ngày |
+| 2. Baseline và mô hình lai | 5-6 | Cài đặt B0 với pgmpy và DoWhy | 2 ngày |
+| 2. Baseline và mô hình lai | 7-9 | Cài đặt H1, A1 và A3 | 3 ngày |
+| 3. Học cấu trúc và đối soát | 10-11 | Cài đặt H2, domain mask và A2 | 2 ngày |
+| 3. Học cấu trúc và đối soát | 12 | Chạy 5 seeds, xuất Bảng A/B/C và refutation | 1 ngày |
+| 4. Hoàn thiện và diễn tập | 13 | Thiết kế slide, rà soát notebook | 1 ngày |
+| 4. Hoàn thiện và diễn tập | 14 | Diễn tập demo 6 bước và nộp bài | Mốc |
+
+> Dùng bảng Markdown thay cho Mermaid Gantt để tài liệu hiển thị ổn định trong
+> VS Code và không phụ thuộc phiên bản Mermaid của trình xem.
 
 ### Chi tiết từng mốc công việc:
 

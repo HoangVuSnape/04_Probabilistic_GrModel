@@ -30,6 +30,10 @@ phải dùng `P(Y | do(T=t))`, ATE, rủi ro và độ bất định.
 5. Ghép tất cả thành notebook theo
    [03_notebook_cell_order.md](./03_notebook_cell_order.md).
 6. Chạy checklist trong [04_validation_and_outputs.md](./04_validation_and_outputs.md).
+7. Tra cứu thuật ngữ và metric trong
+   [05_glossary_and_metrics.md](./05_glossary_and_metrics.md).
+8. Dùng [06_notebook_review_plan.md](./06_notebook_review_plan.md) để review
+   notebook EDA hiện tại và triển khai notebook causal riêng.
 
 ## Phạm vi bắt buộc và tùy chọn
 
@@ -46,6 +50,19 @@ phải dùng `P(Y | do(T=t))`, ATE, rủi ro và độ bất định.
 
 ## Quy tắc quan trọng
 
+- Viết theo phong cách academic, ưu tiên code rõ ràng, có type hints, docstring
+  ngắn cho hàm public và tách các bước thí nghiệm thành các hàm thuần.
+- Dùng procedural functional style, không thiết kế hệ thống bằng class/OOP.
+  Class chỉ được dùng khi thư viện bắt buộc hoặc khi một cấu trúc dữ liệu
+  thực sự cần bất biến hành vi riêng.
+- Dùng `dataclasses.dataclass` cho configuration, split specification,
+  experiment result và các record trung gian có schema cố định.
+- Hạn chế structural programming dài trong notebook: không viết một cell lớn
+  chứa toàn bộ pipeline; tách `load`, `validate`, `transform`, `fit`,
+  `estimate` và `summarize` thành các hàm có đầu vào/đầu ra rõ ràng.
+- Hạn chế biến toàn cục. Hằng số dùng chung phải nằm trong dataclass cấu hình
+  hoặc được truyền tường minh qua tham số; không để model, dataframe, seed
+  hay kết quả fit phụ thuộc vào state ẩn của notebook.
 - Tách rõ discovery, identification và estimation.
 - Chỉ fit preprocessing trên train của từng seed.
 - Không đưa điểm học kỳ 1/2 vào các biến nền của causal question; đây là
@@ -55,4 +72,3 @@ phải dùng `P(Y | do(T=t))`, ATE, rủi ro và độ bất định.
 - H2 chỉ được xem là thành công khi có tối ưu liên tục, DAG constraint và
   domain mask được kiểm tra bằng số liệu.
 - Lưu cả kết quả thành `.csv`/`.json`, không chỉ in ra notebook.
-

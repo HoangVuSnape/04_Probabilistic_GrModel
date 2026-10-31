@@ -1,0 +1,4 @@
+Model,Placebo_Effect,Subset_Effect,Paired_Spread_Max_Min,Delta_ATE_vs_B0,Total_Runtime_5_Runs,Hardware
+B0,+0.0003 (Pass: True),+0.2341 (Pass: True),0.0137,---,0.27s,CPU / PyTorch MPS/CUDA
+H1,+0.0080 (Pass: True),+0.2347 (Pass: True),0.0231,-0.0054,27.57s,CPU / PyTorch MPS/CUDA
+H2,-0.0044 (Pass: True),+0.2328 (Pass: True),0.0000,+0.1074,2.20s,CPU / PyTorch MPS/CUDA

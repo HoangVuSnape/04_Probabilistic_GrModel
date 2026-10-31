@@ -45,13 +45,26 @@ Chi tiết bản chất Kaggle được lưu tại [08_kaggle_s4e6_data_deep_div
 - $Y$: kết quả nhị phân sau khi loại `Enrolled`: `Graduate=1`, `Dropout=0`.
 - $\mathbf{Z}$: tập biến nền được chọn trước treatment.
 
-Tập $\mathbf{Z}$ ban đầu:
+Tập $\mathbf{Z}$ chính thức cho primary estimand:
 
 $$
 \mathbf{Z}=
 \{\text{Admission grade},\text{Debtor},\text{Tuition fees up to date},
 \text{Mother's qualification},\text{Age at enrollment}\}.
 $$
+
+Theo data dictionary chính thức của UCI 697, các biến hồ sơ nhập học khác có
+thể là ứng viên cho sensitivity analysis: `Application mode`, `Application
+order`, `Course`, `Previous qualification`, `Previous qualification (grade)`,
+`Father's qualification`, `Mother's occupation`, `Father's occupation`,
+`Gender`, `Displaced`, `Educational special needs` và `International`.
+Không đưa các biến `Curricular units 1st sem ...` hoặc `Curricular units 2nd
+sem ...` vào admission-time adjustment vì chúng được đo sau khi quá trình học
+đã bắt đầu và có thể là mediator hoặc post-treatment leakage.
+
+Quyết định thực thi là chạy DAG năm biến trước; DAG mở rộng chỉ được chạy như
+sensitivity analysis sau khi kiểm tra positivity, sparse cells và temporal
+ordering.
 
 ### 3.2. Hai prediction estimand phải tách riêng
 
@@ -102,6 +115,27 @@ $$
 =P(Y=1\mid do(T=1))
 -P(Y=1\mid do(T=0)).
 $$
+
+Danh sách cạnh triển khai của DAG B0:
+
+```python
+EDGES_B0 = [
+    ("Admission grade", "Scholarship holder"),
+    ("Admission grade", "Target"),
+    ("Debtor", "Scholarship holder"),
+    ("Debtor", "Target"),
+    ("Tuition fees up to date", "Scholarship holder"),
+    ("Tuition fees up to date", "Target"),
+    ("Mother's qualification", "Scholarship holder"),
+    ("Mother's qualification", "Target"),
+    ("Age at enrollment", "Scholarship holder"),
+    ("Age at enrollment", "Target"),
+    ("Scholarship holder", "Target"),
+]
+```
+
+Danh sách này không phải là cấu trúc được học tự động; đây là domain DAG
+được giả định trước để so sánh B0/H1 và làm mask temporal cho H2.
 
 ### 4.2. Ba giả định bắt buộc phải bảo vệ
 

@@ -39,8 +39,40 @@ Nhóm chính thức quyết định lựa chọn **Phương án B: Bộ dữ li�
   * Biến can thiệp $T$: `Scholarship holder` (0/1).
   * Biến nền $Z$: Điểm tuyển sinh, nợ học phí, đóng học phí đúng hạn, học vấn phụ huynh, tuổi nhập học.
 
+### 3.1. Cập nhật từ data dictionary UCI
+
+Trang UCI chính thức xác nhận dữ liệu có 36 thuộc tính, không có missing value,
+bao gồm thông tin hồ sơ nhập học, nhân khẩu học, kinh tế-xã hội và kết quả học
+tập theo học kỳ. Vì mục tiêu là ước lượng tác động của học bổng tại thời điểm
+đầu kỳ, các biến `Curricular units 1st sem ...` và `Curricular units 2nd sem ...`
+được đánh dấu là hậu treatment; không đưa chúng vào tập điều chỉnh admission-time.
+
+Từ ngày 2026-10-30, quyết định DAG được chia thành hai tầng:
+
+1. **DAG chính để thực thi B0/H1/H2 (primary estimand):** giữ tập $Z$ năm biến
+   đã chốt ở trên để tránh sparse cells và bảo đảm khả năng giải thích.
+2. **DAG mở rộng để sensitivity analysis:** xem xét thêm `Application mode`,
+   `Application order`, `Course`, `Previous qualification`,
+   `Previous qualification (grade)`, `Father's qualification`,
+   `Mother's occupation`, `Father's occupation`, `Gender`, `Displaced`,
+   `Educational special needs` và `International`. Chỉ đưa biến nào qua được
+   kiểm tra temporal ordering, overlap và leakage vào sensitivity run.
+
+Các cạnh nhân quả nền tảng được giả định theo thứ tự:
+
+```text
+Z_baseline -> Scholarship holder -> Target
+Z_baseline --------------------> Target
+```
+
+Không cho phép `Target -> Scholarship holder`, `Target -> Z_baseline` hoặc
+`Scholarship holder -> Z_baseline`. Đây là giả định domain DAG để định danh,
+không phải kết luận được chứng minh chỉ từ tương quan dữ liệu.
+
 ---
 
 ## 4. Hệ quả & Lợi ích (Consequences)
 * **Tích cực:** Thỏa mãn hoàn toàn yêu cầu của Giảng viên về tính thực tế, quy mô đủ lớn để chạy chia 5 seed ghép cặp mà không bị rỗng mẫu; đảm bảo tính bao phủ (treatment overlap).
 * **Tuân thủ quy định:** Đảm bảo điều kiện duyệt đề tài Midterm (Accept) và cung cấp cơ sở dữ liệu vững chắc cho bài báo khoa học Cuối kỳ.
+* **Quyết định thực thi:** Chạy primary estimand với DAG tối giản trước; chỉ chạy
+  DAG mở rộng sau khi primary pipeline pass toàn bộ validation.

@@ -1,15 +1,18 @@
 # Thứ tự cell notebook
 
 Notebook nên chạy từ đầu đến cuối bằng `Run all`, không phụ thuộc state của
-phiên trước.
+phiên trước. Cell chỉ điều phối các hàm; logic chính không được viết thành
+một khối structural programming dài trong cell.
 
 ## Cell 1-4: Setup
 
 1. Tiêu đề, tác giả, câu hỏi nhân quả, nguồn dữ liệu.
 2. Cài/import phiên bản package (`numpy`, `pandas`, `scikit-learn`,
    `pgmpy`, `dowhy`, `networkx`, `torch`).
-3. Khai báo seed list, cấu hình, thư mục artifacts.
-4. Hàm `set_seed`, logger và hàm ghi JSON/CSV.
+3. Khai báo `ExperimentConfig`/các dataclass cần thiết; chỉ tạo một config
+   bất biến, không tạo global dataframe/model.
+4. Định nghĩa hàm `set_seed`, logger và hàm ghi JSON/CSV; các hàm nhận config
+   hoặc đường dẫn qua tham số.
 
 ## Cell 5-9: Synthetic benchmark
 
@@ -63,4 +66,3 @@ phiên trước.
 37. Bảng C: ablation deltas.
 38. Hình DAG, mask, CPD, uncertainty và runtime.
 39. Kết luận, limitations, và 6 bước demo Midterm.
-

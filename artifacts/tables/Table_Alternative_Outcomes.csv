@@ -1,0 +1,5 @@
+Chiều Kết quả (Outcome),Cỡ mẫu,Causal Estimand,ATE Ước lượng,Khoảng tin cậy 95%,p-value,Hàm ý Chính sách
+Continuous Semester 2 GPA (0-20 scale),"N = 3,630",E[Y|do(1)] - E[Y|do(0)],+1.478 điểm,"[1.093, 1.863]",6.69e-14,"Học bổng tăng điểm GPA +7.4%, thúc đẩy năng lực học thuật thực chất"
+Credit Completion Velocity (Ratio 0-1),"N = 3,630",E[Y|do(1)] - E[Y|do(0)],+14.50%,"[11.80%, 17.20%]",1.58e-25,"Học bổng tăng tỷ lệ qua môn +14.5%, giảm nợ đọng tín chỉ"
+Full-Cohort Retention (Non-Dropout),"N = 4,424 (Includes Enrolled)",Doubly Robust AIPW ATE,+16.87%,"[13.79%, 19.73%]",< 1e-10,Học bổng bảo vệ tỷ lệ duy trì toàn trường tăng gần 17 điểm %
+Causal Mediation via 1st Sem Credits,"N = 3,630",Natural Indirect Effect (NIE),+4.65% (NIE),Tỷ lệ trung gian: 21.5%,< 1e-10,21.5% hiệu ứng học bổng đi qua đà học tập tích lũy ở học kỳ 1

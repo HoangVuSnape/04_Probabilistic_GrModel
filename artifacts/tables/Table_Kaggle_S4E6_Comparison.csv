@@ -1,0 +1,7 @@
+Feature,UCI_Mean,Kaggle_Mean,Wasserstein_Dist,KS_Statistic,KS_p_value
+Age at enrollment,23.461 (±7.827),22.513 (±7.153),0.9495,0.0858,2.12e-22
+Admission grade,127.294 (±14.609),125.793 (±12.838),1.7116,0.0513,2.76e-08
+Mother's qualification,19.986 (±15.583),20.118 (±15.423),0.4283,0.0239,3.92e-02
+Debtor,0.114 (±0.318),0.078 (±0.268),0.0357,0.0357,3.16e-04
+Tuition fees up to date,0.866 (±0.341),0.874 (±0.332),0.0076,0.0076,9.88e-01
+Scholarship holder,0.267 (±0.442),0.275 (±0.447),0.0081,0.0081,9.76e-01
