@@ -5,6 +5,11 @@ import traceback
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+plt.show = lambda *args, **kwargs: None
+
 def mock_display(*args, **kwargs):
     for arg in args:
         print(arg)
@@ -13,7 +18,7 @@ def run_notebook(nb_path):
     with open(nb_path, "r", encoding="utf-8") as f:
         nb = json.load(f)
     
-    global_ns = {"display": mock_display}
+    global_ns = {"display": mock_display, "plt": plt}
     
     code_cells = [c for c in nb["cells"] if c["cell_type"] == "code"]
     print(f"Executing {len(code_cells)} code cells from {nb_path}...")

@@ -46,7 +46,9 @@ Mọi script Python thực thi (huấn luyện, đánh giá, kiểm thử refuta
 
 ## 4. Điều hướng nhanh
 
-* 📋 [Bản ghi Quyết định (Decisions / ADRs)](./decisions/ADR_001_dataset_selection.md)
+* 📑 [Báo cáo Tổng hợp Dự án Toàn diện (FINAL_COURSE_PROJECT_REPORT.md)](./FINAL_COURSE_PROJECT_REPORT.md)
+* 📊 [Báo cáo Phân tích Chuyên sâu Hình ảnh Thực nghiệm (NOTEBOOK_VISUAL_ANALYSIS_REPORT.md)](./NOTEBOOK_VISUAL_ANALYSIS_REPORT.md)
+* 📋 [Bản ghi Quyết định Kiến trúc & Bảng Kiểm tra (Decisions / ADRs & Checklists)](./decisions/)
 * 📜 [Thư mục File Log Thực nghiệm](./logs/)
 * 🎤 [Báo cáo & Slide Midterm](./midterm/README.md)
 * 📑 [Bài báo Khoa học LaTeX Cuối kỳ (Final)](./final/README.md)
