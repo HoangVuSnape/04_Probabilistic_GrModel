@@ -1,0 +1,48 @@
+\section{Expected Results}
+
+The primary objective of this research is to develop a robust, compliant, and computationally efficient non-parametric continual learning framework for Vietnamese legal language modeling. The expected scientific and technology deliverables, mapped directly to the project's specific objectives and their quantitative acceptance thresholds, are structured as follows:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Deliverable 1 (Objective 1): Selective RAG Memory with Compliance and Temporal/Unlearning Gating Module}
+    \begin{itemize}
+        \item \textit{Description:} A software module that structures Vietnamese legal corpora into a temporal-aware vector database, implements centrality-based importance and Ebbinghaus-based decay reranking, and provides the compliance hard-gate together with the temporal/compliance gating---including the $P+Q$ unlearning filters for replaced laws, sealed cases, and personal data.
+        \item \textit{Quantitative Acceptance Thresholds:}
+        \begin{itemize}
+            \item Active vector index size reduction of $\ge 30\%$ compared to static RAG, with retrieval accuracy (Recall@10) maintained within $\pm 2\%$ of the full-index baseline.
+            \item Unlearning effectiveness ROUGE-L $\le 0.15$ on target queries; harmlessness $\ge 95\%$ of baseline on unrelated active queries; robustness reported as TPR at a $1\%$ FPR limit under adversarial/jailbreak queries.
+        \end{itemize}
+    \end{itemize}
+    \newpage
+    \item \textbf{Deliverable 2 (Objective 2): Continual-Ingestion Forgetting Study}
+    \begin{itemize}
+        \item \textit{Description:} Parametric comparison baselines---Continual Pre-Training/Instruction Tuning and the semi-parametric Retrievable Gradients (ReGrad) approach---built at the \emph{same} small model scale, the legal corpus ingested in incremental snapshots, and the catastrophic forgetting of each paradigm measured against the frozen-RAG framework on QA, NLI, and syllogism.
+        \item \textit{Quantitative Acceptance Thresholds:}
+        \begin{itemize}
+            \item Forgetting curves (performance vs.\ ingestion volume) reported for all four arms on the three tasks.
+            \item A measurable contrast: Backward Transfer near zero for the frozen-RAG framework while the parametric baseline degrades significantly (strongly negative BWT) at the highest ingestion level.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Deliverable 3 (Objective 3): Standardized Benchmark Evaluation Suite}
+    \begin{itemize}
+        \item \textit{Description:} An evaluation pipeline configured to run baseline models and proposed modules on public Vietnamese legal NLP datasets.
+        \item \textit{Quantitative Acceptance Thresholds:}
+        \begin{itemize}
+            \item Successful deployment and testing on VLQA \parencite{nguyen2025vlqacomprehensivelargehighquality}, ViLegalNLI \parencite{duong2026vilegalnlinaturallanguageinference}, and LegalSLM \parencite{le-etal-2025-overview} datasets, with test scenarios sourced from data-rich legal sub-domains such as labour and tax law.
+            \item A cross-domain sequential evaluation (e.g.\ labour~$\rightarrow$~tax) that quantifies catastrophic forgetting via Backward Transfer, with the proposed RAG-centric framework targeting near-zero factual forgetting of the earlier sub-domain relative to a parametric continual-tuning baseline.
+            \item A task-difficulty analysis reporting the retrieval improvement $\Delta$ across QA~$\rightarrow$~NLI~$\rightarrow$~syllogism, characterizing the \emph{reasoning ceiling}---substantial gains on retrieval-bound QA, tapering towards syllogistic reasoning bounded by the frozen base model.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Academic and Training Outcomes}
+In addition to the software deliverables, this project aims to contribute to academic training and scientific literature:
+\begin{enumerate}
+    \item \textbf{Scientific Publication (target):} One (1) paper aimed at a Vietnamese/regional NLP venue (e.g., VLSP workshop or KSE), commensurate with a student research project. No ISI/Scopus journal submission is committed within the six-month scope.
+    \item \textbf{Training Outcome:} Completion of this Master's thesis in Computer Science / Artificial Intelligence, including the methodology, implementation, and evaluation reported here.
+    \item \textbf{Open-Source Assets:}
+    \begin{itemize}
+        \item Release of a public GitHub repository containing the complete implementation code, evaluation scripts, and metadata-augmented indexes.
+        \item Publication of the evaluation metrics and baseline results to foster reproducibility in Vietnamese legal-CL studies.
+    \end{itemize}
+\end{enumerate}

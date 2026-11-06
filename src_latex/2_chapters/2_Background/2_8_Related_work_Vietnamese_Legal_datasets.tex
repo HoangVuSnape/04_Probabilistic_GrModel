@@ -1,0 +1,47 @@
+\section{Vietnamese Legal Datasets and Benchmarks}
+\label{sec:vndata}
+
+The final section reviews the Vietnamese legal resources that ground the empirical scope of this work and surface the domain-specific gaps it addresses.
+
+\textbf{VLQA} \parencite{nguyen2025vlqacomprehensivelargehighquality} is the first comprehensive, expert-annotated Vietnamese legal question-answering dataset, comprising roughly $59{,}000$ articles and $3{,}100$ question--answer pairs, evaluated with Recall@$K$, MRR@$10$, ROUGE, and BLEU. Its regulatory density is highest in the Administrative System topic ($14.67\%$ of questions), and it serves as the retrieval knowledge base for the selective memory proposed in this work.
+
+\textbf{ViLegalNLI} \parencite{duong2026vilegalnlinaturallanguageinference} is the largest Vietnamese legal natural language inference dataset ($42{,}000$ sentence pairs), notable for removing lexical shortcuts via pointwise mutual information so that genuine reasoning is measured. As Table~\ref{tab:vilegalnli} shows, a large few-shot model (Qwen-2.5) reaches $90.72\%$ test accuracy, while a compact Vietnamese encoder (CafeBERT) remains competitive at $87.49\%$.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Selected model performance on ViLegalNLI \parencite{duong2026vilegalnlinaturallanguageinference}.}
+\label{tab:vilegalnli}
+\begin{tabularx}{\textwidth}{X c c c}
+\hline
+\textbf{Model} & \textbf{Size} & \textbf{Test Acc (\%)} & \textbf{Test F1 (\%)} \\
+\hline
+PhoBERT (large) & 370M & 84.98 & 84.78 \\
+CafeBERT (Vietnamese) & 110M & 87.49 & 87.36 \\
+InfoXLM (large) & 550M & 87.98 & 87.85 \\
+Qwen-2.5 (few-shot) & 72B & 90.72 & 90.64 \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{LegalSLM} \parencite{le-etal-2025-overview} is a shared task evaluating Vietnamese small language models on legal QA, NLI, and syllogistic reasoning. Its results, summarized in Table~\ref{tab:legalslm}, reveal a critical pattern: models score near $0.95$ on classification and NLI but only around $0.5$--$0.6$ on free-form syllogism, and continued pre-training helps the 4B model yet harms the 1.7B model. This exposes a wide gap between retrieval or classification and active multi-step legal reasoning.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Selected LegalSLM leaderboard results \parencite{le-etal-2025-overview}.}
+\label{tab:legalslm}
+\begin{tabularx}{\textwidth}{X c c c c}
+\hline
+\textbf{Model} & \textbf{NLI} & \textbf{QA} & \textbf{Syllogism} & \textbf{Average} \\
+\hline
+Bosch@AI (team) & 0.970 & 0.927 & 0.536 & 0.811 \\
+Qwen-3-4B (continued pre-trained) & 0.960 & 0.850 & 0.595 & 0.801 \\
+Qwen-3-4B (base) & 0.970 & 0.821 & 0.516 & 0.769 \\
+Qwen-3-1.7B (base) & 0.562 & 0.793 & 0.468 & 0.608 \\
+Qwen-3-1.7B (continued pre-trained) & 0.645 & 0.787 & 0.384 & 0.605 \\
+\hline
+\end{tabularx}
+\end{table}
+
+Taken together, these resources confirm that strong Vietnamese legal retrieval and classification are attainable, but active legal reasoning remains weak and existing corpora lack the validity and temporal metadata required to reason about legal regimes over time. These observations, combined with the gaps identified throughout this chapter---the inevitability of parametric forgetting, the rising external-memory paradigm, the absence of selective legal memory, the under-explored controllable forgetting, and the scarcity of low-resource benchmarks---directly motivate the hybrid, retrieval-centric framework for the Vietnamese legal domain presented in the following chapter.

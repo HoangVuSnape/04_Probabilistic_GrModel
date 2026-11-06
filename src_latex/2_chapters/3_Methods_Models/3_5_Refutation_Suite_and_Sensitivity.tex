@@ -1,0 +1,38 @@
+\section{DoWhy Refutation Suite and Sensitivity Algebra}
+\label{sec:meth_refutations}
+
+A causal claim is unscientific unless subjected to adversarial refutations designed to falsify its identifying assumptions \parencite{sharma2020dowhy, cinelli2020making}.
+
+\subsection{The Three-Tier DoWhy Refutation Protocol}
+
+We implement a three-tier adversarial refutation suite via \texttt{DoWhy} (Algorithm \ref{alg:refutation_protocol}):
+
+\begin{algorithm}[htbp]
+\caption{Three-Tier Adversarial Causal Refutation Protocol}
+\label{alg:refutation_protocol}
+\begin{algorithmic}[1]
+\Require Model $\mathcal{M}$, Data $\mathcal{D} = \{(\mathbf{x}_i, t_i, y_i)\}_{i=1}^N$, Estimated Effect $\hat{\tau}$
+\Ensure Refutation Audit Report $\mathcal{R}$
+\Statex \textbf{Tier 1: Placebo Treatment Test}
+\State $T_{\text{placebo}} \leftarrow \operatorname{UniformPermute}(T)$
+\State $\hat{\tau}_{\text{placebo}} \leftarrow \operatorname{Estimate}(\mathcal{M}, \mathcal{D}, T_{\text{placebo}})$ \Comment{Assert $|\hat{\tau}_{\text{placebo}}| \le 0.01$, $p \ge 0.05$}
+\Statex \textbf{Tier 2: Random Common Cause Test}
+\State Sample synthetic noise $W_i \sim \mathcal{N}(0, 1)$, augment $\mathbf{Z}' \leftarrow \mathbf{Z} \cup \{W\}$
+\State $\hat{\tau}_{\text{random}} \leftarrow \operatorname{Estimate}(\mathcal{M}, \mathcal{D}_{\text{aug}}, \mathbf{Z}')$ \Comment{Assert $|\hat{\tau} - \hat{\tau}_{\text{random}}| \le 0.01$}
+\Statex \textbf{Tier 3: Data Subset Bootstrap Test}
+\For{$b = 1$ to $B=100$}
+    \State Sample 80\% sub-cohort $\mathcal{D}^{(b)} \subset \mathcal{D}$; compute $\hat{\tau}^{(b)} \leftarrow \operatorname{Estimate}(\mathcal{M}, \mathcal{D}^{(b)})$
+\EndFor
+\State $\Delta_{\text{subset}} \leftarrow \max_b \hat{\tau}^{(b)} - \min_b \hat{\tau}^{(b)}$ \Comment{Assert paired spread $\le 0.03$}
+\State \Return $\mathcal{R} = \{\hat{\tau}_{\text{placebo}}, \hat{\tau}_{\text{random}}, \Delta_{\text{subset}}\}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Cinelli-Hazlett Sensitivity Benchmarking}
+
+To establish unobserved confounding survival thresholds, we benchmark hypothetical unmeasured confounders against observed administrative predictors:
+\begin{equation}
+    \operatorname{Bias}(U) = \operatorname{SE}(\hat{\tau}) \cdot \sqrt{\frac{R^2_{Y \sim U \mid T, \mathbf{Z}} \cdot R^2_{T \sim U \mid \mathbf{Z}}}{1 - R^2_{T \sim U \mid \mathbf{Z}}}} \cdot \sqrt{\text{df}}.
+    \label{eq:cinelli_bias_eval}
+\end{equation}
+We benchmark $U$ at $1\times$, $2\times$, and $3\times$ the explanatory power of student first-semester academic performance ($Z_5$, partial $R^2 = 0.1041$), computing the Robustness Value ($RV_{q=1}$) required to overturn policy recommendations.

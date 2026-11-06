@@ -1,0 +1,27 @@
+\section{Machine Unlearning in Retrieval-Augmented Generation}
+\label{sec:unlearn}
+
+A defining requirement of the legal domain is \emph{intentional forgetting}: repealed statutes must no longer be cited as current, sealed judgments must remain confidential, and personal data may be subject to a right-to-be-forgotten request. Model-level unlearning---for example gradient ascent---is computationally expensive and tends to degrade unrelated capabilities, making it ill-suited to frequently changing legal knowledge.
+
+Wang et al. \parencite{11207222} reframe unlearning as a retrieval-level operation. The knowledge to be forgotten is modeled as a pair $(P, Q)$, where $P$ is a retrieval-side component that suppresses, hides, or gates the target entries, and $Q$ is an output-side constraint preventing the model from revealing or relying on the forgotten knowledge. Because this leaves the backbone untouched, it is inexpensive, reversible, and applicable even to closed models such as GPT-4o and Gemini. As Table~\ref{tab:rag_unlearn} shows, the RAG-based approach achieves near-complete forgetting (Unlearning Success Rate of $99.8\%$ and ROUGE-L of $0.10$) while \emph{preserving} general utility, whereas parametric methods such as gradient ascent forget less effectively and degrade utility.
+
+\begin{table}[H]
+\centering
+\small
+\caption{RAG-based versus model-level unlearning on Llama-2-7b-chat \parencite{11207222}. Arrows indicate the desirable direction.}
+\label{tab:rag_unlearn}
+\begin{tabularx}{\textwidth}{l X c c c c}
+\hline
+\textbf{Task} & \textbf{Method} & \textbf{ROUGE-L $\downarrow$} & \textbf{USR $\uparrow$} & \textbf{TPR $\downarrow$} & \textbf{Utility} \\
+\hline
+Concept & Gradient ascent & 61.30 & 35.9\% & 2.2\% & 40.2\% \\
+Concept & In-context & 75.60 & 13.8\% & 2.4\% & 52.4\% \\
+Concept & $\mu$-unlearning & 80.20 & 43.4\% & 2.0\% & 43.1\% \\
+Concept & RAG-based & 0.10 & 99.8\% & 1.3\% & 53.8\% \\
+Sample & Gradient ascent & 32.70 & 75.8\% & 2.0\% & 38.5\% \\
+Sample & RAG-based & 0.00 & 100.0\% & 1.2\% & 53.8\% \\
+\hline
+\end{tabularx}
+\end{table}
+
+The evaluation criteria established in this line of work---effectiveness, universality, harmlessness, robustness, and simplicity---are adopted in Chapter~4. It must be emphasized that this is \emph{behavioral} unlearning: it controls retrieval and grounding rather than erasing knowledge from the frozen backbone, so residual parametric leakage is measured (via membership-inference rates) rather than assumed to be zero. This framework provides the direct foundation for the controllable legal unlearning mechanism proposed in Chapter~3.

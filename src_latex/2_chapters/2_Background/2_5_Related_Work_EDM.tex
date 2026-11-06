@@ -1,0 +1,27 @@
+\section{Related Work in Educational Data Mining and Causal Learning}
+\label{sec:bg_related_work}
+
+Higher education dropout prediction has witnessed an extensive literature within Educational Data Mining (EDM) and Learning Analytics (LA). However, prior works remain overwhelmingly confined to Layer 1 correlational prediction.
+
+\subsection{Correlational Machine Learning for Dropout Prediction}
+
+The benchmark Portuguese higher education dataset studied in this research was curated by \textcite{martins2021predicting} at the Polytechnic Institute of Portalegre (IPPortalegre). Their baseline evaluation benchmarked classical classifiers (MLP, Random Forests, SVM, GBDT), reporting classification accuracies between $77\%$ and $80\%$. Subsequent benchmarks on the 76,518-instance Kaggle Playground Series 4 Episode 6 dataset \parencite{kaggle2024s4e6} pushed accuracy to $83.5\%$ utilizing complex ensemble stacking. 
+
+However, these models operate strictly as predictive black boxes:
+\begin{enumerate}
+    \item \textbf{Absence of Interventional Semantics:} Feature attribution metrics (SHAP, Gini importance) quantify how a feature shifts model scores, not how physical intervention alters graduation probability.
+    \item \textbf{Feature Conflation and Reverse Causality:} Standard classifiers exploit post-treatment proxies (e.g., late tuition arrears) as top predictors, obscuring early actionable policy levers.
+    \item \textbf{Susceptibility to Data Leakage:} Many published EDM models incorporate second-semester curricular features (e.g., \texttt{Curricular units 2nd sem grade}) to predict year-end dropout. In real university workflows, by the time semester-2 final grades appear, student departure has already occurred.
+\end{enumerate}
+
+\subsection{Causal Graphical Models in Education}
+
+Recent studies have explored Causal Bayesian Networks (CBNs) for educational analytics \parencite{edm2024cbn}. While standard discrete CBNs satisfy Pearl's $do$-calculus, they have been constrained by discrete CPTs, requiring severe categorical binning and failing on unobserved parental combinations. Conversely, deep causal representation models (such as TARNet \parencite{shalit2017tarnet} and Dragonnet \parencite{shi2019dragonnet}) lack inspectable DAG topologies, preventing domain experts from verifying d-separation conditions and conducting transparent mediation path analysis.
+
+\subsection{The Methodological Void and Proposed Synthesis}
+
+This review identifies an unaddressed methodological gap:
+\begin{displayquote}
+\textit{There is currently no unified framework that simultaneously provides: (1) an inspectable, domain-admissible causal DAG; (2) continuous deep neural parameterization to eliminate zero-frequency CPT cell explosion; (3) an $\mathcal{O}(1)$ vectorized tensor interventional query engine; and (4) formal econometric refutation guarantees tailored for budget-constrained educational policy intervention.}
+\end{displayquote}
+Addressing this specific void constitutes the core technical motivation of this research.

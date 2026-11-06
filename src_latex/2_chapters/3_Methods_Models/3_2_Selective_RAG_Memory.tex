@@ -1,0 +1,53 @@
+\section{Selective Legal RAG Memory}
+\label{sec:selective}
+
+This module realizes the first methodological contribution of the framework: a retrieval memory that is not merely relevance-ranked but \emph{importance-aware}, pruning low-value content to reduce index size and context clutter while guaranteeing that in-force law is never dropped. The design adapts the cognitive forgetting principle of long-term retrieval chatbots \parencite{Sumida_2025} from conversational turns to legal knowledge units.
+
+\subsection{Legal Importance Scoring}
+For each knowledge unit $u_i$, a legal importance score $I_i \in [0,1]$ aggregates four domain-specific signals derived from the metadata schema of Section~3.1:
+\begin{equation}
+    I_i = w_1 \cdot \widehat{c_i} + w_2 \cdot v_i + w_3 \cdot \rho_i + w_4 \cdot g(H_i, t),
+\end{equation}
+where $\widehat{c_i}$ is the normalized citation centrality, $v_i$ the validity flag, $\rho_i$ the risk/applicability weight, and $g(H_i,t)$ a time-decayed access frequency (Section~3.2.2). The weights $w_1,\dots,w_4$ are not fixed heuristically; two estimation strategies are compared in an ablation study: (i) a \emph{rule-based} scheme whose weights are tuned on a validation set against retrieval metrics (Recall@$K$, MRR@$10$) \parencite{nguyen2025vlqacomprehensivelargehighquality}, and (ii) an \emph{LLM-estimated} scheme in which a language model rates importance, following the six-metric protocol of \textcite{Sumida_2025}.
+
+\subsection{Cognitive Consolidation and Decay}
+The frequency term emulates a human-like forgetting curve: repeated retrievals consolidate a unit, while unused units decay over time. Given the set of access timestamps $H_i$, the contribution at time $t$ is
+\begin{equation}
+    g(H_i, t) = \sum_{\tau \in H_i,\; \tau < t} e^{-\lambda (t - \tau)},
+\end{equation}
+where $\lambda$ is a decay-rate hyperparameter. Based on the resulting importance, the memory is stratified into two tiers:
+\begin{itemize}
+    \item \textbf{Active (long-term semantic) memory:} the top-$k$ units by $I_i$, retrieved with priority.
+    \item \textbf{Archive (cold) tier:} units below a threshold $\theta$, which are \emph{down-ranked but never deleted}.
+\end{itemize}
+Crucially, ``forgetting'' here reduces the size of the \emph{active} index and the noise in the context window; it never removes legal coverage, since archived units remain retrievable.
+
+\subsection{Compliance Hard-Gate and Retrieval Scoring}
+Legal question answering imposes a hard correctness constraint that pure relevance ranking ignores: a currently valid clause must never be omitted merely because its importance is low. The module therefore separates retrieval candidates into a mandatory \emph{must-keep} set and a re-ranked remainder. For a query $q$ with optional time-stamp $t_q$, candidates $C$ are first retrieved by semantic similarity; the must-keep set is
+\begin{equation}
+    M = \{\, u_i \in C : v_i = 1 \;\wedge\; \mathrm{valid\_at}(u_i, t_q) \;\wedge\; \mathrm{match}(u_i, q) \,\},
+\end{equation}
+and the remaining units are ordered by a combined score
+\begin{equation}
+    S(q, u_i) = \mathrm{sim}(q, e_i) + \beta \cdot I_i ,
+\end{equation}
+where $\beta$ balances semantic relevance against legal importance. The final context is $M \cup \mathrm{Top\text{-}}k(C \setminus M)$. Thus validity acts as a \textbf{hard gate} while importance only re-ranks within the admissible set. The procedure is summarized in Algorithm~\ref{alg:selective}.
+
+\begin{algorithm}[H]
+\caption{Selective retrieval with compliance hard-gate}
+\label{alg:selective}
+\begin{algorithmic}[1]
+\Require query $q$, optional time-stamp $t_q$; knowledge base $KB$
+\Ensure ranked context $\mathit{ctx}$ for generation
+\State $C \gets \mathrm{RetrieveTopM}(q)$ \Comment{semantic candidates}
+\State $C \gets \mathrm{UnlearningGate}(C, q, t_q)$ \Comment{Section~3.3, policy $P$}
+\State $M \gets \{\, u \in C : v_u = 1 \;\wedge\; \mathrm{ValidAt}(u, t_q) \;\wedge\; \mathrm{Match}(u, q) \,\}$ \Comment{compliance hard-gate}
+\State $R \gets \mathrm{Sort}\!\left(C \setminus M,\ \text{key: } \mathrm{sim}(q, e_u) + \beta\, I_u\right)$ \Comment{rerank remainder}
+\State $\mathit{ctx} \gets M \cup \mathrm{TopK}(R)$
+\State $\mathrm{LogAccess}(\mathit{ctx})$ \Comment{update $H_u$ for decay}
+\State \Return $\mathit{ctx}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Limitations and Open Questions}
+The importance signals are proxies: citation centrality, for instance, correlates with but does not guarantee legal significance, which is why it is combined with validity and risk and subjected to feature ablation. A further practical question is how to obtain a realistic access history $H_i$ before deployment; this is addressed using query logs synthesized from the dataset distribution. The central research question---which importance signals are most effective for selective legal memory---is evaluated experimentally per the design in Section~3.1.

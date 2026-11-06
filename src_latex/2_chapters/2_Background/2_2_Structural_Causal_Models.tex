@@ -1,0 +1,53 @@
+\section{Structural Causal Models and Pearl's Causal Hierarchy}
+\label{sec:bg_scm}
+
+While observational Bayesian networks model $P(\mathbf{X})$, distinct DAG structures may belong to the same Markov Equivalence Class yet prescribe contradictory policy interventions \parencite{pearl2009causality}. Judea Pearl formulated Structural Causal Models (SCMs) and established the Three-Layer Causal Hierarchy (Table \ref{tab:causal_hierarchy}).
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Pearl's Three-Layer Causal Hierarchy and Educational Policy Equivalents.}
+    \label{tab:causal_hierarchy}
+    \begin{tabularx}{\textwidth}{p{2.2cm}p{3.2cm}p{4.2cm}X}
+        \toprule
+        \textbf{Layer} & \textbf{Mathematical Form} & \textbf{Typical Query} & \textbf{Educational Domain Meaning} \\
+        \midrule
+        \textbf{$L_1$: Association} & $P(Y \mid T=t)$ & What does observing a scholarship tell us about graduation? & Observational correlation; confounded by socioeconomic privilege. \\
+        \textbf{$L_2$: Intervention} & $P(Y \mid do(T=t))$ & What will happen if the university mandates aid for this group? & Institutional policy effect; graph surgery cuts incoming confounding arrows. \\
+        \textbf{$L_3$: Counterfactuals} & $P(Y_{T=1} \mid T=0, Y=0)$ & Would a student who dropped out have graduated had aid been given? & Individual retrospective accountability and algorithmic fairness. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Structural Assignments and Graph Surgery}
+
+An SCM is a 4-tuple $\mathcal{M} = \langle \mathbf{U}, \mathbf{V}, \mathbf{F}, P(\mathbf{U}) \rangle$, where $\mathbf{U}$ are exogenous background variables governed by $P(\mathbf{U})$, $\mathbf{V}$ are endogenous variables, and $\mathbf{F} = \{f_i\}_{i=1}^d$ are deterministic structural assignments:
+\begin{equation}
+    V_i \leftarrow f_i(\text{Pa}_{\mathcal{G}}(V_i), U_i), \quad \forall i \in \{1, \dots, d\}.
+    \label{eq:scm_assignment}
+\end{equation}
+An external physical intervention setting variable $T$ to constant $t$, denoted $do(T=t)$, replaces structural equation $f_T$ with the assignment $T \leftarrow t$. Graphically, this corresponds to \textit{graph surgery}: all directed edges entering $T$ from its parents $\text{Pa}(T)$ are removed in the sub-graph $\mathcal{G}_{\overline{T}}$, severing all incoming confounding paths.
+
+\subsection{The Backdoor Criterion and Identification Formula}
+
+\begin{definition}[Backdoor Criterion \parencite{pearl2009causality}]
+A set of variables $\mathbf{Z}$ satisfies the Backdoor Criterion relative to an ordered pair of variables $(T, Y)$ in a DAG $\mathcal{G}$ if:
+\begin{enumerate}
+    \item No node in $\mathbf{Z}$ is a causal descendant of treatment $T$ (i.e., $\mathbf{Z} \cap \text{Descendants}(T) = \emptyset$).
+    \item $\mathbf{Z}$ blocks every backdoor path between $T$ and $Y$ that enters $T$ through an incoming arrow in $\mathcal{G}_{\underline{T}}$.
+\end{enumerate}
+\end{definition}
+
+When backdoor admissibility holds, the interventional distribution is non-parametrically identified by the Backdoor Adjustment Formula:
+\begin{equation}
+    P(Y = y \mid do(T = t)) = \sum_{\mathbf{z} \in \mathcal{Z}} P(Y = y \mid T = t, \mathbf{Z} = \mathbf{z}) P(\mathbf{Z} = \mathbf{z}).
+    \label{eq:backdoor_adjustment}
+\end{equation}
+Correspondingly, the Average Treatment Effect ($ATE$) of shifting treatment from control ($T=0$) to intervention ($T=1$) on binary outcome $Y \in \{0, 1\}$ is:
+\begin{equation}
+\begin{aligned}
+    ATE &= \mathbb{E}[Y \mid do(T=1)] - \mathbb{E}[Y \mid do(T=0)] \\
+        &= \sum_{\mathbf{z}} \left[ P(Y=1 \mid T=1, \mathbf{z}) - P(Y=1 \mid T=0, \mathbf{z}) \right] P(\mathbf{z}).
+\end{aligned}
+\label{eq:ate_definition}
+\end{equation}

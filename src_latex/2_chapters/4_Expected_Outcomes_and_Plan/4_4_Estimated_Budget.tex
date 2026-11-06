@@ -1,0 +1,40 @@
+\section{Estimated Budget}
+
+The estimated budget required to complete the 6-month research plan is scaled to a student-level academic project scope. The total projected cost is 20,000,000 VND (~$800$ USD). As the research is conducted as a master's thesis project by a single student investigator, personnel payroll costs are set to zero. Compute costs are minimized by using university laboratory resources supplemented by budget-friendly GPU services, while data acquisition utilizes free, open-source resources. A detailed breakdown of the financial allocations is presented in Table~\ref{tab:estimated_budget}.
+
+\begin{table}[p]
+\small
+\centering
+\caption{Estimated Budget Breakdown for the 6-Month Student Research Project.}
+\label{tab:estimated_budget}
+\begin{tabularx}{\textwidth}{lXXr}
+\hline
+\textbf{Category} & \textbf{Description} & \textbf{Quantity / Rate} & \textbf{Cost (VND)} \\
+\hline
+\textbf{Personnel} & Student Investigator (1) & Academic research / No payroll & 0 \\
+                   & Project Supervisor & Mentorship / No payroll & 0 \\
+\hline
+\textbf{Compute \& Cloud} & Google Colab Pro+ subscription & 6 months @ 800,000 VND/mo & 4,800,000 \\
+                          & Cloud GPU Server Credits (RunPod/L4/RTX 4090) & GPU hours for model validation & 1,200,000 \\
+\hline
+\textbf{Data \& Operations} & Law Student Volunteer Compensation & 10 volunteers @ 400,000 VND each & 4,000,000 \\
+                            & Raw Data Preprocessing \& OCR APIs & API credits for PDF parsing & 2,500,000 \\
+\hline
+\textbf{Materials} & Academic reference books & Textbooks & 1,000,000 \\
+                   & Thesis printing \& hard binding & 5 copies for thesis defense & 1,500,000 \\
+\hline
+\textbf{Operations} & Local travel to libraries & Travel expenses & 2,000,000 \\
+                    & Student workshop publication & Registration fee / presentation expenses & 3,000,000 \\
+\hline
+\textbf{Total Budget} & & & \textbf{20,000,000} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Justification of Cost Allocations}
+\begin{itemize}
+    \item \textbf{Personnel Costs:} The research is carried out by a single student investigator as a master's thesis project. In line with academic guidelines for master's theses, no personnel payroll is allocated, and the project supervisor provides academic guidance without financial compensation.
+    \item \textbf{Compute and Cloud:} Initial training and indexing are performed on local consumer GPUs available in the university laboratory. The allocated budget covers a Google Colab Pro+ subscription to access high-RAM runtimes and additional cloud GPU credits (e.g., RunPod RTX 4090 or L4 instances) for executing heavy validation sweeps.
+    \item \textbf{Data Acquisition \& Annotation Validation:} Raw Vietnamese legal documents are crawled from free official government portals (e.g., *Cơ sở dữ liệu quốc gia về văn bản pháp luật*). A budget of 2,500,000 VND is set aside for OCR API subscriptions to digitize scanned legacy PDFs. Additionally, 4,000,000 VND is allocated as compensation (coffee, snacks, and small stipends) for law student volunteers who assist in verifying the annotated test samples.
+    \item \textbf{Materials and Operations:} General operational costs cover printouts of draft papers, professional hard-cover binding of the final reports for the defense committee, local travel to court archives/libraries, and local student workshop registration fees to disseminate the research findings.
+\end{itemize}

@@ -1,0 +1,27 @@
+\section{Research Questions and Hypotheses}
+
+This monograph addresses one overarching question and four specific research questions and paired hypotheses:
+
+\noindent\textbf{Overarching Question (RQ0):} Does financial scholarship provision ($T$) exert a genuine causal effect on university degree completion ($Y$) after adjusting for pre-enrollment confounders, through what structural mechanisms is this effect transmitted, and how can aid policies be optimized under institutional budget constraints?
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{RQ1 (Predictive Calibration):} Does continuous neural CPD parameterization improve held-out predictive accuracy (AUROC, Macro F1) and probability calibration (Brier score) relative to discrete tabular CPTs?
+    \begin{itemize}
+        \item \textbf{Hypothesis H1:} Deep neural parameterization ($H_1, H_3$) will outperform discrete tabular baselines ($B_0, H_2$) in AUROC ($\Delta \ge +0.008$) and Brier calibration ($\Delta \le -0.005$) by interpolating across sparse multi-dimensional covariate cells.
+    \end{itemize}
+
+    \item \textbf{RQ2 (Confounding Distortion):} What proportion of the raw observational graduation gap between scholarship recipients and non-recipients is driven by spurious confounding?
+    \begin{itemize}
+        \item \textbf{Hypothesis H2:} The true causal Average Treatment Effect ($ATE$) will be substantially lower than the naive observational association gap, revealing an empirical confounding overestimation exceeding $25\%$.
+    \end{itemize}
+
+    \item \textbf{RQ3 (Mediation Transmission):} What fraction of the scholarship's causal effect is mediated through early academic momentum ($M_1$, first-semester approved credits) versus direct economic relief?
+    \begin{itemize}
+        \item \textbf{Hypothesis H3:} While direct economic relief ($NDE$) accounts for the majority of policy impact ($\ge 70\%$), early academic credit completion ($NIE$) mediates a statistically significant channel ($\ge 15\%$).
+    \end{itemize}
+
+    \item \textbf{RQ4 (Policy Welfare Gains):} Can individual treatment effect estimation (CATE) under finite institutional budgets enhance cohort degree attainment relative to historical merit-only allocation?
+    \begin{itemize}
+        \item \textbf{Hypothesis H4:} Allocating scholarships according to estimated CATE scores will yield a statistically significant graduation surge ($+100$ or more net additional graduates) at zero added fiscal cost.
+    \end{itemize}
+\end{enumerate}

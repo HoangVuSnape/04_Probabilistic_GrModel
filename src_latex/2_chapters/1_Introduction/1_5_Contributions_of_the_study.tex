@@ -1,0 +1,12 @@
+\section{Contributions of the Study}
+
+This investigation delivers six key methodological, computational, and policy contributions:
+
+\begin{enumerate}
+    \item \textbf{Controlled $2 \times 2$ Factorial Benchmarking:} We design and execute an end-to-end framework systematically crossing graph topologies (Domain DAG vs. Learned DAG) and parameterizations (Tabular CPT vs. Neural CPD), isolating the specific drivers of predictive and causal performance across 5-fold cross-validation.
+    \item \textbf{Resolution of Continuous Structure Discovery via Temporal Masking:} We show that unconstrained continuous discovery (NOTEARS) suffers from variance sortability failure (inverting temporal causality $Y \to T$). We formulate an exact Temporal Forbidden Mask matrix that restores valid causal directionality.
+    \item \textbf{Vectorized $\mathcal{O}(1)$ Counterfactual Tensor Query Engine:} We develop a PyTorch-based tensor engine that executes counterfactual interventional queries across entire cohorts in milliseconds---achieving a $>3,000\times$ speedup over iterative variable elimination.
+    \item \textbf{Quantification of Confounding Bias and Causal Invariance:} We demonstrate that $31.86\%$ of the apparent raw scholarship graduation advantage is spurious selection bias (naive gap $33.9\%$ vs. true causal $ATE = +23.09\%$). Furthermore, neural CPD parameterization preserves exact causal invariance while improving probability calibration.
+    \item \textbf{Causal Mediation and Subgroup Effect Heterogeneity:} We prove that $21.53\%$ of the scholarship's effect operates through early academic momentum ($NIE = +4.65\%$), while $78.47\%$ acts as direct financial protection ($NDE = +16.95\%$). Furthermore, non-traditional older students ($>20$ years) and indebted students exhibit treatment multipliers of $1.72\times$ and $2.03\times$.
+    \item \textbf{Zero-Cost Policy Optimization and Out-of-Distribution Invariance:} Reallocating the historical quota of 969 scholarships via CATE ranking generates $\mathbf{+164}$ additional graduates annually ($+4.52\%$ graduation surge) at zero added fiscal cost. Finally, we demonstrate zero-shot causal transfer invariance ($|\Delta ATE| = 0.0010$) across 76,518 instances from Kaggle S4E6.
+\end{enumerate}

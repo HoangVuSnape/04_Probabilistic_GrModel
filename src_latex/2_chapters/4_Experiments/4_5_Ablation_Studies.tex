@@ -1,0 +1,31 @@
+\section{Ablation Studies and Structural Diagnostics}
+\label{sec:exp_ablations}
+
+To dissect the contribution of each architectural component, we conduct three targeted ablation experiments (Table \ref{tab:ablation_summary}).
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Ablation Study Across Structural and Parametric Components.}
+    \label{tab:ablation_summary}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lp{3.5cm}cccp{5.5cm}}
+        \toprule
+        \textbf{Variant} & \textbf{Component Modification} & \textbf{AUROC} & \textbf{Brier} & \textbf{ATE} & \textbf{Diagnostic Outcome} \\
+        \midrule
+        \textbf{Full $H_1$} & Complete Proposed Hybrid & \textbf{0.8082} & \textbf{0.1648} & \textbf{+0.2309} & Certified Robust (All Refutations Pass) \\
+        \textbf{Ablation A1} & Remove Dropout ($p=0, \lambda_w=0$) & 0.7912 & 0.1754 & +0.2281 & Overfitting on sparse demographic cells \\
+        \textbf{Ablation A2} & Remove Temporal Mask ($M = \mathbf{1}$) & 0.8115 & 0.1682 & +0.4120 & 4 reverse causal edges (collider M-bias) \\
+        \textbf{Ablation A3} & Discrete Tabular MLE (no BDeu) & 0.7620 & 0.1985 & +0.2450 & 18.4\% test instances hit zero-count cells \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+\subsection{Diagnostics and Failure Modes}
+
+\begin{enumerate}
+    \item \textbf{Ablation A1 (Dropout Regularization):} Deactivating Monte Carlo dropout ($p=0$) and weight decay increases Brier calibration error by $+6.43\%$ ($0.1648 \to 0.1754$), confirming that stochastic regularization is vital to prevent neural memorization of sparse conditioning intersections.
+    \item \textbf{Ablation A2 (Temporal Mask Indispensability):} Removing the Temporal Forbidden Mask causes unconstrained NOTEARS to discover four reverse-temporal arrows: $Y \to \text{Admission grade}$, $M_1 \to Z_1$, $M_2 \to Z_3$, and $Y \to T$. Conditioning on these reversed descendants contaminates the backdoor set with post-treatment colliders, artificially inflating the estimated ATE by $+78.4\%$ (from $+23.09\%$ to $+41.20\%$). Domain-enforced temporal masking is therefore mathematically mandatory.
+    \item \textbf{Ablation A3 (Discrete MLE Collapse):} Without Bayesian BDeu smoothing, discrete tabular BN ($B_0$) fails on $18.4\%$ of held-out test records whose demographic profiles never appeared in training, causing probability collapse ($0/0$) and driving Brier error to $0.1985$. Continuous neural CPDs entirely resolve this failure.
+\end{enumerate}

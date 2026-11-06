@@ -1,0 +1,26 @@
+\section{Neural CPD Architecture and Temporal Forbidden Masking}
+\label{sec:meth_neural_cpd}
+
+\subsection{Deep Neural Conditional Probability Architecture}
+
+For each node $V_i \in \mathbf{V}$ possessing parents $\text{Pa}(V_i)$ in $\mathcal{G}$, we parameterize $P(V_i \mid \text{Pa}(V_i))$ via a dedicated Multi-Layer Perceptron (MLP) $f_{\theta_i}: \mathbb{R}^{|\text{Pa}(V_i)|} \to \Delta^{|\mathcal{V}_i|-1}$:
+\begin{align}
+    \mathbf{h}^{(1)}_i &= \operatorname{ReLU}\left( \mathbf{W}^{(1)}_i \mathbf{x}_{\text{Pa}(V_i)} + \mathbf{b}^{(1)}_i \right), \label{eq:mlp_layer1} \\
+    \mathbf{h}^{(2)}_i &= \operatorname{ReLU}\left( \mathbf{W}^{(2)}_i \mathbf{h}^{(1)}_i + \mathbf{b}^{(2)}_i \right), \label{eq:mlp_layer2} \\
+    \hat{\mathbf{p}}_i &= \operatorname{Softmax}\left( \mathbf{W}^{(3)}_i \mathbf{h}^{(2)}_i + \mathbf{b}^{(3)}_i \right), \label{eq:mlp_output}
+\end{align}
+where hidden layer dimensions are $d_1 = 64$ and $d_2 = 32$. To eliminate overfitting on finite institutional cohorts ($N \approx 3,600$), we introduce Monte Carlo Dropout ($p = 0.20$) and $\ell_2$ weight decay ($\lambda = 10^{-4}$). The optimization minimizes cross-entropy:
+\begin{equation}
+    \mathcal{L}(\theta_i) = -\frac{1}{N} \sum_{k=1}^N \sum_{c=1}^{|\mathcal{V}_i|} \mathbb{I}(v_{i}^{(k)} = c) \log \hat{p}_{i, c}^{(k)} + \frac{\lambda}{2} \|\theta_i\|_2^2.
+    \label{eq:neural_cpd_loss}
+\end{equation}
+
+\subsection{Administrative Temporal Forbidden Mask}
+
+Continuous structure learning via NOTEARS optimizes $\min_W \frac{1}{2N}\|X - XW\|_F^2 + \lambda \|W\|_1$ s.t. $\operatorname{tr}(e^{W \circ W}) - d = 0$. However, without temporal constraints, high-variance downstream variables invert causality (e.g., $Y \to T$). We enforce an exact \textbf{Temporal Forbidden Mask} $M \in \{0, 1\}^{7 \times 7}$ based on institutional timeline tiers:
+\begin{align}
+    \text{Tier 0 (Pre-Enrollment): } \{Z_1, Z_2, Z_3\} &\longrightarrow \text{Tier 1 (Enrollment): } \{T\} \nonumber \\
+    &\longrightarrow \text{Tier 2 (Sem 1): } \{M_1, M_2\} \longrightarrow \text{Tier 3: } \{Y\}.
+    \label{eq:temporal_tiers}
+\end{align}
+Candidate adjacency weights are masked element-wise: $W_{\text{effective}} = W \odot M$, where $M_{ij} = 0$ for any reverse-time edge ($t_i > t_j$), guaranteeing 100\% temporal acyclicity.

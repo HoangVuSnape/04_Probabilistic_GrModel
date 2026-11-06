@@ -1,0 +1,10 @@
+\section{Retrieval-Augmented Generation and Adaptive Agent Memory}
+\label{sec:ragmem}
+
+This section reviews retrieval-augmented generation (RAG) as a form of external memory and the cognitive principles for managing it selectively---the theoretical basis for the selective legal memory proposed in this thesis.
+
+Within the lifelong-agent framework \parencite{11328884}, memory is stratified into Working, Episodic, Semantic, and Parametric types; RAG corresponds to non-parametric \emph{semantic} memory, which can be updated or pruned without touching the backbone. This positioning is what makes both continual knowledge injection and intentional forgetting first-class, inexpensive operations.
+
+Building on cognitive theory, Sumida et al.\ propose LUFY \parencite{Sumida_2025}, a long-term RAG chatbot that scores the importance of stored interactions using six psychological metrics and applies a human-like consolidation-and-decay curve. By forgetting roughly $90\%$ of low-importance turns, LUFY improves retrieval precision by about $17\%$ while reducing memory load and context clutter. However, LUFY targets \emph{conversational} memory with generic importance signals; it has no notion of legal validity, citation centrality, or temporal regime, and no hard compliance constraint.
+
+This gap directly motivates the contribution developed in Chapter~3: extending importance-based selective forgetting from conversations to \emph{legal units} (articles and precedents), with a legal-specific importance score (combining citation centrality, in-force status, and risk level) and a compliance hard-gate that guarantees in-force law is never dropped. The open question of which importance signals are most effective for legal memory becomes a central research question of this work.

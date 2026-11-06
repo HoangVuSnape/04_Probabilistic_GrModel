@@ -1,0 +1,65 @@
+\section{LoRA-Based Behavioural Adaptation}
+\label{sec:lora}
+
+The preceding modules manage \emph{what} legal knowledge the system uses; this section describes \emph{how} the model reasons over that knowledge. To balance the otherwise external-memory-heavy design, behavioural competence is acquired through parameter-efficient fine-tuning while the base model remains frozen, in line with the hybrid framing established in the literature review.
+
+\subsection{Role and the Knowledge-Behaviour Separation}
+A guiding principle separates two concerns: \emph{retrieval decides which statute to use, whereas the adapter decides how to reason with it}. Low-Rank Adaptation (LoRA) \parencite{hu2021loralowrankadaptationlarge} is used to learn behaviour and policy---reading the retrieved context, producing legally structured reasoning (e.g. the major-premise / minor-premise / conclusion form of a syllogism), citing the relevant articles, and respecting the output constraints of the unlearning module---rather than to memorize legal facts, which remain in the external knowledge base.
+
+\subsection{Why Adapters for Behaviour, Not Facts}
+This separation is justified by the singular-value analysis of \textcite{biderman2024loralearnsforgets}: the intrinsic rank of the weight change required for continual \emph{pre-training} is extremely high (on the order of $2000$), so low-rank adapters cannot absorb large volumes of factual knowledge; in contrast, \emph{instruction} fine-tuning is well approximated by a low intrinsic rank, where LoRA matches full fine-tuning. Storing facts in adapters would therefore be both under-capacity and forgetting-prone, whereas LoRA used for behaviour acts as a strong regularizer that ``learns less and forgets less'', preserving the base model's general capabilities.
+
+\subsection{Adapter Configuration and Training Data}
+The proposed configuration is summarized in Table~\ref{tab:lora_config}. The base model is an instruction-tuned decoder-only LLM, chosen because such architectures resist forgetting and provide a protective instruction-tuning buffer \parencite{li2024revisitingcatastrophicforgettinglarge}. Consistent with the low-resource setting that motivates this work, all experiments use \emph{small} open-weight models---primarily in the $1$--$4$B-parameter range and at most ${\sim}15$B---rather than frontier-scale systems. This is a deliberate design choice as much as a hardware constraint: because the base remains frozen and all factual knowledge lives in the external store, the framework is intended to deliver compliant, updatable legal assistance \emph{without} relying on large parametric capacity, and a small frozen base is precisely the regime where the cost and forgetting advantages of the RAG-centric design matter most. The same small scale is used for the parametric comparison baselines so that the forgetting analysis is a like-for-like comparison rather than a confound of model size. To preserve general ability, a small fraction (about $0.5\%$) of general Vietnamese text is mixed into the instruction data as rehearsal \parencite{scialom-etal-2022-fine}. The instruction set comprises legal QA, NLI, and syllogism examples formatted with task-distinct prompt templates to avoid label-space collision \parencite{yin-etal-2022-contintin}, and includes ``read-the-retrieved-context-then-answer'' examples so that the adapter explicitly learns the policy of grounding on the legal RAG memory.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Proposed LoRA configuration for behavioural adaptation.}
+\label{tab:lora_config}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+\hline
+\textbf{Component} & \textbf{Setting} & \textbf{Rationale} \\
+\hline
+Base model & Instruction-tuned decoder-only, frozen ($1$--$4$B, ${\le}15$B) & forgetting resistance + SFT buffer; fits low-resource budget \\
+Rank $r$ & 256 (primary), $\le 64$ (evaluated) & headroom for multi-task behavioural coverage; lower ranks tested for efficiency \\
+Scaling $\alpha$ & $2r$ (e.g., 512, 128) & standard scaling relative to chosen $r$ \\
+Target modules & all linear projections & full behavioural coverage \\
+Rehearsal & $\approx 0.5\%$ general Vietnamese text & preserves zero-shot ability \\
+Optimizer & AdamW (optionally SAM) & flat minima reduce forgetting \\
+\hline
+\end{tabularx}
+\end{table}
+
+While $r=256$ is proposed as the primary configuration to guarantee alignment with full fine-tuning performance on complex reasoning tasks \parencite{biderman2024loralearnsforgets}, lower rank configurations (e.g., $r \le 64$) will also be empirically evaluated to determine the optimal trade-off between parameter efficiency and generation quality.
+
+\subsection{Sequential Multi-Sector Adaptation}
+If adapters are trained sequentially across legal sub-domains---in this study the sequential test scenario adapts on \textbf{labour law} and then \textbf{tax law}, two legislation-rich sub-domains chosen to make cross-domain forgetting observable---naive sharing of a single adapter causes parameter collision, and adapting to the later sub-domain can degrade performance on the earlier one (catastrophic forgetting, measured here through Backward Transfer). Two remedies from the literature are applicable: orthogonal-subspace projection, as in O-LoRA \parencite{wang-etal-2023-orthogonal} and its sparsity-based refinement N-LoRA \parencite{yang2024parametercollisionhinderingcontinual}, which isolate task updates; and soft expert routing, as in SLIM \parencite{han-etal-2025-slim}, which routes queries of different sub-domains to dedicated experts. Orthogonal methods are noted to be sensitive to their projection hyperparameters and are tuned accordingly. This two-domain sequence is the minimal configuration that makes cross-domain forgetting measurable; longer sequences over further sub-domains are a straightforward extension.
+
+\subsection{Interaction with Retrieval at Inference}
+At inference, the frozen base model augmented by the LoRA adapter receives the selectively retrieved and unlearning-filtered context, the user query, and the output constraint $Q$, and produces a grounded legal argument, as shown in Figure~\ref{fig:lora_inference}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=0.7cm and 1.2cm,
+  b/.style={rectangle, rounded corners, draw, align=center, text width=3.0cm, minimum height=0.8cm},
+  frz/.style={rectangle, rounded corners, draw, align=center, text width=2.6cm, fill=blue!6},
+  lora/.style={rectangle, rounded corners, draw, very thick, align=center, text width=2.6cm, fill=green!10},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[b] (ctx) {Retrieved context\\ (selective + unlearned)};
+\node[b, below=of ctx] (q) {Query $q$ + constraint $Q$};
+\node[frz, right=of ctx] (base) {Frozen base LLM};
+\node[lora, below=of base] (lo) {LoRA adapter\\ (behaviour, IFT)};
+\node[b, right=of base] (out) {Legal reasoning\\ (syllogism + citation)};
+\draw[arr] (ctx) -- (base);
+\draw[arr] (q) -- (lo);
+\draw[arr] (base) -- (out);
+\draw[arr] (lo) -- (out);
+\end{tikzpicture}
+\caption{Inference-time interaction between the frozen base model, the behavioural LoRA adapter, and the retrieved legal context.}
+\label{fig:lora_inference}
+\end{figure}
+
+In summary, the LoRA layer supplies the parametric, behavioural counterpart to the non-parametric memory modules: it teaches the model to reason and cite in the legal register without ever storing volatile facts in its weights, keeping the system's knowledge updatable and unlearnable through retrieval alone.

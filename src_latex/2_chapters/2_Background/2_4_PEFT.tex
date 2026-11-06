@@ -1,0 +1,19 @@
+\section{Parameter-Efficient Fine-Tuning in Continual Learning}
+\label{sec:peft}
+
+Parameter-Efficient Fine-Tuning (PEFT), particularly Low-Rank Adaptation (LoRA) \parencite{hu2021loralowrankadaptationlarge}, has become a standard approach to adapt Large Language Models to specialized domains. LoRA operates by freezing the pre-trained weights $W_0 \in \mathbb{R}^{d \times k}$ and representing weight updates $\Delta W$ through the product of two low-rank matrices $B \in \mathbb{R}^{d \times r}$ and $A \in \mathbb{R}^{r \times k}$, where rank $r \ll \min(d, k)$. This formulation reduces the number of trainable parameters up to $10,000$ times, significantly lowering VRAM requirements.
+
+\subsection{Vanilla LoRA and Its Capacity Limits}
+Research by Biderman et al. \parencite{biderman2024loralearnsforgets} establishes that LoRA learns less and forgets less compared to full fine-tuning. By constraining updates to a low-rank subspace, LoRA acts as a geometric regularizer that prevents the weights from drifting too far from the pre-trained distribution, thereby preserving generation diversity and general capabilities.
+
+However, Vanilla LoRA faces capacity limits: the intrinsic rank of the parameter update $\Delta W$ in full-parameter continual pre-training (CPT) on a new domain is typically around $2,000$. Consequently, low-rank adapters with conventional ranks (such as $r \le 256$) lack the capacity to absorb massive factual knowledge during domain pre-training. LoRA is therefore best suited for instruction fine-tuning (IFT) to adapt task behaviors rather than memorizing domain-specific facts.
+
+\subsection{Subspace Isolation: O-LoRA and N-LoRA}
+Fine-tuning sequential tasks on a single LoRA adapter often leads to parameter overwriting. To address this, O-LoRA \parencite{wang-etal-2023-orthogonal, repec:axf:aidtaa:v:3:y:2026:i:1:p:52-61} projects gradient updates of new tasks onto a subspace orthogonal to the LoRA parameters learned on previous tasks. While O-LoRA minimizes cross-task interference, it remains highly sensitive to hyperparameters like rank $r$ and scaling factor $\alpha$, which can lead to performance drops in complex reasoning tasks.
+
+N-LoRA \parencite{yang2024parametercollisionhinderingcontinual} identifies that orthogonal subspaces do not fully eliminate parameter collisions at the scalar level. It introduces an $\ell_1$ sparsity constraint to force LoRA parameters to reside in sparse, disjoint regions. N-LoRA reduces parameter collisions $58.1$ times compared to O-LoRA, providing stronger protection against catastrophic forgetting.
+
+\subsection{Architectural Extensions: MoE-LoRA and Prompts}
+To scale to multiple tasks, LoRA has been combined with Mixture of Experts (MoE). The SLIM framework \parencite{han-etal-2025-slim} applies soft routing between LoRA experts and identity layers, allowing general queries to bypass the adapters entirely. MoLA \parencite{gao2024higherlayersneedlora} allocates LoRA experts using an inverted triangle layout: fewer experts are allocated in lower layers (which extract stable syntactic features), while more experts are assigned in higher layers (which extract semantic features vulnerable to interference). Additionally, I-LoRA \parencite{ren2024analyzingreducingcatastrophicforgetting} connects adjacent task minima through linear weight interpolation, while Progressive Prompts \parencite{razdaibiedina2023progressivepromptscontinuallearning} concatenates task-specific soft prompt tokens while keeping base weights frozen.
+
+Despite these advances, managing multiple adapters or routing mechanisms increases GPU memory overhead and runtime complexity. Furthermore, PEFT methods still modify parameters permanently. These limitations motivate a shift toward semi-parametric architectures, where non-parametric external memory (RAG) is utilized for factual knowledge storage.

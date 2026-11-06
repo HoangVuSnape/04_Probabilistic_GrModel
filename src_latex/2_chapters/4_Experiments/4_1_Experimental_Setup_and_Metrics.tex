@@ -1,0 +1,22 @@
+\section{Experimental Setup and Evaluation Protocol}
+\label{sec:exp_setup}
+
+All empirical investigations are conducted on benchmark higher education records from the UCI Machine Learning Repository (Dataset ID 697) \parencite{martins2021predicting}.
+
+\subsection{Dataset Cohorts and Paired 5-Fold Cross-Validation}
+
+The dataset comprises $N = 4,424$ undergraduate student records enrolled across 17 degree programs at the Polytechnic Institute of Portalegre, tracking 35 administrative attributes. In accordance with causal policy evaluation standards \parencite{hernan2020causal}, we evaluate two distinct cohorts:
+\begin{enumerate}
+    \item \textbf{Binary Outcome Cohort ($N = 3,630$):} Comprises 2,209 graduates ($Y=1$) and 1,421 dropouts ($Y=0$) for definitive degree attainment intervention modeling.
+    \item \textbf{Full Institutional Cohort ($N = 4,424$):} Incorporates 794 active enrolled students for comprehensive doubly robust retention estimation.
+\end{enumerate}
+
+To ensure statistical rigor, we implement a paired 5-fold cross-validation protocol using fixed seeds $\mathcal{S} = \{42, 43, 44, 45, 46\}$. In each fold, $70\%$ ($N_{\text{train}} = 2,541$) is allocated to model fitting and $30\%$ ($N_{\text{test}} = 1,089$) is held out for out-of-sample evaluation.
+
+\subsection{Dual-Criterion Evaluation Suite}
+
+Models are appraised simultaneously across two non-overlapping performance axes:
+\begin{enumerate}
+    \item \textbf{Criterion 1: Held-Out Predictive Discrimination:} Area Under ROC Curve (AUROC), Macro F1-score, and Brier Score ($\frac{1}{N}\sum (\hat{p}_i - y_i)^2$) for probability forecast calibration.
+    \item \textbf{Criterion 2: Causal Estimand Robustness:} Causal Average Treatment Effect ($ATE = \mathbb{E}[Y \mid do(1)] - \mathbb{E}[Y \mid do(0)]$), 95\% bootstrap confidence intervals, and DoWhy adversarial refutation pass rates.
+\end{enumerate}

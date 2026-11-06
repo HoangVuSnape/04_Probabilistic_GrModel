@@ -1,0 +1,19 @@
+\section{Reason for Choosing the Topic}
+
+Student attrition in higher education represents a major socioeconomic challenge that impairs institutional sustainability, strains public educational budgets, and disrupts individual socioeconomic mobility \parencite{martins2021predicting}. Consequently, universities and government ministries allocate substantial fiscal capital toward student financial aid and scholarship programs. However, a foundational policy dilemma persists: \emph{Does awarding an operational scholarship ($T=1$) causally increase a student's degree completion probability ($Y=1$), or does the observed empirical correlation merely reflect pre-existing socioeconomic self-selection?}
+
+Standard machine learning models (e.g., Gradient Boosted Trees, Deep Neural Classifiers) estimate observational conditional probabilities $P(Y=1 \mid T=t, \mathbf{X}=\mathbf{x})$. As proven by \textcite{pearl2009causality} and \textcite{hernan2020causal}, association does not imply causation:
+\begin{equation}
+    P(Y=1 \mid T=t) \neq P(Y=1 \mid do(T=t)).
+    \label{eq:pearl_inequality}
+\end{equation}
+In university administrative registries, scholarship recipients systematically differ from non-recipients: they typically exhibit higher secondary school entrance grades ($Z_2$), greater family educational capital ($Z_1$), and better initial solvency ($Z_3$). Relying on associational correlations to guide policy risks severe misallocation of scarce public capital to students who would have graduated regardless of institutional aid.
+
+Probabilistic Graphical Models (PGMs)---specifically Causal Bayesian Networks (CBNs) and Structural Causal Models (SCMs)---provide a formal graph-theoretic framework for causal identification \parencite{pearl2009causality, ankan2015pgmpy}. Through Pearl's $do$-calculus and graph surgery, incoming backdoor confounding arrows into $T$ are severed, identifying the interventional distribution:
+\begin{equation}
+    P(Y=1 \mid do(T=t)) = \sum_{\mathbf{z}} P(Y=1 \mid T=t, \mathbf{Z}=\mathbf{z}) P(\mathbf{Z}=\mathbf{z}).
+    \label{eq:backdoor_formula_intro}
+\end{equation}
+However, canonical discrete Bayesian networks rely on tabular Conditional Probability Tables (CPTs), which suffer from combinatorial parameter explosion and sparse-cell failures when conditioning on multi-dimensional continuous covariates \parencite{koller2009pgm}. Conversely, deep neural networks provide flexible function approximation but lack causal semantics, frequently exploiting spurious correlations and collider biases \parencite{shi2019dragonnet, sharma2020dowhy}.
+
+Developing a \textbf{Hybrid Neural-Causal Graphical Architecture} that integrates the structural identification of graphical models with the continuous density estimation of deep learning addresses this critical scientific challenge. This research establishes an end-to-end framework to isolate true causal effects, execute adversarial refutations, uncover mediation pathways, and optimize policy allocations under real-world fiscal constraints.

@@ -1,0 +1,38 @@
+\section{Standardized Causal Interventions and ATE (Table B Analysis)}
+\label{sec:exp_causal_interventions}
+
+Table \ref{tab:table_b_intervention} reports the interventional outcomes under Pearl's $do$-calculus across all 5 cross-validation splits, detailing the baseline non-intervention counterfactual risk $\mathbb{E}[Y \mid do(T=0)]$, the active scholarship counterfactual risk $\mathbb{E}[Y \mid do(T=1)]$, and the resulting Average Treatment Effect ($ATE$).
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \setlength{\tabcolsep}{6pt}
+    \caption{Table B: Standardized Causal Interventions and Average Treatment Effects ($ATE$).}
+    \label{tab:table_b_intervention}
+    \resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccc}
+        \toprule
+        \textbf{Model} & \textbf{Graph Topology} & \textbf{$\mathbb{E}[Y_0]$} & \textbf{$\mathbb{E}[Y_1]$} & \textbf{Causal ATE} & \textbf{95\% CI} \\
+        \midrule
+        \textbf{$B_0$ (Baseline)} & Domain DAG & $0.5499 \pm 0.0114$ & $0.7863 \pm 0.0087$ & $\mathbf{+0.2363 \pm 0.0061}$ & $[+0.2240, +0.2487]$ \\
+        \textbf{$H_1$ (Neural CPD)} & Domain DAG & $0.5535 \pm 0.0121$ & $0.7844 \pm 0.0087$ & $\mathbf{+0.2309 \pm 0.0097}$ & $[+0.2223, +0.2397]$ \\
+        \textbf{$H_2$ (Learned DAG)} & Discovered DAG & $0.5163 \pm 0.0000$ & $0.8600 \pm 0.0000$ & $+0.3437 \pm 0.0000$ & $[+0.3437, +0.3437]$ \\
+        \textbf{$H_3$ (Fully Neural)} & Discovered DAG & $0.5518 \pm 0.0105$ & $0.7746 \pm 0.0091$ & $\mathbf{+0.2228 \pm 0.0101}$ & $[+0.2150, +0.2310]$ \\
+        \bottomrule
+    \end{tabular}%
+}
+\end{table}
+
+\subsection{Quantifying Confounding Bias}
+
+Comparing observational conditional distributions against interventional distributions reveals the fundamental distortion of non-causal analytics:
+\begin{align}
+    \tau_{\text{obs}} &= P(Y=1 \mid T=1) - P(Y=1 \mid T=0) = 81.3\% - 47.4\% = \mathbf{+33.9\%}, \label{eq:naive_gap} \\
+    \tau_{\text{causal}} &= \mathbb{E}[Y \mid do(T=1)] - \mathbb{E}[Y \mid do(T=0)] = 78.4\% - 55.4\% = \mathbf{+23.1\%}. \label{eq:causal_ate}
+\end{align}
+The gap between Equation \eqref{eq:naive_gap} and Equation \eqref{eq:causal_ate} demonstrates that:
+\begin{equation}
+    \text{Confounding Overestimation} = \frac{33.9\% - 23.1\%}{33.9\%} = \mathbf{31.86\%}.
+    \label{eq:confounding_fraction}
+\end{equation}
+Nearly one-third ($31.86\%$) of the apparent graduation advantage among scholarship holders is entirely non-causal. In observational registries, students who secure scholarships are disproportionately drawn from candidates who already possess stronger secondary school preparation, fewer accumulated debts, and lower parental financial stress. A university leadership that naively projects institutional retention based on correlational machine learning would severely overestimate policy impact, committing substantial public capital to unadjusted associations.

@@ -1,0 +1,57 @@
+\section{Causal Discovery: From Combinatorial Search to Continuous Optimization}
+\label{sec:bg_causal_discovery}
+
+When the true data-generating causal DAG $\mathcal{G}^*$ is unknown a priori, causal discovery algorithms infer directed graph topologies directly from observational data $\mathcal{D} = \{\mathbf{x}^{(1)}, \dots, \mathbf{x}^{(N)}\}$ \parencite{zheng2018notears}. In modern computational libraries (e.g., \texttt{pgmpy}, \texttt{causal-learn}), structure learning algorithms fall into three fundamental paradigms:
+
+\subsection{Taxonomy of Structure Learning Paradigms}
+\begin{enumerate}
+    \item \textbf{Constraint-Based Methods (PC, FCI):} The Peter-Clark (PC) algorithm operates under the Causal Markov and Faithfulness assumptions. It initializes a fully connected undirected skeleton and executes conditional independence tests ($X \perp\!\!\!\perp Y \mid \mathbf{S}$) of increasing order (e.g., Fisher-$Z$ or $\chi^2$ tests) to remove spurious edges. Subsequently, unshielded colliders ($X \to Z \leftarrow Y$) are oriented, and Meek rules propagate edge directions. The Fast Causal Inference (FCI) algorithm extends PC to allow for latent confounders and selection bias, outputting a Partial Ancestral Graph (PAG).
+    \item \textbf{Score-Based Combinatorial Search (Hill Climb, GES):} These algorithms treat structure learning as discrete optimization, navigating the DAG space by adding, removing, or reversing edges to optimize a penalized likelihood criterion such as the Bayesian Information Criterion (BIC) or Bayesian Dirichlet equivalent uniform (BDeu) score. While Hill Climbing evaluates greedy local edge operations and easily enforces expert blacklists and whitelists, Greedy Equivalence Search (GES) navigates Markov equivalence classes (CPDAGs) to achieve asymptotic consistency.
+    \item \textbf{Continuous Optimization via NOTEARS:} Discrete DAG search scales super-exponentially with dimension $d$: $a_d = \sum_{k=1}^d (-1)^{k-1} \binom{d}{k} 2^{k(d-k)} a_{d-k}$ ($a_{10} \approx 4.2 \times 10^{18}$). \textcite{zheng2018notears} fundamentally transformed structure learning into continuous constrained optimization by establishing an exact, differentiable algebraic characterization of acyclicity.
+\end{enumerate}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparative Survey of Causal Structure Learning Paradigms.}
+\label{tab:structure_learning_survey}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccp{4.5cm}}
+\toprule
+\textbf{Algorithm} & \textbf{Library} & \textbf{Paradigm} & \textbf{Data Type} & \textbf{Domain Prior Support} & \textbf{Core Limitation} \\
+\midrule
+\textbf{PC} & \texttt{pgmpy}, \texttt{causal-learn} & Constraint-based & Discrete / Gauss & Moderate (Whitelist/Blacklist) & Error cascades from early hypothesis test mistakes. \\
+\textbf{FCI} & \texttt{causal-learn} & Constraint-based & Discrete / Gauss & Low & Yields indeterminate PAG rather than a DAG. \\
+\textbf{Hill Climb} & \texttt{pgmpy} & Score-based (BIC/BDeu) & Discrete & High (Blacklist/Whitelist/Tiers) & Prone to local optima in large search spaces. \\
+\textbf{GES} & \texttt{pgmpy}, \texttt{causal-learn} & Score-based (CPDAG) & Discrete / Gauss & Moderate & Difficult to enforce non-symmetric temporal tiers. \\
+\textbf{NOTEARS} & \texttt{causal-learn}, PyTorch & Continuous Optimization & Continuous & High (Temporal Forbidden Mask) & Vulnerable to variance sortability ($Y \to T$). \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Continuous Optimization via NOTEARS}
+
+\begin{theorem}[NOTEARS Acyclicity Constraint \parencite{zheng2018notears}]
+A real-valued adjacency matrix $W \in \mathbb{R}^{d \times d}$ corresponds to a Directed Acyclic Graph if and only if:
+\begin{equation}
+    h(W) \equiv \operatorname{tr}\left( e^{W \circ W} \right) - d = 0,
+    \label{eq:notears_constraint}
+\end{equation}
+where $\circ$ denotes Hadamard element-wise multiplication, $e^M = \sum_{k=0}^\infty \frac{M^k}{k!}$ is the matrix exponential, and $\operatorname{tr}(\cdot)$ is matrix trace.
+\end{theorem}
+The continuous structure learning objective combines least-squares loss, $\ell_1$-sparsity regularization, and the acyclicity penalty:
+\begin{equation}
+    \min_{W \in \mathbb{R}^{d \times d}} \quad \frac{1}{2N} \|X - XW\|_F^2 + \lambda \|W\|_1 \quad \text{s.t.} \quad h(W) = 0,
+    \label{eq:notears_objective}
+\end{equation}
+solved via the Augmented Lagrangian method with subproblem updates: $\mathcal{L}_c(W, \alpha) = F(W) + \alpha h(W) + \frac{c}{2} h(W)^2$.
+
+\subsection{Var-Sortability and the Temporal Forbidden Mask}
+
+Despite mathematical elegance, continuous discovery algorithms are known to be vulnerable to \textit{variance sortability} \parencite{reisach2021varsortability}: if endogenous variables exhibit uneven empirical marginal variances, unconstrained NOTEARS systematically orients edges from high-variance variables toward low-variance variables regardless of causal ground truth. In administrative education registries where terminal dropout $Y \in \{0, 1\}$ exhibits higher variance than early entrance metrics, unconstrained NOTEARS inverts causality, discovering invalid reverse arrows $Y \to T$.
+
+To guarantee physical causal admissibility, we enforce an exact \textbf{Temporal Forbidden Mask} $M \in \{0, 1\}^{d \times d}$, setting $M_{ij} = 0$ for any candidate edge $X_i \to X_j$ that violates physical time ordering ($t(X_i) > t(X_j)$):
+\begin{equation}
+    W_{\text{masked}} = W \odot M, \quad \text{where} \quad M_{ij} = \mathbb{I}(t(X_i) \le t(X_j)).
+    \label{eq:temporal_mask_formula}
+\end{equation}

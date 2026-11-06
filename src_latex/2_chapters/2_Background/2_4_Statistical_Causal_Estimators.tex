@@ -1,0 +1,51 @@
+\section{Parameter Learning and Semi-Parametric Estimators}
+\label{sec:bg_estimators}
+
+Once a causal DAG structure $\mathcal{G} = (\mathbf{V}, \mathbf{E})$ is established, the next task is parameterizing the conditional probability distributions $P(X_i \mid \text{Pa}(X_i))$ for each vertex.
+
+\subsection{Survey of Parameter Learning Paradigms for Bayesian Networks}
+In probabilistic graphical modeling, parameter estimation methodologies fall into four primary paradigms:
+\begin{enumerate}
+    \item \textbf{Maximum Likelihood Estimation (MLE):} Counts empirical frequencies: $\hat{\theta}_{ijk} = \frac{N_{ijk}}{\sum_k N_{ijk}} = \frac{N_{ijk}}{N_{ij}}$. While asymptotically efficient for large samples, MLE suffers from the zero-frequency problem: if a specific parent configuration $(Z_1=z_1, \dots, Z_m=z_m)$ has zero observations, MLE outputs undefined probabilities or assigns absolute zero probabilities to possible future events.
+    \item \textbf{Bayesian Parameter Estimation (Dirichlet / BDeu Prior):} Places a conjugate Dirichlet prior over parameter vectors: $\hat{\theta}_{ijk} = \frac{N_{ijk} + \alpha_{ijk}}{N_{ij} + \alpha_{ij}}$, where $\alpha$ represents the Equivalent Sample Size (ESS). Under uniform BDeu priors ($\alpha_{ijk} = \frac{\alpha}{|\mathcal{X}_i| \cdot \prod |\text{Pa}|}$), pseudo-counts smooth sparse cells, guaranteeing non-zero probability support.
+    \item \textbf{Expectation-Maximization (EM):} Alternates between an Expectation step (computing expected sufficient statistics given observed data) and a Maximization step (updating parameter vectors via MLE). Essential when data contain latent variables or unobserved missing attributes.
+    \item \textbf{Neural CPD Parameterization (Deep Semi-Parametric):} Replaces combinatorial discrete CPTs with continuous feed-forward networks: $P(Y=1 \mid \mathbf{z}) = \sigma(W_2 \operatorname{ReLU}(W_1 \mathbf{z} + b_1) + b_2)$. Reduces parameter scaling from $\mathcal{O}(|\mathcal{Y}| \prod_{j=1}^m |Z_j|)$ to $\mathcal{O}(d \cdot h)$, interpolating smoothly across continuous multidimensional covariate spaces.
+\end{enumerate}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparative Survey of Parameter Learning Paradigms.}
+\label{tab:parameter_learning_survey}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccp{4.2cm}}
+\toprule
+\textbf{Paradigm} & \textbf{Library} & \textbf{Formula / Mechanism} & \textbf{Sparse Cell Handling} & \textbf{Continuous Covariates} & \textbf{Key Trade-off} \\
+\midrule
+\textbf{MLE} & \texttt{pgmpy} & $\hat{\theta}_{ijk} = N_{ijk} / N_{ij}$ & Fails ($0/0$ division) & Poor (requires coarse bins) & Simple frequency counts, but zero-frequency failure. \\
+\textbf{Bayesian (BDeu)} & \texttt{pgmpy} & $\hat{\theta}_{ijk} = \frac{N_{ijk} + \alpha_{ijk}}{N_{ij} + \alpha_{ij}}$ & Robust (Dirichlet ESS smoothing) & Poor (exponential table size) & Sound smoothing, but still scales as $\mathcal{O}(|\mathcal{Y}|\prod |Z_j|)$. \\
+\textbf{EM Algorithm} & \texttt{pgmpy} & E-step (expected counts) + M-step & Moderate & Poor & Handles missing records, but slower convergence. \\
+\textbf{Neural CPD} & PyTorch & $\sigma(W_2 \operatorname{ReLU}(W_1 \mathbf{z} + b_1) + b_2)$ & Excellent (continuous smooth manifold) & Excellent ($\mathbb{R}^d$ native) & Eliminates table explosion, requires gradient training. \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Potential Outcomes and Doubly Robust Estimation (AIPW)}
+
+Under the Neyman-Rubin Potential Outcomes framework \parencite{rubin2005causal, hernan2020causal}, each unit $i$ has potential outcomes $Y_i(1)$ and $Y_i(0)$ under treatment ($T_i=1$) and control ($T_i=0$). The observed outcome satisfies $Y_i = T_i Y_i(1) + (1 - T_i) Y_i(0)$. Causal identification requires conditional exchangeability ($(Y(1), Y(0)) \perp\!\!\!\perp T \mid \mathbf{Z}$) and positivity ($0 < \epsilon \le P(T=1 \mid \mathbf{Z}=\mathbf{z}) \le 1 - \epsilon < 1$).
+
+The Augmented Inverse Probability Weighting (AIPW) estimator combines an outcome model $\mu_t(\mathbf{z}) = \mathbb{E}[Y \mid T=t, \mathbf{Z}=\mathbf{z}]$ with a propensity score model $e(\mathbf{z}) = P(T=1 \mid \mathbf{Z}=\mathbf{z})$:
+\begin{equation}
+    \hat{\tau}_{\text{AIPW}} = \frac{1}{N} \sum_{i=1}^N \left( \left[ \mu_1(\mathbf{z}_i) + \frac{T_i (Y_i - \mu_1(\mathbf{z}_i))}{e(\mathbf{z}_i)} \right] - \left[ \mu_0(\mathbf{z}_i) + \frac{(1 - T_i)(Y_i - \mu_0(\mathbf{z}_i))}{1 - e(\mathbf{z}_i)} \right] \right).
+    \label{eq:aipw_estimator}
+\end{equation}
+AIPW possesses the \textit{double robustness} property: $\hat{\tau}_{\text{AIPW}}$ remains consistent if \emph{either} $\mu_t(\mathbf{z})$ \emph{or} $e(\mathbf{z})$ is correctly specified \parencite{hernan2020causal}. To evaluate heterogeneous responses across sub-populations, we fit Causal Forests \parencite{wager2018causalforest} to estimate $\text{CATE}(\mathbf{x}) \equiv \mathbb{E}[Y(1) - Y(0) \mid \mathbf{X} = \mathbf{x}]$.
+
+\subsection{Cinelli-Hazlett Sensitivity Algebra for Unmeasured Confounding}
+
+Because unconfoundedness cannot be verified empirically from observational records alone, we subject causal estimates to the sensitivity algebra of \textcite{cinelli2020making}. Let $U$ denote an unobserved confounder. The omitted variable bias formula is:
+\begin{equation}
+    \operatorname{Bias} = |\hat{\tau} - \tau^*| = \operatorname{SE}(\hat{\tau}) \cdot \sqrt{\frac{R^2_{Y \sim U \mid T, \mathbf{Z}} \cdot R^2_{T \sim U \mid \mathbf{Z}}}{1 - R^2_{T \sim U \mid \mathbf{Z}}}} \cdot \sqrt{\text{df}}.
+    \label{eq:cinelli_bias}
+\end{equation}
+From Equation \eqref{eq:cinelli_bias}, \textcite{cinelli2020making} define the \textit{Robustness Value} ($RV_{q=1}$), which quantifies the minimum equal explanatory power ($R^2_{Y \sim U \mid T, \mathbf{Z}} = R^2_{T \sim U \mid \mathbf{Z}} = RV$) an omitted confounder must have with both treatment and outcome to bring the estimated effect to zero.

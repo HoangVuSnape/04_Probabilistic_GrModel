@@ -1,0 +1,10 @@
+\chapter{Empirical Evaluation and Core Benchmark Results}
+\label{chap:experiments}
+
+This chapter details the empirical evaluation of our causal framework on the UCI ID 697 benchmark. Section \ref{sec:exp_setup} establishes the experimental setup, cohort definitions, 5-fold cross-validation splits, and dual-criterion metrics. Section \ref{sec:exp_predictive} analyzes Table A, demonstrating that neural parameterization systematically enhances held-out predictive accuracy and probability calibration. Section \ref{sec:exp_causal_interventions} examines Table B, isolating the causal ATE and proving that over $31.8\%$ of apparent observational scholarship correlation is spurious confounding. Section \ref{sec:exp_refutations} presents Table C, validating the DoWhy refutation suite and illustrating the Pareto trade-off geometry. Finally, Section \ref{sec:exp_ablations} details the ablation diagnostics, highlighting the indispensability of the Temporal Forbidden Mask.
+
+\input{2_chapters/4_Experiments/4_1_Experimental_Setup_and_Metrics}
+\input{2_chapters/4_Experiments/4_2_HeldOut_Predictive_Performance}
+\input{2_chapters/4_Experiments/4_3_Causal_Interventions_and_ATE}
+\input{2_chapters/4_Experiments/4_4_DoWhy_Refutations_and_Computational_Efficiency}
+\input{2_chapters/4_Experiments/4_5_Ablation_Studies}

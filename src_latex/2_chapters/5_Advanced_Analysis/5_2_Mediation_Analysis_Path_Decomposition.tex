@@ -1,0 +1,18 @@
+\section{Causal Mediation and Path Decomposition}
+\label{sec:adv_mediation}
+
+To identify the internal mechanism transmitting policy impact, we decompose the Total Causal Effect ($TE$) into the \textit{Natural Direct Effect} ($NDE$) and \textit{Natural Indirect Effect} ($NIE$) mediated through first-semester approved credits ($M_1$) \parencite{pearl2009causality}:
+\begin{align}
+    TE &= \mathbb{E}\left[ Y(1, M(1)) - Y(0, M(0)) \right] = NDE + NIE, \label{eq:total_effect_decomp} \\
+    NDE &= \mathbb{E}\left[ Y(1, M(0)) - Y(0, M(0)) \right], \label{eq:nde_def} \\
+    NIE &= \mathbb{E}\left[ Y(1, M(1)) - Y(1, M(0)) \right]. \label{eq:nie_def}
+\end{align}
+
+Empirical path decomposition on the Portuguese cohort ($N = 3,630$) yields:
+\begin{equation}
+    \widehat{TE} = \mathbf{+21.60\%}, \quad \widehat{NDE} = \mathbf{+16.95\%}, \quad \widehat{NIE} = \mathbf{+4.65\%} \quad (\text{all } p < 10^{-10}),
+    \label{eq:med_estimates}
+\end{equation}
+resulting in a mediated proportion of $\frac{\widehat{NIE}}{\widehat{TE}} = \frac{4.65\%}{21.60\%} = \mathbf{21.53\%}$.
+
+This indicates that over one-fifth ($21.53\%$) of the scholarship's efficacy operates through the \textit{academic momentum pathway}: funding enables course attendance and exam completion during Semester 1. Conversely, $78.47\%$ acts directly ($NDE$), insusceptibly protecting students against administrative deregistration due to tuition arrears. Thus, pairing financial aid with academic tutoring is necessary to avoid forfeiting $>21\%$ of policy benefits.

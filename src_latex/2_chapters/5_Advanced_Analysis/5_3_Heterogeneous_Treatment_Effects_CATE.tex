@@ -1,0 +1,48 @@
+\section{Heterogeneous Treatment Effects and Subgroup Vulnerability (CATE)}
+\label{sec:adv_heterogeneous_cate}
+
+The aggregate population $ATE = +23.09\%$ masks critical variation across demographic profiles. We estimate Conditional Average Treatment Effects ($\tau(\mathbf{x}) \equiv \mathbb{E}[Y(1) - Y(0) \mid \mathbf{X} = \mathbf{x}]$) via Causal Forests \parencite{wager2018causalforest} (Table \ref{tab:heterogeneous_cate}).
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Heterogeneous Treatment Effects (CATE) Across Demographic Subgroups.}
+    \label{tab:heterogeneous_cate}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Demographic Subgroup} & \textbf{$N$} & \textbf{$\mathbb{E}[Y_0]$} & \textbf{$\mathbb{E}[Y_1]$} & \textbf{CATE} & \textbf{Risk Ratio} \\
+        \midrule
+        \textbf{Age: Non-Traditional ($> 20$ yrs)} & 1,550 & 38.72\% & 66.74\% & \textbf{+28.02\%} & \textbf{1.72$\times$} \\
+        \textbf{Age: Traditional ($\le 20$ yrs)} & 2,080 & 68.55\% & 84.63\% & +16.08\% & 1.23$\times$ \\
+        \midrule
+        \textbf{Finance: Debtor (Active Arrears)} & 413 & 19.74\% & 40.01\% & \textbf{+20.27\%} & \textbf{2.03$\times$} \\
+        \textbf{Finance: Solvent (No Arrears)} & 3,217 & 60.02\% & 81.37\% & +21.35\% & 1.36$\times$ \\
+        \midrule
+        \textbf{Housing: Living Locally} & 1,637 & 48.33\% & 74.22\% & \textbf{+25.88\%} & 1.54$\times$ \\
+        \textbf{Housing: Displaced / Renting} & 1,993 & 61.41\% & 79.01\% & +17.60\% & 1.29$\times$ \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/fig4_mediation_path_decomposition.png}
+        \caption{Mediation Path Decomposition}
+        \label{fig:mediation_decomp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/fig5_heterogeneous_cate_forest.png}
+        \caption{Subgroup CATE Estimates}
+        \label{fig:cate_forest}
+    \end{subfigure}
+    \caption{Structural Mechanisms and Subgroup Vulnerability. (a) Total Effect partitioned into Direct Financial Relief ($NDE = +16.95\%$) and Academic Momentum ($NIE = +4.65\%$); (b) CATE estimates via Causal Forest (Figure \ref{fig:cate_forest}).}
+    \label{fig:mechanisms_and_heterogeneity}
+\end{figure}
+
+Non-traditional older students ($>20$ years) exhibit a massive CATE of $\mathbf{+28.02\%}$ ($1.72\times$ graduation surge from $38.72\%$ to $66.74\%$), as funding relieves full-time employment pressures. For tuition debtors, aid more than doubles graduation rates ($19.74\% \to 40.01\%$, $2.03\times$ surge), pinpointing financial insolvency as the registry's primary structural barrier.

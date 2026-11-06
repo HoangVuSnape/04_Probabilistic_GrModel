@@ -8,9 +8,9 @@
 
 ## 1. Thành phần Nộp Bắt buộc Midterm
 
-1. **Slide thuyết trình:** Lưu tại thư mục này với tên `Presentation_Midterm_Group[X].pdf` hoặc `.pptx`.
-   * Cấu trúc bám sát 10 tiêu chí Rubric (Slide 27, 28).
-   * Thể hiện rõ: Tên First Author, Co-Author, câu hỏi nhân quả, đồ thị Domain DAG B0, kết quả thực nghiệm và kịch bản bóc tách A1–A3.
+1. **Slide thuyết trình:** Đã hoàn thiện và lưu tại [Presentation_Midterm_Group_CausalML.pptx](./Presentation_Midterm_Group_CausalML.pptx).
+   * Cấu trúc chuẩn hóa 13 slides bám sát 10 tiêu chí Rubric (Slide 42 & 43).
+   * Thể hiện rõ: Bối cảnh, câu hỏi nhân quả, đồ thị Domain DAG B0, cấu trúc H1 và H2, 3 Bảng A, B, C, kết quả kiểm định DoWhy, phân tích ca thất bại và kịch bản demo trực tiếp 6 bước.
 2. **File Notebook hoàn chỉnh:** File `.ipynb` tương thích Google Colab.
    * Có Mục lục (Table of Contents).
    * Đã chạy lưu sẵn toàn bộ output (Saved outputs), không có cell nào bị lỗi.

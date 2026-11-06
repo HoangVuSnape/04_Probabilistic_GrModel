@@ -1,0 +1,29 @@
+\section{The $2 \times 2$ Factorial Model Matrix}
+\label{sec:meth_factorial_matrix}
+
+To isolate whether empirical gains stem from graph topology versus functional parameterization, we formulate a $2 \times 2$ factorial experimental design spanning two orthogonal axes (Table \ref{tab:factorial_design}):
+\begin{enumerate}
+    \item \textbf{Factor 1: Graph Topology ($\mathcal{G}$):} Expert Domain DAG ($\mathcal{G}_{\text{domain}}$) vs. Data-Driven Discovered DAG ($\mathcal{G}_{\text{learned}}$ via NOTEARS with Temporal Mask).
+    \item \textbf{Factor 2: Parameterization ($\mathbf{P}$):} Tabular CPTs (with BDeu Bayesian Dirichlet smoothing) vs. Continuous Neural CPDs (deep PyTorch MLPs).
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{The $2 \times 2$ Factorial Model Architecture Space.}
+    \label{tab:factorial_design}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lp{3.5cm}p{3.5cm}p{5.5cm}}
+        \toprule
+        \textbf{Model Identifier} & \textbf{Graph Topology ($\mathcal{G}$)} & \textbf{CPD Parameterization ($\mathbf{P}$)} & \textbf{Methodological Role in Study} \\
+        \midrule
+        \textbf{$B_0$ (Baseline)} & Domain DAG ($\mathcal{G}_{\text{domain}}$) & Discrete Tabular CPT (BDeu) & Canonical discrete Bayesian Network benchmark. \\
+        \textbf{$H_1$ (Neural Hybrid)} & Domain DAG ($\mathcal{G}_{\text{domain}}$) & Continuous Neural CPD (PyTorch) & Evaluates neural smoothing over expert causal structure. \\
+        \textbf{$H_2$ (Learned Tabular)} & Discovered DAG ($\mathcal{G}_{\text{learned}}$) & Discrete Tabular CPT (BDeu) & Tests whether continuous structure discovery alone suffices. \\
+        \textbf{$H_3$ (Fully Neural)} & Discovered DAG ($\mathcal{G}_{\text{learned}}$) & Continuous Neural CPD (PyTorch) & Full end-to-end continuous causal discovery and estimation. \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+This $2 \times 2$ decomposition enables clean two-way Analysis of Variance (ANOVA): comparing $H_1$ against $B_0$ isolates the marginal effect of neural parameterization under fixed expert structure; comparing $H_2$ against $B_0$ isolates the impact of purely data-driven structure learning; and $H_3$ measures their non-linear synergy.

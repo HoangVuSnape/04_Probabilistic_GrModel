@@ -1,0 +1,25 @@
+\section{Research Subjects and Scope}
+\label{sec:intro_scope}
+
+\subsection{Research Subjects}
+The subjects of this research encompass two complementary domains:
+\begin{enumerate}
+    \item \textbf{Methodological Subject:} Formulation, implementation, and empirical auditing of Probabilistic Graphical Models for causal inference. This includes Causal Bayesian Networks, continuous structure discovery with temporal constraints (NOTEARS), deep neural parameterization (PyTorch Neural CPDs), semi-parametric doubly robust estimation (AIPW), and Cinelli-Hazlett sensitivity algebra.
+    \item \textbf{Empirical Subject:} The academic retention, course completion, and graduation outcomes of undergraduate students in administrative higher education registries, specifically evaluated on the UCI ID 697 dataset ($N = 4,424$ institutional records from the Polytechnic Institute of Portalegre) and the large-scale Kaggle Playground Series 4 Episode 6 benchmark ($N = 76,518$ records).
+\end{enumerate}
+
+\subsection{Research Scope and Boundaries}
+The empirical and technical boundaries of this investigation are defined as follows:
+\begin{itemize}
+    \item \textbf{Institutional Scope:} Undergraduate degree programs across 17 fields of study, tracking students from initial enrollment through terminal graduation or dropout.
+    \item \textbf{Observational Policy Scope:} Analysis of state-subsidized operational scholarships ($T$) administered by national and university social welfare services, evaluated after controlling for all observable pre-treatment covariates.
+    \item \textbf{Methodological Boundaries:} We focus on DAG-based causal identification under the unconfoundedness assumption ($(Y(1), Y(0)) \perp\!\!\!\perp T \mid \mathbf{Z}$), accompanied by formal sensitivity bounds for potential unmeasured confounding. Network interference and general equilibrium labor market dynamics are outside the current monograph scope.
+\end{itemize}
+
+\subsection{Actionability Principle for Intervention Variable Selection}
+A foundational axiom in policy-oriented causal inference states: \emph{"No causation without manipulation"} \parencite{hernan2020causal, pearl2009causality}. When formulating an interventional query $P(Y \mid do(T=t))$, the policy variable $T$ must satisfy the \textbf{Actionability (Manipulability) Principle}:
+\begin{enumerate}
+    \item \textbf{Institutional Manipulability:} The chosen variable must be physically and administratively manipulable by university decision-makers. In higher education administrative registries, demographic traits such as \texttt{Gender}, \texttt{Age at enrollment}, \texttt{Mother's qualification}, and \texttt{Nationality} represent immutable pre-existing traits. Hypothetically asserting $do(\text{Age}=18)$ or $do(\text{Gender}=\text{Female})$ is conceptually ill-defined and administratively impossible.
+    \item \textbf{Distinction from Intermediate Mediators:} Similarly, academic performance metrics such as completed credits (\texttt{Curricular units 1st sem approved}) are post-treatment endogenous mediators resulting from student cognitive exertion; university administrators cannot directly assign a student's semester credits by executive fiat.
+    \item \textbf{Scholarship as an Actionable Policy Lever:} In contrast, awarding an operational scholarship (\texttt{Scholarship holder}, $T \in \{0, 1\}$) represents an institutional resource allocation decision fully within the jurisdiction of the university financial aid board. Administrators possess the institutional agency to award ($do(T=1)$) or deny ($do(T=0)$) aid. Consequently, \texttt{Scholarship holder} serves as the ideal actionable treatment variable.
+\end{enumerate}

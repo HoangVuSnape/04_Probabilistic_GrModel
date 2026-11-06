@@ -1,0 +1,29 @@
+\section{Synthesis of Findings and Hypothesis Verification}
+\label{sec:concl_summary}
+
+This research developed, implemented, and empirically audited a Hybrid Neural-Causal Probabilistic Graphical Modeling framework for educational policy intervention. Table \ref{tab:hypotheses_resolution} summarizes the formal resolution of our foundational research questions and hypotheses.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Systematic Verification of Research Questions and Scientific Hypotheses.}
+    \label{tab:hypotheses_resolution}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lp{4.2cm}p{6.8cm}c}
+        \toprule
+        \textbf{Question} & \textbf{Formal Hypothesis} & \textbf{Empirical Finding} & \textbf{Resolution} \\
+        \midrule
+        \textbf{RQ1 / H1} & Continuous Neural CPDs resolve CPT cell explosion and improve calibration. & Neural CPDs ($H_1$) reduce Brier error from 0.1701 to 0.1648 and raise AUROC to 0.8082 without sparse-cell degradation. & \textbf{Supported} \\
+        \midrule
+        \textbf{RQ2 / H2} & Observational models are confounded; Pearl $do$-calculus isolates true ATE. & Raw observational gap (+33.9\%) overstates causal impact (+23.1\%) by 31.86\%. True ATE is +23.09\% across folds. & \textbf{Supported} \\
+        \midrule
+        \textbf{RQ3 / H3} & Mediation separates academic momentum from direct financial relief. & $NDE = +16.95\%$ (78.47\%) and $NIE = +4.65\%$ (21.53\% via Sem 1 credits). Robustness Value $RV_{q=1} = 23.40\%$. & \textbf{Supported} \\
+        \midrule
+        \textbf{RQ4 / H4} & CATE-guided policy yields major graduation welfare gains at fixed budget. & Reallocating 969 aid slots via CATE increases graduation from 60.85\% to 65.37\% (+164 graduates annually at \$0 added cost). & \textbf{Supported} \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+\subsection{Theoretical Takeaways}
+Our findings demonstrate that: (1) pairing an inspectable DAG with local neural probability surfaces eliminates the historical trade-off between expressive deep representation and transparent causal inference; (2) domain-enforced temporal forbidden masking is an absolute prerequisite to prevent continuous structure discovery (NOTEARS) from committing reverse causality; and (3) structural causal models provide inherent robustness against out-of-distribution covariate shifts ($|\Delta ATE| = 0.0010$ across 76,518 Kaggle instances).

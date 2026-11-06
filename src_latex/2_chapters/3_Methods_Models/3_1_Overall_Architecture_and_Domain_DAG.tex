@@ -1,0 +1,95 @@
+\section{The Primary Domain Causal DAG and Identification}
+\label{sec:meth_domain_dag}
+
+The structural foundation of our causal framework is the \textit{Primary Domain Causal DAG} ($\mathcal{G}_{\text{domain}}$), constructed in consultation with higher education pedagogical literature and institutional regulations at IPPortalegre \parencite{martins2021predicting}.
+
+\subsection{Node Taxonomy and Operational Definitions}
+
+The 35 administrative features are mapped into a 7-node canonical DAG:
+\begin{enumerate}
+    \item \textbf{Socioeconomic Profile ($Z_1$):} Student enrollment age, parental educational attainment, and housing displacement status.
+    \item \textbf{Prior Academics ($Z_2$):} Secondary school exit grade and national entrance examination performance (\texttt{Admission grade}).
+    \item \textbf{Financial Solvency ($Z_3$):} Baseline tuition fee arrears status upon enrollment (\texttt{Debtor}).
+    \item \textbf{Primary Policy Treatment ($T$):} Binary indicator for state-subsidized operational scholarship award ($T=1$: Awarded, $T=0$: Control).
+    \item \textbf{Semester 1 Credits ($M_1$):} Total ECTS course units approved in first semester (\texttt{Curricular units 1st sem approved}).
+    \item \textbf{Semester 1 GPA ($M_2$):} Normalized first-semester grade point average ($[0, 20]$ scale).
+    \item \textbf{Terminal Outcome ($Y$):} Definitive educational outcome ($Y=0$: Dropout, $Y=1$: Graduate).
+\end{enumerate}
+
+\subsection{Graphical Topology and Backdoor Admissibility}
+
+Figure \ref{fig:domain_dag_tikz} displays the causal topology $\mathcal{G}_{\text{domain}}$.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{0.82\textwidth}{!}{%
+    \begin{tikzpicture}[
+        node distance=1.6cm and 2.2cm,
+        every node/.style={draw, font=\small\sffamily, thick},
+        confounder/.style={rectangle, rounded corners=3pt, fill=blue!10, text width=2.6cm, align=center},
+        treatment/.style={rectangle, rounded corners=3pt, fill=red!15, draw=red!70!black, line width=1.5pt, text width=2.4cm, align=center},
+        mediator/.style={rectangle, rounded corners=3pt, fill=orange!15, draw=orange!80!black, line width=1.2pt, text width=2.6cm, align=center},
+        outcome/.style={rectangle, rounded corners=3pt, fill=green!20, draw=green!60!black, line width=1.5pt, text width=2.4cm, align=center},
+        edge/.style={->, >=Latex, thick, draw=black!80},
+        causal_edge/.style={->, >=Latex, very thick, draw=red!80!black},
+        med_edge/.style={->, >=Latex, thick, draw=orange!80!black}
+    ]
+        % Top row: Confounders
+        \node[confounder] (Z1) at (0, 2.6) {Socioeconomic ($Z_1$)};
+        \node[confounder] (Z2) at (4.2, 2.6) {Prior Academics ($Z_2$)};
+        \node[confounder] (Z3) at (8.4, 2.6) {Financial Solvency ($Z_3$)};
+        
+        % Middle row: Treatment & Mediators
+        \node[treatment] (T) at (0, 0) {\textbf{Scholarship ($T$)}};
+        \node[mediator] (M1) at (4.2, 0.7) {Sem 1 Credits ($M_1$)};
+        \node[mediator] (M2) at (4.2, -0.7) {Sem 1 GPA ($M_2$)};
+        
+        % Bottom right: Outcome
+        \node[outcome] (Y) at (8.4, 0) {\textbf{Graduation ($Y$)}};
+        
+        % Confounder Edges
+        \draw[edge] (Z1) -- (T);
+        \draw[edge] (Z1) -- (M1);
+        \draw[edge] (Z1) to[out=-40, in=140] (Y);
+        
+        \draw[edge] (Z2) -- (T);
+        \draw[edge] (Z2) -- (M1);
+        \draw[edge] (Z2) -- (M2);
+        \draw[edge] (Z2) -- (Y);
+        
+        \draw[edge] (Z3) -- (T);
+        \draw[edge] (Z3) -- (Y);
+        
+        % Causal Paths
+        \draw[causal_edge] (T) to[out=-30, in=-150] node[below, font=\scriptsize, draw=none, fill=none] {Direct Effect ($NDE$)} (Y);
+        \draw[med_edge] (T) -- (M1);
+        \draw[med_edge] (T) -- (M2);
+        \draw[med_edge] (M1) -- (Y);
+        \draw[med_edge] (M2) -- (Y);
+        \draw[edge] (M1) -- (M2);
+    \end{tikzpicture}%
+    }
+    \caption{The Primary Domain Causal DAG ($\mathcal{G}_{\text{domain}}$). Red node indicates treatment; orange nodes denote academic mediators; green node is terminal graduation.}
+    \label{fig:domain_dag_tikz}
+\end{figure}
+
+\begin{theorem}[Backdoor Identification of Scholarship Effect]
+Under $\mathcal{G}_{\text{domain}}$, the conditioning set $\mathbf{Z} = \{Z_1, Z_2, Z_3\}$ satisfies the Backdoor Criterion relative to $(T, Y)$. Consequently, $P(Y \mid do(T=t))$ is identified non-parametrically by:
+\begin{equation}
+    P(Y=1 \mid do(T=t)) = \sum_{z_1, z_2, z_3} P(Y=1 \mid T=t, z_1, z_2, z_3) P(z_1, z_2, z_3).
+    \label{eq:backdoor_proof_domain}
+\end{equation}
+\end{theorem}
+\begin{proof}
+First, no node in $\mathbf{Z}$ is a descendant of $T$; all elements of $\mathbf{Z}$ represent pre-enrollment baseline traits determined strictly prior to scholarship allocation. Second, in the manipulated sub-graph $\mathcal{G}_{\underline{T}}$, all outgoing arrows from $T$ ($T \to M_1, T \to M_2, T \to Y$) are removed. The remaining backdoor paths connecting $T$ and $Y$ are: $T \leftarrow Z_1 \to Y$, $T \leftarrow Z_2 \to Y$, and $T \leftarrow Z_3 \to Y$. Since conditioning on $\mathbf{Z} = \{Z_1, Z_2, Z_3\}$ blocks all three forks, d-separation holds: $(T \perp_{\mathcal{G}_{\underline{T}}} Y \mid \mathbf{Z})$.
+\end{proof}
+
+
+\subsection{Formal Validity Constraints for Causal DAGs}
+To audit whether candidate graph topologies generated by automated discovery algorithms or proposed by human domain analysts are physically and mathematically valid, we enforce a four-pillar constraint verification protocol:
+\begin{enumerate}
+    \item \textbf{Acyclicity Constraint:} The candidate graph $\mathcal{G} = (\mathbf{V}, \mathbf{E})$ must contain strictly zero directed cycles: $\operatorname{tr}(e^{W \odot W}) - d = 0$. In algorithmic implementations, this is audited via Tarjan's cycle detection or topological sort.
+    \item \textbf{Temporal Tier Consistency:} Features are partitioned into four non-invertible administrative stages: Tier 1 (Pre-enrollment $Z_1, Z_2, Z_3$) $\prec$ Tier 2 (Admission Aid $T$) $\prec$ Tier 3 (First Semester $M_1, M_2$) $\prec$ Tier 4 (Graduation Outcome $Y$). Any candidate edge directing causality backward in time belongs to the forbidden set $\mathcal{E}_{\text{forbidden}} = \{(u, v) \mid \text{tier}(u) > \text{tier}(v)\}$ and is rejected.
+    \item \textbf{Domain Blacklist and Whitelist Adherence:} Must strictly include substantive institutional pathways ($T \to Y$, $T \to M_1$, $M_1 \to Y$) while strictly prohibiting absurd feedback arrows ($Y \to T$, $M_1 \to Z_1$).
+    \item \textbf{Backdoor $d$-Separation Admissibility:} On the manipulated subgraph $\mathcal{G}_{\underline{T}}$ where all outgoing edges from $T$ are pruned, the candidate conditioning set $\mathbf{Z}$ must d-separate $T$ from $Y$: $(T \perp_{\mathcal{G}_{\underline{T}}} Y \mid \mathbf{Z})$.
+\end{enumerate}

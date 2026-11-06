@@ -1,0 +1,108 @@
+\section{Project Timeline and Implementation Plan}
+
+\subsection{Work Package Breakdown and Implementation Strategy}
+The execution of the proposed research is organized into three unified Work Packages (WPs) to ensure a systematic progression from data collection to pipeline development, validation, and documentation:
+\begin{itemize}
+    \item \textbf{WP1: Selective RAG Memory System:} Coordinates the crawl and structured parsing of Vietnamese legal documents---with the crawl prioritising legislation-rich sub-domains (notably labour and tax law) that supply the continual-learning test scenarios, while the pipeline itself remains domain-general---indexing them with dense bi-encoder models, constructing citation graphs, implementing the dynamic legal importance and Ebbinghaus-based consolidation and decay rerankers, and the temporal/compliance gating (including the $P{+}Q$ unlearning filters) that keeps retrieval grounded on in-force law.
+    \item \textbf{WP2: Continual-Ingestion Forgetting Study:} Builds the parametric comparison baselines---Continual Pre-Training/Instruction Tuning and Retrievable Gradients (ReGrad) \parencite{su2026retrievablegradientscontinualposttraining}---at the same small model scale, ingests the legal corpus in incremental snapshots, and measures catastrophic forgetting (Backward Transfer and the performance drift across ingestion volume) of each paradigm against the frozen RAG framework.
+    \item \textbf{WP3: System Benchmarking and Validation:} Sets up static RAG baselines, executes ablation studies on the importance features, measures unlearning effectiveness and robustness, and evaluates accuracy on Vietnamese datasets like VLQA \parencite{nguyen2025vlqacomprehensivelargehighquality}, ViLegalNLI \parencite{duong2026vilegalnlinaturallanguageinference}, and LegalSLM \parencite{le-etal-2025-overview}.
+\end{itemize}
+
+The dependency flow between the three Work Packages is illustrated in Figure~\ref{fig:wp_dependencies}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm and 2cm,
+    wp/.style={draw, rectangle, minimum height=1cm, minimum width=3.5cm, align=center, fill=blue!5, rounded corners, draw=blue!40, font=\footnotesize\bfseries},
+    arrow/.style={-Stealth, thick, draw=gray!80}
+]
+    \node (wp1) [wp] {WP1: Selective RAG Memory \\ (Indexing, Reranking, Gating)};
+    \node (wp2) [wp, below=of wp1] {WP2: Forgetting Study \\ (CPT/ReGrad vs frozen RAG)};
+    \node (wp3) [wp, right=of wp1, yshift=-0.75cm] {WP3: System Benchmarking \\ (VLQA, ViLegalNLI, LegalSLM)};
+
+    \draw [arrow] (wp1) -- node[above, font=\tiny, align=center] {Reranked\\Candidates} (wp3);
+    \draw [arrow] (wp2) -- node[below, font=\tiny, align=center] {Forgetting\\Curves} (wp3);
+    \draw [arrow] (wp1) -- node[left, font=\tiny, align=center] {RAG\\Arm} (wp2);
+\end{tikzpicture}
+\caption{Workflow dependency graph illustrating interaction between the three Work Packages.}
+\label{fig:wp_dependencies}
+\end{figure}
+
+\subsection{Detailed Implementation Timeline}
+The project spans a 6-month duration. The timeline of research tasks mapped across the project months is structured as follows:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Month 1 (M1): Initial Indexing \& Ingestion}
+    \begin{itemize}
+        \item Task 1.1: Corpus Acquisition \& Ingestion (WP1)
+        \item Task 1.2: Metadata \& Citation Graph Indexing (WP1)
+    \end{itemize}
+    \item \textbf{Month 2 (M2): Indexing Completion \& Baseline Setup}
+    \begin{itemize}
+        \item Task 1.2: Metadata \& Citation Graph Indexing (WP1)
+        \item Task 1.3: Importance \& Consolidation Model (WP1)
+        \item Task 3.1: Baseline Setup \& Evaluators (WP3)
+    \end{itemize}
+    \item \textbf{Month 3 (M3): Modeling Memory \& Initial Benchmarking}
+    \begin{itemize}
+        \item Task 1.3: Importance \& Consolidation Model (WP1)
+        \item Task 2.1: Parametric Baselines Setup (CPT/CIT, ReGrad) (WP2)
+        \item Task 3.1: Baseline Setup \& Evaluators (WP3)
+    \end{itemize}
+    \item \textbf{Month 4 (M4): Forgetting Study \& Ablation Studies}
+    \begin{itemize}
+        \item Task 1.4: Temporal/Compliance Gating ($P{+}Q$) (WP1)
+        \item Task 2.2: Continual-Ingestion Snapshots \& Forgetting Measurement (WP2)
+        \item Task 3.2: Ablation Studies \& Tuning (WP3)
+    \end{itemize}
+    \item \textbf{Month 5 (M5): Forgetting Study Completion \& Tuning}
+    \begin{itemize}
+        \item Task 2.2: Continual-Ingestion Snapshots \& Forgetting Measurement (WP2)
+        \item Task 2.3: RAG-vs-Parametric Comparison across Tasks (WP2)
+        \item Task 3.2: Ablation Studies \& Tuning (WP3)
+        \item Task 3.3: Final Validation \& Report Writing (WP3)
+    \end{itemize}
+    \item \textbf{Month 6 (M6): Final Validation \& Thesis Submission}
+    \begin{itemize}
+        \item Task 3.3: Final Validation \& Report Writing (WP3)
+    \end{itemize}
+\end{itemize}
+
+The corresponding weekly milestones are structured as follows:
+\begin{itemize}
+    \item \textit{Milestone 1 (Week 3):} Complete legal corpus compilation and normalization, with labour and tax law as the primary data scenarios for the continual-learning tests.
+    \item \textit{Milestone 2 (Week 5):} Complete dense embedding generation and initial indexing.
+    \item \textit{Milestone 3 (Week 9):} Functioning baseline static RAG pipeline with metadata validity filtering.
+    \item \textit{Milestone 4 (Week 12):} Deployment of Selective Memory and the temporal/compliance gating; parametric baselines (CPT/ReGrad) running.
+    \item \textit{Milestone 5 (Week 15):} Complete parameter tuning for selective memory reranking.
+    \item \textit{Milestone 6 (Week 18):} Finalize continual-ingestion forgetting curves and robustness check.
+    \item \textit{Milestone 7 (Week 21):} Achieve benchmark validation target scores.
+    \item \textit{Milestone 8 (Week 24):} Submission of the final project report.
+\end{itemize}
+
+\subsection{Risk Assessment and Mitigation Strategies}
+To ensure the smooth execution of the project, potential technical and operational risks are identified along with corresponding mitigation strategies:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Risk 1: Metadata Inaccuracy}
+    \begin{itemize}
+        \item \textit{Impact \& Probability:} High Impact / Moderate Probability
+        \item \textit{Mitigation Strategy:} Implement a double-pass manual verification check on a randomized sample of 5\% of the ingested legal documents to validate validity dates and citation links.
+    \end{itemize}
+    \item \textbf{Risk 2: Retrieval Recall Failure}
+    \begin{itemize}
+        \item \textit{Impact \& Probability:} High Impact / Low Probability
+        \item \textit{Mitigation Strategy:} Integrate a hybrid search mechanism (combining dense bi-encoder embeddings with sparse BM25 keyword matching) to act as a robust fallback.
+    \end{itemize}
+    \item \textbf{Risk 3: Computational Bottleneck}
+    \begin{itemize}
+        \item \textit{Impact \& Probability:} Moderate Impact / Moderate Probability
+        \item \textit{Mitigation Strategy:} Restrict all experiments to \emph{small} open-weight models ($1$--$4$B parameters, at most ${\sim}15$B) in keeping with the low-resource focus; pre-compute dense embeddings offline; and restrict the hyperparameter tuning search grids via Bayesian optimization. Because the base model is frozen, the dominant cost is one-off indexing rather than repeated training.
+    \end{itemize}
+    \item \textbf{Risk 4: Access Restriction Leakage}
+    \begin{itemize}
+        \item \textit{Impact \& Probability:} High Impact / Low Probability
+        \item \textit{Mitigation Strategy:} Conduct automated validation audits on the access-control filter policies before deploying vector index updates.
+    \end{itemize}
+\end{itemize}

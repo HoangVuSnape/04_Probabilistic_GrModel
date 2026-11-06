@@ -1,0 +1,69 @@
+\section{RAG Machine Unlearning}
+
+\subsection{Problem Statement and Scope}
+In a legal question-answering system, it is frequently necessary to erase specific information from the model's output space due to legislative updates (repealed laws), judicial confidentiality (sealed records), or privacy mandates (such as the Right to be Forgotten). While traditional machine unlearning seeks to erase information directly from neural network weights, doing so is highly impractical for Large Language Models due to extreme computational costs, stability risks, and the difficulty of verifying complete deletion.
+
+Under the proposed RAG-centric paradigm, we define the scope of unlearning as \textit{behavioral and retrieval-level unlearning} \parencite{11207222}. Rather than altering the frozen parameters of the base LLM, our goal is to ensure that:
+\begin{enumerate}
+    \item The system \textbf{never retrieves} targeted unlearned information.
+    \item The system \textbf{never grounds or cites} the unlearned clauses in its responses.
+    \item Any residual parametric memories regarding the unlearned concept inside the base LLM are suppressed at the output level.
+\end{enumerate}
+This formulation fulfills standard legal compliance frameworks while maintaining the general reasoning utility of the system intact.
+
+\subsection{Taxonomy of Forget Requests}
+Different legal scenarios necessitate different intensities of unlearning. The proposed framework supports three distinct regimes of forget requests:
+\begin{enumerate}
+    \item \textbf{Temporal Gating (Soft Unlearning):} Triggered when a legal clause is repealed or replaced by new legislation. If the user query targets current state affairs ($t_q \ge t_{\text{end}}$), the unit $u_i$ is hidden. However, if the user explicitly queries historical compliance (e.g., "What was the corporate tax rate in 2015?"), the unit remains accessible.
+    \item \textbf{Access-Control Gating (Restricted Unlearning):} Applied to sealed court records, confidential case files, or classified administrative rulings. The knowledge unit $u_i$ is dynamically filtered based on the security credentials ($acl_i$) accompanying the user query.
+    \item \textbf{Index Deletion (Hard Unlearning):} Triggered by personal data removal requests (Right to be Forgotten). The targeted knowledge unit $u_i$ is permanently pruned from the vector database and citation graph, ensuring it cannot be recovered.
+\end{enumerate}
+
+\subsection{\texorpdfstring{The $P + Q$ Unlearning Optimization Framework}{The P + Q Unlearning Optimization Framework}}
+To implement controllable behavioral unlearning, we adopt the dual-component $P+Q$ optimization framework proposed in recent RAG unlearning studies \parencite{11207222}. For a target concept or document set $T$ to be forgotten, the system applies two simultaneous updates:
+\begin{itemize}
+    \item \textbf{Retriever Policy $P$ (Non-Parametric Control):} Modifies the active search space of the retriever. For any query $q$, the retriever operates on a dynamically restricted knowledge base:
+    \begin{equation}
+        KB_{T} = \{u_i \in KB : u_i \notin T \text{ and } \text{Authorize}(u_i, q, t_q) = \text{True}\}
+    \end{equation}
+    where $\text{Authorize}$ evaluates validity and access permissions.
+    \item \textbf{Prompt Constraints $Q$ (Parametric Control):} Appends structural negative constraints to the system prompt presented to the frozen LLM. This prevents the model from generating information related to $T$ even if the concept is implicitly activated through historical weights or related context leakage:
+    \begin{equation}
+        \text{Prompt}_{T}(q) = \text{SystemPrompt} \cup \{\text{Constraint}(T)\} \cup \text{Context}(q) \cup \{q\}
+    \end{equation}
+    where $\text{Constraint}(T)$ explicitly instructs the model to refuse referencing the unlearned concept and fallback to alternative active legal rules.
+\end{itemize}
+
+By coupling non-parametric retrieval exclusion ($P$) with parametric generation constraints ($Q$), the system provides robust defense-in-depth against unauthorized knowledge retrieval.
+
+\subsection{Output Compliance Filtering and Auditing}
+To handle potential context leakage or jailbreak attempts, the framework incorporates an online output compliance filter and an offline auditing log:
+\begin{itemize}
+    \item \textbf{Privacy Compliance Filter:} A lightweight semantic classifier scans the generated output text. If the response contains exact citations or semantic concepts belonging to the forget set $T$, the response is blocked, and a generic compliance disclaimer is displayed.
+    \item \textbf{Immutable Audit Log (with data minimization):} All unlearning requests, modifications to $KB_T$, and retrieval audit trails are recorded chronologically:
+    \begin{equation}
+        \text{Log} = \langle \text{Timestamp}, \text{QueryID}, \text{Action}, \text{ref}(T), \text{Status} \rangle
+    \end{equation}
+    To avoid the privacy paradox of the right-to-be-forgotten---where the audit trail could itself retain deleted content---the log applies \emph{data minimization}: it stores only operational metadata and a non-reversible reference $\text{ref}(T)$ (e.g.\ a salted hash of the target identifier), never the raw deleted text. This serves as legal proof of compliance for regulatory audits while honouring the deletion request itself.
+\end{itemize}
+
+\subsection{Evaluation Criteria and Quantitative Metrics}
+To evaluate the performance of RAG-based unlearning, the system is measured against five key criteria established in unlearning benchmarks \parencite{11207222}:
+\begin{table}[H]
+\centering
+\caption{Unlearning Evaluation Criteria, Explanations, and Metrics.}
+\label{tab:unlearning_metrics}
+\begin{tabularx}{\textwidth}{lXX}
+\hline
+\textbf{Criterion} & \textbf{Operational Definition} & \textbf{Quantitative Metric} \\
+\hline
+Effectiveness & Does the system successfully forget the targeted legal facts? & Decrease in ROUGE-L and exact-match accuracy on target QA pairs. \\
+Universality & Is the forgetting robust against paraphrased or indirect queries? & Performance consistency across semantically perturbed queries. \\
+Harmlessness & Does forgetting $T$ preserve performance on unrelated legal tasks? & QA accuracy and F1 score on a control set of unrelated active laws. \\
+Robustness & Does the system resist prompt injection or jailbreak attempts? & Low True Positive Rate (TPR) at a 1\% False Positive Rate (FPR) limit. \\
+Simplicity & What is the computational and memory footprint of the update? & CPU/GPU runtime and memory overhead during unlearning execution. \\
+\hline
+\end{tabularx}
+\end{table}
+
+By evaluating the system along these dimensions, we demonstrate that the $P+Q$ framework successfully implements reliable forgetting without needing model retraining or parameter modifications.

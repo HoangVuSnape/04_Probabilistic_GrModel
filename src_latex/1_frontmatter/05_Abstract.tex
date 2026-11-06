@@ -1,0 +1,16 @@
+\chapter*{ABSTRACT}
+
+\begin{center}
+    \textbf{\fontsize{13}{16}\selectfont CAUSAL INFERENCE AND DEEP GRAPHICAL REPRESENTATIONS FOR EDUCATIONAL POLICY INTERVENTION}
+\end{center}
+\vspace{0.3cm}
+
+Estimating the true causal impact of educational interventions from observational tabular records is a fundamental problem in modern institutional policy design. While traditional Causal Bayesian Networks (CBNs) provide rigorous identification guarantees and transparent probabilistic reasoning through Judea Pearl's do-calculus, discrete conditional probability tables (CPDs) suffer from statistical sparsity and struggle to capture continuous or high-order nonlinear interactions. Conversely, purely correlational deep learning and machine learning algorithms achieve high predictive accuracy but fail to identify counterfactual outcomes due to confounding bias and collider stratification. 
+
+In this study, we propose and rigorously benchmark a controlled hybrid framework—\textbf{Hybrid Neural-Causal Probabilistic Graphical Models (Hybrid PGM)}—that bridges structural causal discovery, Bayesian graphical modeling, and deep neural parameterization. Focusing on the public educational success benchmark (UCI Machine Learning Repository ID 697, $N=4,424$, binary cohort $N=3,630$) and its large-scale counterpart (Kaggle Playground Series S4E6, $N=76,518$), we formalize a 7-node Primary Domain Directed Acyclic Graph (DAG) with 11 directed edges, separating 24 pre-enrollment baseline covariates from 12 post-enrollment academic progression variables. We design a $2 \times 2$ factorial evaluation comparing four paradigms: baseline tabular CBN with BDeu smoothing ($B_0$), fixed-DAG hybrid neural outcome parameterization via PyTorch Multi-Layer Perceptrons ($H_1$), continuous optimization-based causal discovery via NOTEARS with temporal forbidden masking ($H_2$), and fully neural graphical discovery-parameterization ($H_3$).
+
+Across five paired random seeds under a 70/15/15 train/validation/test split, our empirical results establish three central findings:
+(1) Granting scholarships ($T=1$) yields a statistically significant, positive causal average treatment effect on degree graduation ($ATE = +22.3\% \sim +23.7\%$, $p < 10^{-15}$), confirmed by DoWhy placebo and data-subset refutations.
+(2) Neural CPD parameterization ($H_1, H_3$) markedly improves predictive probability calibration (lowering Brier score from $0.1719$ to $0.1667$) and discriminatory ranking (AUROC $= 0.8053$), while preserving structural causal invariance ($ATE \approx +0.23$).
+(3) Causal mediation analysis demonstrates that $78.5\%$ of the scholarship effect operates via direct socioeconomic relief ($NDE = +16.96\%$), while $21.5\%$ is mediated through first-semester academic momentum ($NIE = +4.65\%$). 
+Furthermore, Cinelli-Hazlett sensitivity analysis confirms robust unconfoundedness ($RV_{q=1} = 19.09\%$), and budget-constrained counterfactual policy learning reveals that prioritizing scholarship distribution based on Conditional Average Treatment Effects (CATE) produces $+164$ additional university graduates annually at zero incremental fiscal cost. Cross-dataset testing on 61,578 synthetic students validates that the learned graphical causal mechanisms remain invariant under distribution shifts ($ATE = +0.2143$, AUROC $= 0.8537$).

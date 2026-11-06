@@ -1,0 +1,27 @@
+\section{Probabilistic Graphical Models and Bayesian Networks}
+\label{sec:bg_pgm}
+
+Probabilistic Graphical Models (PGMs) encode joint probability distributions over multivariate random vectors by exploiting conditional independence assertions represented in directed graphs \parencite{pearl2009causality, ankan2015pgmpy}. Let $\mathbf{X} = \{X_1, \dots, X_d\}$ denote a set of random variables. A Bayesian Network (BN) is defined as a pair $\mathcal{B} = (\mathcal{G}, \mathbf{P})$, where $\mathcal{G} = (\mathbf{V}, \mathbf{E})$ is a Directed Acyclic Graph (DAG) and $\mathbf{P} = \{P(X_i \mid \text{Pa}_{\mathcal{G}}(X_i))\}_{i=1}^d$ is a collection of Conditional Probability Distributions (CPDs) conditioned on the parental set $\text{Pa}_{\mathcal{G}}(X_i) = \{X_j \in \mathbf{V} : (X_j \to X_i) \in \mathbf{E}\}$.
+
+\subsection{Factorization and d-Separation}
+
+Under the Local Markov Assumption, each variable $X_i$ is conditionally independent of its non-descendants given its direct parents: $X_i \perp\!\!\!\perp \text{NonDescendants}(X_i) \mid \text{Pa}(X_i)$. Consequently, the joint distribution factorizes recursively as:
+\begin{equation}
+    P(X_1, \dots, X_d) = \prod_{i=1}^d P(X_i \mid \text{Pa}_{\mathcal{G}}(X_i)).
+    \label{eq:bn_factorization}
+\end{equation}
+Equation \eqref{eq:bn_factorization} reduces an unconstrained joint probability mass function of size $\mathcal{O}(2^d)$ to $\mathcal{O}(d \cdot 2^k)$, where $k = \max_i |\text{Pa}(X_i)| \ll d$.
+
+Conditional independencies in $\mathcal{G}$ are evaluated graphically via \textit{directed separation} (d-separation) \parencite{pearl2009causality}:
+\begin{definition}[d-separation]
+A trail $p$ between $V_1$ and $V_m$ is d-separated (blocked) by conditioning set $\mathbf{Z}$ if: (1) $p$ contains a chain $V_{k-1} \to V_k \to V_{k+1}$ or fork $V_{k-1} \leftarrow V_k \to V_{k+1}$ with $V_k \in \mathbf{Z}$; or (2) $p$ contains a collider $V_{k-1} \to V_k \leftarrow V_{k+1}$ where neither $V_k$ nor any descendant belongs to $\mathbf{Z}$. If all trails between disjoint sets $\mathbf{X}$ and $\mathbf{Y}$ are blocked by $\mathbf{Z}$, then $(\mathbf{X} \perp_{\mathcal{G}} \mathbf{Y} \mid \mathbf{Z}) \implies \mathbf{X} \perp\!\!\!\perp \mathbf{Y} \mid \mathbf{Z}$.
+\end{definition}
+
+\subsection{The Parameter Explosion Dilemma in Discrete CPTs}
+
+In standard discrete BNs, tabular Conditional Probability Tables (CPTs) parameterize $P(Y \mid \text{Pa}(Y))$. For discrete target $Y$ with support $|\mathcal{Y}|$ and parents $\{Z_1, \dots, Z_m\}$, the number of free parameters scales exponentially:
+\begin{equation}
+    K_{\text{CPT}} = (|\mathcal{Y}| - 1) \prod_{j=1}^m |\mathcal{Z}_j|.
+    \label{eq:cpt_explosion}
+\end{equation}
+In higher education registries containing multiple continuous demographic variables, continuous features must be coarsely discretized (e.g., binning grades into 3--5 quantiles). When $m = 5$ parents are discretized into 5 bins each, a single binary node requires estimating $(2 - 1) \cdot 5^5 = 3,125$ conditional probability parameters. In realistic institutional cohorts ($N \approx 3,000 \sim 4,000$), many conditioning cells contain zero observations, causing Maximum Likelihood Estimation (MLE) to produce degenerate zero-frequency predictions ($0/0$) or fall back on uninformative uniform priors, degrading held-out calibration.

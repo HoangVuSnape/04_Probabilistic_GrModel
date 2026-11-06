@@ -1,0 +1,44 @@
+\section{Budget-Constrained Policy Optimization and Welfare Gains}
+\label{sec:adv_policy_learning}
+
+Under institutional budget constraints capping scholarship awards at $K = \alpha N$ ($K = 969$, $26.70\%$ of cohort), the optimal policy $\pi^*$ maximizes total completions $\sum \pi(\mathbf{x}_i) \tau(\mathbf{x}_i)$ by sorting applicants in descending order of their CATE score: $\pi^*(\mathbf{x}_i) = \mathbb{I}(\hat{\tau}(\mathbf{x}_i) \ge \tau_{(K)})$ \parencite{wager2018causalforest}.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Cohort Outcomes Under Competing Policies at Fixed 26.70\% Budget ($K=969$).}
+    \label{tab:policy_learning}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Allocation Strategy} & \textbf{Quota ($K$)} & \textbf{Grad. Rate} & \textbf{Graduates} & \textbf{Net Gain vs Factual} \\
+        \midrule
+        \textbf{Historical Factual} & 26.7\% (969) & 60.85\% & 2,208 & Baseline \\
+        \textbf{Random Lottery} & 26.7\% (969) & 61.87\% & 2,245 & +36 students \\
+        \textbf{Need-Based Debtor Priority} & 26.7\% (969) & 62.19\% & 2,257 & +48 students \\
+        \textbf{CATE-Optimal Policy ($\pi^*$)} & 26.7\% (969) & \textbf{65.37\%} & \textbf{2,372} & \textbf{+164 students} \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/fig1_cinelli_hazlett_contour.png}
+        \caption{Cinelli-Hazlett Sensitivity Contours}
+        \label{fig:cinelli_contour}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/fig2_policy_learning_curve.png}
+        \caption{Budget Policy Learning Curves}
+        \label{fig:policy_curve}
+    \end{subfigure}
+    \caption{Sensitivity Auditing and Policy Optimization. (a) Critical survival contour for unmeasured confounding ($RV_{q=1} = 23.40\%$); (b) Cohort graduation rate vs. award quota (+164 graduates under $\pi^*$).}
+    \label{fig:sensitivity_and_policy}
+\end{figure}
+
+Reallocating the exact historical quota of 969 scholarships via the CATE-optimal rule elevates graduation from $60.85\%$ to $\mathbf{65.37\%}$, yielding $\mathbf{+164}$ net additional graduates annually at \textbf{\$0 added fiscal cost}.

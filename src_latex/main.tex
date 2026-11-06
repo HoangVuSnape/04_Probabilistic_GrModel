@@ -1,0 +1,34 @@
+\RequirePackage{fix-cm}
+\documentclass[12pt,a4paper]{report}
+\input{config/format}
+% Compile with biblatex/biber: pdflatex main -> biber main -> pdflatex main -> pdflatex main
+\begin{document}
+	% --- Frontmatter ---
+	\input{1_frontmatter/01_Coverpage}
+	\pagenumbering{roman}
+	\setcounter{page}{1}
+	\input{1_frontmatter/02_Acknowledgements}
+	% \input{1_frontmatter/03_CommitteeInfo}
+	\input{1_frontmatter/04_Declaration}
+	\input{1_frontmatter/05_Abstract}
+	\input{1_frontmatter/06_TableOfContents}
+	\input{1_frontmatter/07_ListOfFigures}
+	% \input{1_frontmatter/08_ListOfTables} % Combined with List of Figures
+	\input{1_frontmatter/09_ListOfAbbreviations}
+	
+	% --- Chapters ---
+	\clearpage
+	\pagenumbering{arabic}
+	\setcounter{page}{1}
+	\input{2_chapters/1_Introduction}
+	\input{2_chapters/2_Background}
+	\input{2_chapters/3_Methods_Models}
+	\input{2_chapters/4_Experiments}
+	\input{2_chapters/5_Advanced_Analysis}
+	\input{2_chapters/6_Conclusion}
+	
+	% --- Backmatter ---
+	% \input{3_backmatter/Publications}
+	\input{3_backmatter/References}
+	% \input{3_backmatter/Appendix}
+\end{document}

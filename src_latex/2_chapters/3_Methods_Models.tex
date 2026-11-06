@@ -1,0 +1,10 @@
+\chapter{Methodology and System Architecture}
+\label{chap:methods}
+
+This chapter details the methodological architecture of our proposed causal framework. Section \ref{sec:meth_domain_dag} formalizes the 7-node Primary Domain Causal DAG, establishes the four-pillar DAG validity constraints, and proves backdoor admissibility. Section \ref{sec:meth_factorial_matrix} specifies the $2 \times 2$ factorial model space ($B_0, H_1, H_2, H_3$). Section \ref{sec:meth_neural_cpd} details the PyTorch Deep Neural CPD architecture and the Temporal Forbidden Mask. Section \ref{sec:meth_tensor_engine} derives the vectorized $\mathcal{O}(1)$ tensor interventional query engine. Finally, Section \ref{sec:meth_refutations} formalizes the three-tier DoWhy adversarial refutation protocol and Cinelli-Hazlett sensitivity algebra.
+
+\input{2_chapters/3_Methods_Models/3_1_Overall_Architecture_and_Domain_DAG}
+\input{2_chapters/3_Methods_Models/3_2_Factorial_Model_Matrix}
+\input{2_chapters/3_Methods_Models/3_3_Neural_CPD_and_Temporal_Mask}
+\input{2_chapters/3_Methods_Models/3_4_Vectorized_O1_Tensor_Engine}
+\input{2_chapters/3_Methods_Models/3_5_Refutation_Suite_and_Sensitivity}

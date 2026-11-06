@@ -1,0 +1,13 @@
+\section{Research Objectives}
+
+\subsection{General Objective}
+The primary objective of this research is to develop, evaluate, and benchmark a principled \textbf{Hybrid Neural-Causal Probabilistic Graphical Modeling Framework} for educational policy intervention. By unifying Bayesian network structural identification with continuous neural CPD parameterization, this study estimates the true causal treatment effect of scholarship allocation on degree completion and derives optimal, budget-constrained institutional aid policies.
+
+\subsection{Specific Objectives}
+To achieve the general objective, this research undertakes four specific objectives:
+\begin{enumerate}
+    \item \textbf{SO1 (Structural Formulation and Identification):} Formalize a 7-node domain-grounded Causal Directed Acyclic Graph ($\mathcal{G}_{\text{domain}}$) and continuous structure learning pipeline (NOTEARS with Temporal Forbidden Masking) that provably satisfies backdoor admissibility for educational intervention $T$.
+    \item \textbf{SO2 (Factorial Architecture Benchmarking):} Implement a controlled $2 \times 2$ factorial model matrix ($B_0$: Tabular+Domain, $H_1$: Neural+Domain, $H_2$: Tabular+Learned, $H_3$: Neural+Learned) to empirically isolate the distinct contributions of graph topology versus parameterization across 5-fold cross-validation.
+    \item \textbf{SO3 (Adversarial Causal Robustness and Mediation):} Audit causal effect stability against placebo treatment permutations, random subset refutations, and Cinelli-Hazlett unobserved confounding bounds, while decomposing total effects into direct financial relief ($NDE$) and academic momentum ($NIE$).
+    \item \textbf{SO4 (Policy Optimization and Out-of-Distribution Transfer):} Solve the budget-constrained policy allocation problem to maximize cohort degree completions at fixed institutional expenditure, and evaluate out-of-distribution causal invariance across 76,518 instances from the Kaggle S4E6 benchmark.
+\end{enumerate}

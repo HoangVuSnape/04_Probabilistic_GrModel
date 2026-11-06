@@ -1,0 +1,157 @@
+\section{Surveys on Continual Learning for Large Language Models}
+
+In the era of rapid artificial intelligence advancement, maintaining and updating the knowledge of Large Language Models (LLMs) has become a central challenge in machine learning, as static pre-trained knowledge quickly becomes outdated relative to the dynamic nature of real-world events and domain-specific corpora. The field of Continual Learning (CL) for LLMs has evolved substantially from traditional encoder-based classification architectures toward generative auto-regressive models \parencite{wu2024continuallearninglargelanguage, shi2024continuallearninglargelanguage}. A series of comprehensive surveys published between 2024 and 2026 has progressively shaped this field: from lifecycle-aligned taxonomies \parencite{wu2024continuallearninglargelanguage}, through dual-axis and internal/external formulations \parencite{shi2024continuallearninglargelanguage, zheng2024lifelonglearninglargelanguage}, to cross-modality frameworks \parencite{guo2025continuallearninggenerativeai} and, most recently, lifelong learning for autonomous agents \parencite{11328884, zzz47zzz2025awesome}. This section synthesizes these surveys to establish the conceptual foundations, the dominant mitigation paradigms, and the open gaps that motivate this work.
+
+\subsection{The Continual Learning Lifecycle}
+The surveyed literature converges on a lifecycle-aligned view of continual learning that mirrors the actual LLM training pipeline. Wu et al. \parencite{wu2024continuallearninglargelanguage} organize CL into three sequential stages: \textbf{Continual Pre-Training (CPT)}, which injects new facts, domains, and languages through self-supervised learning; \textbf{Continual Instruction Tuning (CIT)}, which adapts task-solving behaviors via supervised fine-tuning; and \textbf{Continual Alignment (CA)}, which updates human values and preferences through reinforcement learning. Shi et al. \parencite{shi2024continuallearninglargelanguage} complement this with a dual-axis taxonomy distinguishing \emph{vertical} continuity (CPT $\rightarrow$ domain-adaptive pre-training $\rightarrow$ continual fine-tuning) from \emph{horizontal} continuity (temporal, content, and language shifts without task boundaries). A key cross-cutting risk identified by Wu et al. is \textbf{cross-stage forgetting}, whereby optimization in later stages (CIT/CA) corrupts knowledge or safety guardrails established in earlier stages, as illustrated in Figure~\ref{fig:cl_lifecycle}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\small, node distance=1.7cm,
+  stage/.style={rectangle, rounded corners, draw, align=center,
+                minimum height=1.1cm, minimum width=3.2cm},
+  fwd/.style={-{Stealth[length=2.5mm]}, thick}
+]
+\node[stage] (cpt) {\textbf{CPT}\\ Fact / Domain / Language};
+\node[stage, right=of cpt] (cit) {\textbf{CIT}\\ Task / Skill / Tool};
+\node[stage, right=of cit] (ca)  {\textbf{CA}\\ Value / Preference};
+\draw[fwd] (cpt) -- (cit);
+\draw[fwd] (cit) -- (ca);
+\draw[-{Stealth[length=2.5mm]}, thick, dashed, red!70]
+  (ca.south) to[bend left=22] node[below, font=\scriptsize, red!70]{cross-stage forgetting} (cpt.south);
+\end{tikzpicture}
+\caption{The three-stage continual learning lifecycle of LLMs \parencite{wu2024continuallearninglargelanguage}. Solid arrows denote the forward training pipeline; the dashed arrow denotes cross-stage forgetting, where downstream optimization degrades upstream knowledge.}
+\label{fig:cl_lifecycle}
+\end{figure}
+
+This stage-based mapping is directly applicable to the Vietnamese legal domain: statutory facts are best injected at the CPT/retrieval level, task behaviors (legal question answering, natural language inference, syllogistic reasoning) at the CIT level, and judicial compliance at the CA level. Table~\ref{tab:info_stage} reproduces the information-to-stage mapping of Wu et al. \parencite{wu2024continuallearninglargelanguage} alongside its legal-domain interpretation.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Mapping of knowledge types to continual learning stages, adapted from \textcite{wu2024continuallearninglargelanguage} and \textcite{shi2024continuallearninglargelanguage}, with their Vietnamese legal-domain interpretation.}
+\label{tab:info_stage}
+\begin{tabularx}{\textwidth}{l c c c X}
+\hline
+\textbf{Information} & \textbf{CPT} & \textbf{CIT} & \textbf{CA} & \textbf{Legal-domain interpretation} \\
+\hline
+Fact          & $\circ$ & $\times$ & $\times$ & New statutes / legal events $\rightarrow$ RAG memory \\
+Domain        & $\circ$ & $\circ$  & $\times$ & Legal terminology and document structure \\
+Language      & $\circ$ & $\times$ & $\times$ & Vietnamese (a strong distribution shift) \\
+Task          & $\times$ & $\circ$ & $\times$ & QA / NLI / syllogism $\rightarrow$ LoRA adaptation \\
+Skill (Tool)  & $\times$ & $\circ$ & $\times$ & Statutory lookup and citation \\
+Value         & $\times$ & $\times$ & $\circ$ & Judicial and ethical compliance \\
+Preference    & $\times$ & $\times$ & $\circ$ & Advisory style \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Boundaries Between Continual Learning, RAG, and Model Editing}
+To properly position this research, the surveys delineate three distinct paradigms of knowledge management \parencite{wu2024continuallearninglargelanguage, zheng2024lifelonglearninglargelanguage}:
+\begin{enumerate}
+    \item \textbf{Continual Learning:} integrates new knowledge directly into model parameters by optimizing weights over non-stationary data streams, aiming for generalization to future tasks.
+    \item \textbf{Retrieval-Augmented Generation (RAG):} leverages external, non-parametric knowledge sources to inject context at inference time without altering pre-trained weights \parencite{11328884}.
+    \item \textbf{Model Editing:} performs localized factual updates without altering general behaviors or unrelated weights \parencite{guo2025continuallearninggenerativeai}.
+\end{enumerate}
+Crucially, Zheng et al. \parencite{zheng2024lifelonglearninglargelanguage} reorganize the entire field along an \emph{internal versus external} knowledge axis and identify three field-wide shifts: from task-specific to task-agnostic learning, from full fine-tuning to parameter-efficient tuning, and from internal (parametric) to external (non-parametric, RAG-based) knowledge. This taxonomy, depicted in Figure~\ref{fig:internal_external}, provides the central justification for the hybrid framework proposed in this work, which stores volatile legal \emph{facts} in external RAG memory while adapting task \emph{behavior} through parameter-efficient LoRA, thereby neutralizing the catastrophic forgetting inherent in permanent parameter updates.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=0.7cm and 1.1cm,
+  root/.style={rectangle, rounded corners, draw, align=center, minimum height=0.8cm},
+  box/.style ={rectangle, rounded corners, draw, align=center, minimum height=0.7cm, text width=2.7cm},
+  ours/.style={rectangle, rounded corners, draw, very thick, fill=green!10, align=center, text width=2.7cm},
+  arr/.style ={-{Stealth[length=2mm]}}
+]
+\node[root] (r) {Continual Learning of LLMs};
+\node[box, below left=1.1cm and 1.0cm of r]  (int) {\textbf{Internal}\\ (parametric, gradient)};
+\node[box, below right=1.1cm and 1.0cm of r] (ext) {\textbf{External}\\ (non-parametric)};
+\node[box, below=of int]  (cpt) {CPT / CFT};
+\node[ours, below=of cpt] (lora) {LoRA (IFT)\\ \emph{this work: behavior}};
+\node[ours, below=of ext] (rag) {RAG memory\\ \emph{this work: facts}};
+\node[box, below=of rag]  (tool) {Tool / API};
+\draw[arr] (r)--(int); \draw[arr] (r)--(ext);
+\draw[arr] (int)--(cpt); \draw[arr] (cpt)--(lora);
+\draw[arr] (ext)--(rag); \draw[arr] (rag)--(tool);
+\end{tikzpicture}
+}
+\caption{Internal versus external knowledge taxonomy \parencite{zheng2024lifelonglearninglargelanguage}. The highlighted nodes mark the placement of the proposed hybrid framework: external RAG memory for facts and parametric LoRA for task behavior.}
+\label{fig:internal_external}
+\end{figure}
+
+\subsection{Taxonomy of Mitigating Catastrophic Forgetting}
+To counteract catastrophic forgetting, the surveys classify mitigation strategies into four schools of thought \parencite{wu2024continuallearninglargelanguage, shi2024continuallearninglargelanguage, guo2025continuallearninggenerativeai}, summarized in Table~\ref{tab:four_paradigms}. While the first three paradigms operate on model parameters and therefore inevitably trade plasticity against stability, the external-memory paradigm sidesteps this dilemma by decoupling knowledge storage from the frozen backbone, which is the design principle adopted in this work.
+
+\begin{table}[H]
+\centering
+\small
+\caption{The four paradigms for mitigating catastrophic forgetting \parencite{wu2024continuallearninglargelanguage, shi2024continuallearninglargelanguage, guo2025continuallearninggenerativeai} and their role in this work.}
+\label{tab:four_paradigms}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} X >{\raggedright\arraybackslash}p{2.9cm} X}
+\hline
+\textbf{Paradigm} & \textbf{Mechanism} & \textbf{Representative} & \textbf{Role in this work} \\
+\hline
+Rehearsal / Replay & Re-introduces a fraction of historical data to anchor weights & Continual-T0, ER & Minor replay during LoRA tuning \\
+Regularization & Penalizes changes to parameters critical for prior tasks & EWC, LwF & Not used as a primary mechanism \\
+Architecture / PEFT & Isolates updates in auxiliary low-rank modules & LoRA, O-LoRA & LoRA for behavior adaptation \\
+External Memory & Keeps knowledge outside the network and retrieves it dynamically & RAG & Primary mechanism for legal facts \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{From Static Models to Lifelong Agents}
+The most recent surveys extend continual learning from static models toward lifelong learning agents operating under a Perception--Memory--Action framework \parencite{11328884}. Within this architecture, the memory module is stratified into Working, Episodic, Semantic, and Parametric memory, as shown in Figure~\ref{fig:agent_memory}. This stratification is particularly relevant to the present work: representing RAG as non-parametric \emph{semantic} memory and LoRA as \emph{parametric} memory provides a principled foundation for the proposed hybrid design and, in turn, enables selective forgetting mechanisms grounded in temporal validity and legal centrality.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=0.7cm and 1.1cm,
+  mod/.style={rectangle, rounded corners, draw, align=center, minimum height=0.9cm, minimum width=2.4cm},
+  mem/.style={rectangle, draw, align=center, minimum height=0.7cm, text width=2.3cm},
+  ours/.style={rectangle, draw, very thick, fill=green!10, align=center, text width=2.3cm},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[mod] (p) {Perception};
+\node[mod, right=2.4cm of p] (m) {Memory};
+\node[mod, right=2.4cm of m] (a) {Action};
+\draw[arr] (p)--(m); \draw[arr] (m)--(a);
+\draw[arr] (a) to[bend left=28] node[above,font=\scriptsize]{feedback} (p);
+\node[mem, below=1.1cm of m, xshift=-2.0cm] (w) {Working};
+\node[mem, right=of w] (e) {Episodic};
+\node[ours, right=of e] (s) {Semantic\\ \emph{= RAG}};
+\node[ours, right=of s] (par) {Parametric\\ \emph{= LoRA}};
+\draw[arr] (m)--(w); \draw[arr] (m)--(e); \draw[arr] (m)--(s); \draw[arr] (m)--(par);
+\end{tikzpicture}
+}
+\caption{The Perception--Memory--Action framework for lifelong learning agents \parencite{11328884}. The four memory types map directly to the proposed system, where RAG serves as semantic memory and LoRA as parametric memory.}
+\label{fig:agent_memory}
+\end{figure}
+
+\subsection{Comparative Analysis and Research Gaps}
+Table~\ref{tab:survey_comparison} consolidates the five surveys along their classification axis, principal contribution, and relevance to this work. Across all five, a consistent set of metrics emerges---Average Accuracy, Backward Transfer (BWT), and Forward Transfer (FWT)---together with the stability--plasticity dilemma as the central theoretical tension.
+
+Despite their breadth, the surveys collectively expose several gaps that this research addresses. First, continual learning methodologies optimized for \textbf{low-resource languages} such as Vietnamese remain scarce \parencite{wu2024continuallearninglargelanguage, zheng2024lifelonglearninglargelanguage, 11328884}. Second, \textbf{controllable forgetting} and the ``right to be forgotten''---explicitly raised as a future direction by Wu et al. and as an open privacy gap in the agent roadmap---remain under-explored. Third, although the external-memory paradigm is rising, its use for \textbf{selective, importance-aware legal memory} has not been studied. Fourth, there is a lack of \textbf{standardized quantitative benchmarks} for measuring reasoning degradation and compliance in legal continual learning. These gaps directly motivate the hybrid, RAG-centric framework for the Vietnamese legal domain developed in the remainder of this thesis, beginning with a closer examination of the continual learning paradigms in the following section.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Comparative summary of the five core surveys on continual learning for LLMs \parencite{wu2024continuallearninglargelanguage, shi2024continuallearninglargelanguage, zheng2024lifelonglearninglargelanguage, guo2025continuallearninggenerativeai, 11328884}.}
+\label{tab:survey_comparison}
+\begin{tabularx}{\textwidth}{l c >{\raggedright\arraybackslash}p{2.7cm} X X}
+\hline
+\textbf{Survey} & \textbf{Year} & \textbf{Classification axis} & \textbf{Key contribution} & \textbf{Relevance to this work} \\
+\hline
+Wu et al.   & 2024 & Stage-aligned (CPT/CIT/CA) & Cross-stage forgetting; CL $\neq$ RAG $\neq$ editing; calls for controllable forgetting & Pipeline backbone; motivates unlearning \\
+Shi et al.  & 2024 & Dual-axis (vertical/horizontal) & Flat-basin effect; FUAR metric & Domain-adaptive stage; temporal regime \\
+Zheng et al.& 2024 & Internal vs. external (12 scenarios) & Shift toward external (RAG) knowledge & Justifies RAG-centric direction \\
+Guo et al.  & 2025 & Brain-inspired (arch./\allowbreak reg./\allowbreak replay) & CL across LLMs, MLLMs, VLA, and diffusion models & Self-generative replay; future MLLM extension \\
+Zheng et al.& 2026 & Perception--Memory--Action & Four-type memory taxonomy & Anchors hybrid RAG+LoRA architecture \\
+\hline
+\end{tabularx}
+\end{table}
+
+

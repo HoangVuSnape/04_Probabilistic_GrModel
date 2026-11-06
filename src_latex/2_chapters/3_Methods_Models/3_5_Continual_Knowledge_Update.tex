@@ -1,0 +1,38 @@
+\section{Continual Knowledge Update and Index Maintenance}
+\label{sec:update}
+
+The framework's promise of continuous knowledge updating is operationalized by an explicit maintenance pipeline over the knowledge base. Without it, retrieval quality degrades quickly: newly enacted provisions are not indexed (recall drops), repealed clauses retain an active validity flag (compliance failures), the citation graph and hence the importance scores become stale, and the embedding space drifts as new legal terminology appears. Because the base model is frozen, however, an update is a knowledge-base transaction rather than a retraining job, and is therefore performed incrementally and under monitoring.
+
+\subsection{Incremental Update Pipeline}
+New or amended legal documents are ingested both on a schedule (periodic crawling of official gazettes and government portals) and on event triggers (publication of new legislation). Each new or changed unit is segmented, annotated with metadata, embedded with the current encoder, and \emph{upserted} into the index, while unchanged units are not re-embedded, keeping the update cost negligible. When a document supersedes an existing one, the old unit's validity flag is set to $v=0$ with an expiration timestamp $t_{\text{end}}$ and a \texttt{superseded\_by} link is added---this is precisely the temporal-gating operation of the unlearning module (Section~\ref{sec:unlearn}), so that knowledge update and intentional forgetting are realized by the \emph{same} machinery. Newly introduced cross-references update the citation graph, and centrality scores $c_i$ are recomputed locally for the affected nodes rather than over the entire graph. The procedure is illustrated in Figure~\ref{fig:update_pipeline}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=0.8cm and 1.3cm,
+  pipelineStep/.style={rectangle, rounded corners, draw, align=center, text width=3.4cm, minimum height=0.8cm},
+  dec/.style={diamond, aspect=2.2, draw, align=center, inner sep=1pt, text width=2.0cm, font=\scriptsize},
+  good/.style={rectangle, rounded corners, draw, align=center, text width=2.6cm, fill=green!8},
+  bad/.style={rectangle, rounded corners, draw, align=center, text width=2.6cm, fill=red!8},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[pipelineStep] (n) {New / amended document};
+\node[pipelineStep, below=of n] (ing) {Segment + tag metadata + embed (upsert)};
+\node[pipelineStep, below=of ing] (sup) {Supersession: old unit $v{=}0$, $t_{\text{end}}$, link};
+\node[pipelineStep, below=of sup] (cg) {Citation-graph delta $\to$ recompute $c_i$ (local)};
+\node[dec, below=of cg] (canary) {Canary set pass?};
+\node[good, left=of canary] (commit) {Commit KB version $\mathrm{ver}_{N+1}$};
+\node[bad, right=of canary] (rollback) {Rollback + alert};
+\draw[arr] (n)--(ing); \draw[arr] (ing)--(sup); \draw[arr] (sup)--(cg); \draw[arr] (cg)--(canary);
+\draw[arr] (canary) -- node[above,font=\scriptsize]{yes} (commit);
+\draw[arr] (canary) -- node[above,font=\scriptsize]{no} (rollback);
+\end{tikzpicture}
+\caption{The continual knowledge-update pipeline: incremental ingestion, supersession (equivalent to temporal gating), citation-graph maintenance, and a canary-gated commit/rollback.}
+\label{fig:update_pipeline}
+\end{figure}
+
+\subsection{Quality Gates, Versioning, and Rollback}
+Each update is guarded to prevent silent degradation. A randomized sample of the new metadata is verified by experts, and a fixed \emph{canary} query set is evaluated after every update to confirm that retrieval recall and legal-compliance rates remain within tolerance. The knowledge base is versioned with snapshots, so that an update which fails the canary check is rolled back, and every operation is recorded in the immutable audit log. As a consequence, the LoRA adapter is retrained only rarely---when the reasoning \emph{behaviour} itself must change---whereas \emph{facts} are updated continuously through this pipeline without modifying any model weights.
+
+\subsection{Scope and Future Work}
+This proposal specifies the update mechanism at the level of triggers, incremental indexing, supersession, and quality gating. A detailed treatment of \emph{embedding-drift detection} and of the \emph{crawl-scheduling and encoder-versioning} policy is not elaborated in depth here; it is left as immediate implementation work to be undertaken at the start of the project. Continuous behaviour will be evaluated with a time-continual protocol in the spirit of TiC-LM \parencite{li2025ticlmwebscalebenchmarktimecontinual}, measuring retrieval recall, staleness rate, and regime-shift accuracy across successive knowledge-base versions (Chapter~4).
