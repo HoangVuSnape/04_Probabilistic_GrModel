@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Causal PGM — học bổng → tốt nghiệp: đã làm và hướng phát triển",
+    "locale": "vi",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-pgm-roadmap-20261111-082717/pgm-roadmap.html"
+  },
+  "lanes": [
+    { "id": "data", "label": "Dữ liệu & thiết kế" },
+    { "id": "cbn", "label": "B0 / H1 · CBN" },
+    { "id": "neural", "label": "H2 · Neural discovery" },
+    { "id": "evaluate", "label": "Suy luận & đánh giá" },
+    { "id": "deliver", "label": "Bàn giao midterm" },
+    { "id": "extend", "label": "Mở rộng (phụ lục)" },
+    { "id": "future", "label": "Hướng phát triển" }
+  ],
+  "phases": [
+    { "id": "prepare", "label": "Dữ liệu + ràng buộc", "fromCol": 0, "toCol": 1 },
+    { "id": "learn", "label": "Học mô hình (TRAIN, chọn trên VAL)", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "assess", "label": "Đánh giá trên TEST + bàn giao", "fromCol": 4, "toCol": 5 }
+  ],
+  "groups": [
+    { "id": "next_steps", "label": "Chưa làm", "lane": "future", "fromCol": 2, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["uci", "split", "b0", "identify", "tables", "refute", "handoff"],
+  "nodes": [
+    { "id": "uci", "lane": "data", "col": 0, "type": "external", "label": "UCI 697", "sublabel": "4,424 → 3,630 SV", "tag": "loại Enrolled" },
+    { "id": "split", "lane": "data", "col": 1, "type": "database", "label": "5 split 70/15/15", "sublabel": "seed 42–46, phân tầng (T,Y)" },
+    { "id": "constraints", "lane": "cbn", "col": 1, "type": "security", "label": "Ràng buộc thời gian", "sublabel": "cấm Y→·, T→Z; buộc T→Y" },
+    { "id": "b0", "lane": "cbn", "col": 2, "type": "backend", "label": "B0: HillClimb + BDeu", "sublabel": "K2 chọn trên VAL", "tag": "Pa(Y)={T,Z2,Z3,Z5}" },
+    { "id": "h1", "lane": "cbn", "col": 3, "type": "backend", "label": "H1: MLP CPD(Y)", "sublabel": "cùng DAG B0, dừng sớm VAL", "tag": "checkpoint .pt" },
+    { "id": "h2", "lane": "neural", "col": 2, "type": "backend", "label": "H2: NOTEARS-MLP", "sublabel": "h(W)≈1e-7, τ & λ chọn trên VAL", "tag": "mặt nạ M" },
+    { "id": "identify", "lane": "evaluate", "col": 3, "type": "security", "label": "DoWhy identify", "sublabel": "trên từng DAG học được" },
+    { "id": "tables", "lane": "evaluate", "col": 4, "type": "database", "label": "Tables A–C", "sublabel": "ATE ≈ +0.24 cả 3 mô hình", "tag": "AUROC: null finding" },
+    { "id": "refute", "lane": "evaluate", "col": 5, "type": "security", "label": "Refuter + độ nhạy", "sublabel": "placebo, subset, RV 20.97%" },
+    { "id": "handoff", "lane": "deliver", "col": 5, "type": "frontend", "label": "Notebook + QA + slide", "sublabel": "report, glossary, audit" },
+    { "id": "multi", "lane": "extend", "col": 4, "type": "cloud", "label": "Multi-treatment", "sublabel": "T1 chính; T2/T3 khám phá" },
+    { "id": "extras", "lane": "extend", "col": 5, "type": "cloud", "label": "CATE · mediation", "sublabel": "policy, OOD Kaggle" },
+    { "id": "sync", "lane": "future", "col": 2, "type": "messagebus", "label": "Đồng bộ A1–A3, H3", "sublabel": "chạy lại với B0 học DAG" },
+    { "id": "uncertainty", "lane": "future", "col": 3, "type": "messagebus", "label": "Bất định đầy đủ", "sublabel": "refit bootstrap gồm đồ thị" },
+    { "id": "z3", "lane": "future", "col": 4, "type": "messagebus", "label": "Xử lý Z3 học phí", "sublabel": "độ nhạy khi bỏ Z3" },
+    { "id": "latex", "lane": "future", "col": 5, "type": "messagebus", "label": "Báo cáo LaTeX cuối kỳ", "sublabel": "đồng bộ số liệu mới" }
+  ],
+  "edges": [
+    { "id": "e-uci-split", "from": "uci", "to": "split", "variant": "emphasis" },
+    { "id": "e-split-b0", "from": "split", "to": "b0", "label": "TRAIN / VAL", "variant": "emphasis" },
+    { "id": "e-constraints-b0", "from": "constraints", "to": "b0", "variant": "security" },
+    { "id": "e-constraints-h2", "from": "constraints", "to": "h2", "label": "cùng mặt nạ", "variant": "security", "role": "branch" },
+    { "id": "e-b0-h1", "from": "b0", "to": "h1", "label": "giữ DAG", "variant": "default" },
+    { "id": "e-b0-identify", "from": "b0", "to": "identify", "variant": "emphasis" },
+    { "id": "e-h2-identify", "from": "h2", "to": "identify", "variant": "default" },
+    { "id": "e-h1-tables", "from": "h1", "to": "tables", "variant": "default" },
+    { "id": "e-identify-tables", "from": "identify", "to": "tables", "label": "q_m(t,C_i)", "variant": "emphasis" },
+    { "id": "e-tables-refute", "from": "tables", "to": "refute", "variant": "emphasis" },
+    { "id": "e-refute-handoff", "from": "refute", "to": "handoff", "variant": "emphasis" },
+    { "id": "e-tables-multi", "from": "tables", "to": "multi", "label": "đối chiếu", "variant": "dashed", "role": "branch" },
+    { "id": "e-multi-extras", "from": "multi", "to": "extras", "variant": "dashed" },
+    { "id": "e-extras-handoff", "from": "extras", "to": "handoff", "label": "phụ lục", "variant": "dashed", "role": "branch" },
+    { "id": "e-sync-uncertainty", "from": "sync", "to": "uncertainty", "variant": "dashed" },
+    { "id": "e-uncertainty-z3", "from": "uncertainty", "to": "z3", "variant": "dashed" },
+    { "id": "e-z3-latex", "from": "z3", "to": "latex", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Kết quả chính (Tables A–C)",
+      "items": [
+        "ATE B0 +0.2418, H1 +0.2374, H2 +0.2358 — thấp hơn chênh lệch thô +0.3454",
+        "ΔAUROC H1−B0 +0.0016, H2−B0 +0.0038: trong độ tản giữa run (null finding)",
+        "Chạy lại 2 lần: Tables A–C và mọi DAG giống hệt"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Hạn chế đã ghi nhận",
+      "items": [
+        "Z3 (học phí đúng hạn) có thể là hậu quả của bỏ học",
+        "H2: 1–2% hồ sơ test thiếu overlap",
+        "CI bootstrap giữ cố định mô hình; nhiễu ẩn: RV = 20.97%"
+      ]
+    }
+  ]
+}

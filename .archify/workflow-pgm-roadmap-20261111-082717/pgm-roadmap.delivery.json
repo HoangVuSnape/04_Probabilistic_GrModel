@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "eb414640-38ec-4865-84fa-5b71b6788357",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\candidate.json",
+  "output": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\pgm-roadmap.html",
+  "specification": {
+    "sha256": "de1bdeeeeb3ef478b156d9bd56a52ef133ea4c6712ce75f96823e54e521f1917",
+    "bytes": 6169
+  },
+  "artifact": {
+    "sha256": "690296c4d4f0dc7c0f17b18c1cab34d4278463f2ea130a8f26e94898823f340d",
+    "bytes": 877164
+  }
+}

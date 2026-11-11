@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "workflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\candidate.json",
+    "sha256": "de1bdeeeeb3ef478b156d9bd56a52ef133ea4c6712ce75f96823e54e521f1917",
+    "bytes": 6169
+  },
+  "artifact": {
+    "path": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\pgm-roadmap.html",
+    "sha256": "690296c4d4f0dc7c0f17b18c1cab34d4278463f2ea130a8f26e94898823f340d",
+    "bytes": 877164
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [
+    {
+      "code": "i18n/locale-fallback",
+      "severity": "warning",
+      "message": "meta.locale \"vi\" has no bundled catalog and no usable meta.translations; the Viewer chrome and <html lang> fall back to English.",
+      "subject": {
+        "diagramType": "workflow",
+        "path": "/meta/locale"
+      },
+      "evidence": {
+        "locale": "vi",
+        "bundledLocales": [
+          "en",
+          "zh-CN",
+          "zh-TW",
+          "es",
+          "ko",
+          "ar"
+        ]
+      },
+      "supportedFixes": [
+        "Supply meta.translations for this locale.",
+        "Use a bundled locale: en, zh-CN, zh-TW, es, ko, ar."
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\pgm-roadmap.finalize.json",
+    "summaryReceipt": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\pgm-roadmap.finalize-summary.json",
+    "browserCheckReceipt": "E:\\01_Research_Study_Master\\04_Probabilistic_GrModel\\.archify\\workflow-pgm-roadmap-20261111-082717\\pgm-roadmap.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-11-10T09:11:25.111Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 3638,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

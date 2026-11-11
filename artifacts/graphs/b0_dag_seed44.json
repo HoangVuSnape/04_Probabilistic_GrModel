@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    "Z1",
+    "Z2",
+    "Z3",
+    "Z4",
+    "Z5",
+    "T",
+    "Y"
+  ],
+  "edges": [
+    [
+      "Z2",
+      "Z3"
+    ],
+    [
+      "Z2",
+      "Y"
+    ],
+    [
+      "Z2",
+      "Z1"
+    ],
+    [
+      "Z3",
+      "Y"
+    ],
+    [
+      "Z3",
+      "Z5"
+    ],
+    [
+      "Z3",
+      "T"
+    ],
+    [
+      "Z5",
+      "T"
+    ],
+    [
+      "Z5",
+      "Y"
+    ],
+    [
+      "Z5",
+      "Z1"
+    ],
+    [
+      "Z5",
+      "Z4"
+    ],
+    [
+      "T",
+      "Y"
+    ]
+  ],
+  "score_selected_on_val": "K2",
+  "candidates": [
+    {
+      "Score": "BIC",
+      "Edges": 9,
+      "Val_LogLik": -2173.8841590793536,
+      "Pa(Y)": [
+        "T",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "Score": "BDeu",
+      "Edges": 10,
+      "Val_LogLik": -2172.3905465117195,
+      "Pa(Y)": [
+        "T",
+        "Z2",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "Score": "K2",
+      "Edges": 11,
+      "Val_LogLik": -2172.2026735121212,
+      "Pa(Y)": [
+        "T",
+        "Z2",
+        "Z3",
+        "Z5"
+      ]
+    }
+  ],
+  "identification": "Estimand type: EstimandType.NONPARAMETRIC_ATE\n\n### Estimand : 1\nEstimand name: backdoor\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n\n### Estimand : 2\nEstimand name: iv\nNo such variable(s) found!\n\n### Estimand : 3\nEstimand name: frontdoor\nNo such variable(s) found!\n\n### Estimand : 4\nEstimand name: general_adjustment\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n"
+}

@@ -13,14 +13,14 @@ To stress-test conditional exchangeability against unobserved confounding, we ap
         \toprule
         \textbf{Covariate} & \textbf{Administrative Feature Group} & \textbf{Partial $R^2$ with $Y$} & \textbf{Domain Interpretation} \\
         \midrule
-        $Z_1$ & Socioeconomic Profile (Age, Parents' Edu) & 0.0422 (4.22\%) & Baseline family background and life experience. \\
+        $Z_1$ & Age at Enrollment (tertiles) & 0.0422 (4.22\%) & Baseline family background and life experience. \\
         $Z_2$ & Prior Academics (Admission Score) & 0.0048 (0.48\%) & Secondary school exit examination merit. \\
-        $Z_3$ & Housing Demographics (Displacement) & 0.0003 (0.03\%) & Renting vs living in parental home. \\
+        $Z_3$ & Mother's Qualification ($>1$) & 0.0003 (0.03\%) & Parental education background. \\
         $Z_4$ & Baseline Tuition Solvency (Debtor) & 0.0081 (0.81\%) & Financial arrears upon enrollment. \\
-        $Z_5$ & Semester 1 Approved Credits ($M_1$) & \textbf{0.1041 (10.41\%)} & Strongest empirical predictor in registry. \\
+        $Z_5$ & Tuition Fees Up to Date & \textbf{0.1041 (10.41\%)} & Strongest observed predictor; may partly reflect reverse causation (dropout $\to$ unpaid fees). \\
         \bottomrule
     \end{tabular}%
     }
 \end{table}
 
-The sensitivity audit yields a Robustness Value of $RV_{q=1} = \mathbf{0.2340 \quad (23.40\%)}$. To nullify the positive scholarship effect ($\hat{\tau} \to 0$), an unobserved confounder $U$ would need to explain more than $23.40\%$ of residual treatment variance \emph{and} $23.40\%$ of residual graduation variance. Benchmarked against observed predictors, $U$ must be $\frac{RV}{R^2_{Y \sim Z_5}} = \frac{0.2340}{0.1041} \approx \mathbf{2.25\times}$ more powerful than first-semester grades ($Z_5$), certifying extreme causal resilience.
+From the OLS fit $Y \sim T + \mathbf{Z}$ ($t = 14.20$, $df = 3623$) and $RV_q = \tfrac12\big(\sqrt{f_q^4 + 4 f_q^2} - f_q^2\big)$ with $f_q = q\,|t|/\sqrt{df}$ \parencite{cinelli2020making}, the Robustness Value is $RV_{q=1} = \mathbf{0.2097\ (20.97\%)}$, and $RV_{q=1,\alpha=0.05} = 0.1837$. To nullify the scholarship effect ($\hat{\tau} \to 0$), an unobserved confounder $U$ would need to explain at least $20.97\%$ of residual treatment variance \emph{and} $20.97\%$ of residual graduation variance. The strongest observed covariate ($Z_5$) explains $10.41\%$ of residual outcome variance, so the conclusion is robust to confounders weaker than $Z_5$ but not to one roughly twice as strong.

@@ -1,0 +1,136 @@
+{
+  "nodes": [
+    "Z1",
+    "Z2",
+    "Z3",
+    "Z4",
+    "Z5",
+    "T",
+    "Y"
+  ],
+  "edges": [
+    [
+      "Z1",
+      "Y"
+    ],
+    [
+      "Z2",
+      "Y"
+    ],
+    [
+      "Z3",
+      "T"
+    ],
+    [
+      "Z3",
+      "Y"
+    ],
+    [
+      "Z4",
+      "T"
+    ],
+    [
+      "Z5",
+      "T"
+    ],
+    [
+      "Z5",
+      "Y"
+    ],
+    [
+      "T",
+      "Y"
+    ]
+  ],
+  "tau_selected_on_val": 0.1,
+  "lambda_l1": 0.0001,
+  "h_final": 3.2945245465043627e-07,
+  "converged": true,
+  "outer_iters": 7,
+  "h_history": [
+    0.032345676581906346,
+    0.005531975838658276,
+    0.0010332183945198636,
+    0.00015422027603406718,
+    1.8908205288603597e-05,
+    1.6618882217045439e-06,
+    3.2945245465043627e-07
+  ],
+  "recon_history": [
+    0.43644505739212036,
+    0.4361395537853241,
+    0.43636831641197205,
+    0.43743374943733215,
+    0.4413779079914093,
+    0.448356956243515,
+    0.4918457865715027
+  ],
+  "forbidden_weight_max": 0.0,
+  "edges_cut_for_cycles": [],
+  "tau_table": [
+    {
+      "tau": 0.1,
+      "Edges": 8,
+      "Cut_for_cycle": [],
+      "T->Y_forced": false,
+      "Val_LogLik": -2251.1496759200686,
+      "Pa(Y)": [
+        "T",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "tau": 0.2,
+      "Edges": 7,
+      "Cut_for_cycle": [],
+      "T->Y_forced": false,
+      "Val_LogLik": -2254.7872350316884,
+      "Pa(Y)": [
+        "T",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "tau": 0.3,
+      "Edges": 5,
+      "Cut_for_cycle": [],
+      "T->Y_forced": false,
+      "Val_LogLik": -2266.001516293457,
+      "Pa(Y)": [
+        "T",
+        "Z2",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "tau": 0.5,
+      "Edges": 3,
+      "Cut_for_cycle": [],
+      "T->Y_forced": false,
+      "Val_LogLik": -2279.091038211359,
+      "Pa(Y)": [
+        "T",
+        "Z3",
+        "Z5"
+      ]
+    },
+    {
+      "tau": 0.8,
+      "Edges": 1,
+      "Cut_for_cycle": [],
+      "T->Y_forced": true,
+      "Val_LogLik": -2321.204896111079,
+      "Pa(Y)": [
+        "T"
+      ]
+    }
+  ],
+  "identification": "Estimand type: EstimandType.NONPARAMETRIC_ATE\n\n### Estimand : 1\nEstimand name: backdoor\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n\n### Estimand : 2\nEstimand name: iv\nEstimand expression:\n ⎡                     -1⎤\n ⎢  d      ⎛  d       ⎞  ⎥\nE⎢─────(Y)⋅⎜─────([T])⎟  ⎥\n ⎣d[Z₄]    ⎝d[Z₄]     ⎠  ⎦\nEstimand assumption 1, As-if-random: If U→→Y then ¬(U →→{Z4})\nEstimand assumption 2, Exclusion: If we remove {Z4}→{T}, then ¬({Z4}→Y)\n\n### Estimand : 3\nEstimand name: frontdoor\nNo such variable(s) found!\n\n### Estimand : 4\nEstimand name: general_adjustment\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n"
+}

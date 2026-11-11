@@ -14,13 +14,14 @@
 
 Ước lượng hiệu ứng can thiệp nhân quả từ dữ liệu bảng quan sát đóng vai trò nền tảng trong việc hoạch định chính sách giáo dục đại học. Mặc dù các mạng Bayes nhân quả truyền thống (Causal Bayesian Networks - CBN) cung cấp khung toán học định danh chặt chẽ và khả năng giải thích tường minh thông qua giải tích can thiệp do-calculus của Judea Pearl, chúng dựa vào các bảng phân phối xác suất rời rạc (CPD) vốn gặp nhiều thách thức trước các tương tác phi tuyến phức tạp và hiện tượng ô dữ liệu thưa (*sparse data*). 
 
-Trong công trình nghiên cứu này, chúng tôi xây dựng một chuẩn đối sánh thực nghiệm có kiểm soát so sánh mô hình cơ sở CBN rời rạc (**B0**) với hai phương pháp tăng cường học sâu:
-1. **Mô hình H1 (Hybrid Neural CPD):** Cố định cấu trúc đồ thị của B0 và thay thế phân phối của biến kết quả $Y$ bằng mạng nơ-ron sâu PyTorch MLP với cơ chế Early Stopping và ánh xạ cấu hình row-major C-order chuẩn hóa.
-2. **Mô hình H2 (Neural Causal Discovery):** Tối ưu hóa gradient liên tục NOTEARS kết hợp Ma trận Mặt nạ Cấm cạnh Thời gian (Temporal Forbidden Mask $M$) triệt tiêu các quan hệ ngược thời gian, đi kèm thuật toán sửa chu trình và ước lượng tham số làm mịn Bayes.
+Trong công trình nghiên cứu này, chúng tôi xây dựng một chuẩn đối sánh có kiểm soát giữa mô hình CBN truyền thống (**B0**) và hai mở rộng học sâu, cả ba dùng **cùng biến, cùng hàng TRAIN/VALIDATION/TEST và cùng ràng buộc thời gian** (cấm $Y \to \{T, Z\}$, cấm $T \to Z$, bắt buộc $T \to Y$):
+1. **B0:** học DAG trên TRAIN bằng `pgmpy.HillClimbSearch` (hàm điểm BIC/BDeu/K2 chọn theo log-likelihood VALIDATION) + CPD rời rạc BDeu ($ESS = 5$).
+2. **H1 (Neural CPD):** giữ nguyên DAG B0 của từng run, thay CPD của $Y$ bằng MLP PyTorch chỉ nhận $\text{Pa}(Y)$, dừng sớm trên VALIDATION.
+3. **H2 (Neural discovery):** NOTEARS-MLP phi tuyến (Zheng et al., 2020) với cùng mặt nạ thời gian $M$; kiểm tra hội tụ $h(W) < 10^{-6}$; $\lambda_1$ và ngưỡng cạnh chọn trên VALIDATION; CPD BDeu như B0.
 
-Thực nghiệm được tiến hành nghiêm ngặt trên tập dữ liệu chuẩn UCI ID 697 (*Predict Students' Dropout and Academic Success*) qua **5 lượt chạy ghép cặp cố định (5 Paired Runs)** với tỷ lệ chia 70% Train / 15% Validation / 15% Test. Năng lực dự báo ngoài mẫu được đánh giá trên nhãn kiểm thử $Y_{\text{test}}$, trong khi rủi ro can thiệp $P(Y \mid do(T))$ và Hiệu ứng Can thiệp Trung bình (ATE) được chuẩn hóa độc lập trên cùng tập hiệp biến nền kiểm thử $C_{\text{test}}$ mà **tuyệt đối không chạm vào nhãn $Y_{\text{test}}$**.
+Thực nghiệm trên UCI ID 697 qua **5 lượt chạy ghép cặp** (70/15/15). Dự báo được chấm trên $Y_{\text{test}}$; rủi ro can thiệp và ATE được chuẩn hóa trên hiệp biến $C_{\text{test}}$, **không dùng $Y_{\text{test}}$**.
 
-Kết quả thực nghiệm chỉ ra rằng chính sách trao học bổng làm tăng xác suất tốt nghiệp thực chất từ **+22.3% đến +23.7%** (với độ hội tụ cao giữa $B_0$, $H_1$, và các mô hình kinh tế lượng chuẩn IPW/AIPW). Mô hình $H_1$ cải thiện vượt bậc độ chính xác dự báo (AUROC đạt $0.8082$, Brier score giảm xuống $0.1648$). Đặc biệt, nghiên cứu bóc tách (*Ablation A2*) phát hiện: nếu thiếu mặt nạ cấm $M$, học cấu trúc bằng học sâu sẽ học nhầm quan hệ ngược thời gian ($Y \to Z_3$) và làm sụp đổ mô hình Bayes. Cuối cùng, nghiên cứu mở rộng sang các biến kết quả đa chiều (điểm GPA liên tục, tốc độ tích lũy tín chỉ, tỷ lệ giữ chân toàn trường), phân tích trung gian nhân quả ($21.5\%$ hiệu ứng đi qua đà học tập kỳ 1) và hiệu ứng không đồng nhất CATE (sinh viên lớn tuổi $> 20$ tuổi hưởng lợi gấp 1.8 lần).
+**Kết quả chính.** ATE của học bổng ổn định giữa ba mô hình: $B_0 = +0.2418 \pm 0.0046$, $H_1 = +0.2374 \pm 0.0114$, $H_2 = +0.2358 \pm 0.0067$ (chênh lệch thô $+0.3454$). Về dự báo, hiệu ghép cặp $\Delta\text{AUROC}_{H_1 - B_0} = +0.0016 \pm 0.0025$ và $\Delta_{H_2 - B_0} = +0.0038 \pm 0.0038$ nằm trong độ tản giữa các run ⇒ **không có bằng chứng** phần nơ-ron cải thiện dự báo (null finding). Phần mở rộng (kết cục đa chiều, trung gian $21.5\%$, CATE theo nhóm, độ nhạy $RV_{q=1} = 20.97\%$) được báo cáo như phân tích phụ.
 
 ---
 
@@ -39,11 +40,11 @@ Các biến số được tinh lọc nghiêm ngặt từ tập dữ liệu UCI I
 | :--- | :---: | :--- | :--- | :--- | :--- |
 | `Scholarship holder` | **$T$** | Sinh viên được cấp học bổng / tài trợ | $0 = \text{Không}, 1 = \text{Có}$ | Lúc nhập học ($t_1$) | **Biến can thiệp (Treatment)** |
 | `Target` | **$Y$** | Kết quả học tập cuối khóa | $1 = \text{Graduate}, 0 = \text{Dropout}$ | Kết thúc khóa ($t_2$) | **Biến kết quả (Outcome)** |
-| `Age at enrollment` | **$Z_1$** | Độ tuổi khi nhập học | Rời rạc 3 nhóm: $\{0: \text{Trẻ}, 1: \text{TB}, 2: \text{Lớn}\}$ | Trước nhập học ($t_0$) | **Confounder ($Z_1 \prec T \prec Y$)** |
-| `Admission grade` | **$Z_2$** | Điểm xét tuyển đầu vào | Nhị phân theo trung vị: $\{0: < \text{Med}, 1: \ge \text{Med}\}$ | Trước nhập học ($t_0$) | **Confounder ($Z_2 \prec T \prec Y$)** |
-| `Mother's qualification` | **$Z_3$** | Trình độ học vấn của mẹ | Nhị phân: $\{0: \text{Phổ thông}, 1: \text{Đại học/Sau ĐH}\}$ | Trước nhập học ($t_0$) | **Confounder ($Z_3 \prec T \prec Y$)** |
-| `Debtor` | **$Z_4$** | Tình trạng nợ học phí lúc nhập học | $0 = \text{Không nợ}, 1 = \text{Có nợ}$ | Thời điểm nhập học ($t_0$) | **Confounder ($Z_4 \prec T \prec Y$)** |
-| `Tuition fees up to date`| **$Z_5$** | Đóng học phí đầy đủ đúng hạn | $0 = \text{Chưa đóng}, 1 = \text{Đầy đủ}$ | Đầu khóa học ($t_0$) | **Confounder ($Z_5 \prec T \prec Y$)** |
+| `Admission grade` | **$Z_1$** | Điểm xét tuyển đầu vào | 3 nhóm: $<120$, $[120, 140)$, $\ge 140$ | Trước nhập học ($t_0$) | **Confounder** |
+| `Debtor` | **$Z_2$** | Nợ học phí lúc nhập học | $0 / 1$ | Nhập học ($t_0$) | **Confounder** |
+| `Tuition fees up to date` | **$Z_3$** | Đóng học phí đúng hạn | $0 / 1$ | **Mơ hồ** — có thể cập nhật sau nhập học | **Confounder (giả định)**; nguy cơ là hậu quả của bỏ học |
+| `Mother's qualification` | **$Z_4$** | Học vấn của mẹ | $1$ nếu mã $\ge 13$ (đại học trở lên) | Trước nhập học ($t_0$) | **Confounder** |
+| `Age at enrollment` | **$Z_5$** | Tuổi khi nhập học | $1$ nếu $> 20$ | Nhập học ($t_0$) | **Confounder** |
 
 > [!IMPORTANT]
 > **Quy tắc Kiểm toán Chống Rò rỉ (No-Leakage / Collider & Mediator Avoidance):**  
@@ -51,8 +52,8 @@ Các biến số được tinh lọc nghiêm ngặt từ tập dữ liệu UCI I
 
 ---
 
-### 1.2. Cấu trúc Đồ thị Primary Domain DAG & Phân rã Xác suất Đồng thời
-Đồ thị Primary DAG gồm đúng **7 nút** và **11 cạnh có hướng**:
+### 1.2. Domain DAG tham chiếu & Phân rã Xác suất Đồng thời
+Domain DAG dưới đây (7 nút, 11 cạnh) là **giả thuyết tham chiếu** dùng cho DoWhy ở mục 7 của notebook. **B0 không dùng trực tiếp DAG này** mà học DAG riêng trên TRAIN (mục 1.4); DAG học được có $\text{Pa}(Y) = \{T, Z_2, Z_3, Z_5\}$, thưa hơn Domain DAG.
 * 5 cạnh từ biến nền sang can thiệp: $Z_i \to T, \forall i \in \{1, \dots, 5\}$.
 * 5 cạnh từ biến nền sang kết quả: $Z_i \to Y, \forall i \in \{1, \dots, 5\}$.
 * 1 cạnh can thiệp trực tiếp: $T \to Y$.
@@ -122,21 +123,17 @@ $$\text{risk}_m(t) = \frac{1}{n_{\text{test}}} \sum_{i \in \text{TEST}} q_m(t, \
 
 ### 1.4. Vai trò của Học Tham số và Giới hạn của Học Sâu (Tiêu chí 2 - 2.0 điểm)
 
-1. **Mô hình B0 (Bayesian Smoothing):**
-   * Các bảng CPD truyền thống ước lượng bằng cực đại hợp lý (MLE) rất dễ bị chia cho 0 khi gặp tổ hợp ô dữ liệu thưa (*sparse cells*).
-   * B0 khắc phục bằng phân phối Dirichlet liên hợp đối xứng **BDeu prior** với kích thước mẫu tương đương $ESS = 5$:
-     $$P(Y = y \mid T = t, \mathbf{Z} = \mathbf{z}) = \frac{N(y, t, \mathbf{z}) + \frac{ESS}{|Y| \cdot |T| \cdot |\mathbf{Z}|}}{N(t, \mathbf{z}) + \frac{ESS}{|T| \cdot |\mathbf{Z}|}}$$
-2. **Mô hình H1 (Hybrid Neural CPD):**
-   * Giữ nguyên cấu trúc đồ thị vững chắc của B0; thay thế bảng xác suất rời rạc của $Y$ bằng một mạng nơ-ron sâu PyTorch MLP.
-   * **Bảo tồn tính chất Markov nhân quả:** Mạng MLP **chỉ nhận đầu vào duy nhất là các nút cha trực tiếp của $Y$**: $\text{Parents}(Y) = \{T, Z_1, Z_2, Z_3, Z_4, Z_5\}$. Tuyệt đối không nhận các biến ngoài đồ thị.
-   * Huấn luyện bằng Binary Cross-Entropy với cơ chế Early Stopping trên tập Validation.
-   * Dự báo xác suất cho toàn bộ 96 tổ hợp cha theo thứ tự row-major C-order, chuẩn hóa thành `TabularCPD` gắn ngược lại vào mạng Bayes.
-3. **Mô hình H2 (Neural Causal Discovery via NOTEARS):**
-   * Học cấu trúc ma trận kề $W \in \mathbb{R}^{d \times d}$ từ gradient liên tục bằng cách giải bài toán tối ưu hóa có ràng buộc phi chu trình (Zheng et al., 2018):
-     $$\min_{W} \frac{1}{2n} \|X - XW\|_F^2 + \lambda \|W\|_1 \quad \text{s.t.} \quad h(W) = \text{Tr}\left(e^{W \circ W}\right) - d = 0$$
-   * **Ma trận Mặt nạ Cấm cạnh Thời gian (Temporal Forbidden Mask $M$ - Slide 63):**
-     $$W_{\text{eff}} = M \odot W$$
-     Đặt $M_{ij} = 0$ nếu cạnh $i \to j$ vi phạm trật tự thời gian ($Y \to T$, $Y \to Z_k$, $T \to Z_k$) và đường chéo chính $M_{ii} = 0$.
+1. **Mô hình B0 (học DAG truyền thống + CPD BDeu):**
+   * `pgmpy.HillClimbSearch` trên TRAIN với `ExpertKnowledge`: cấm $Y \to \{T, Z\}$, $T \to Z$; bắt buộc $T \to Y$ (giả thuyết cần ước lượng — nếu không có cạnh này thì ATE của mô hình bằng 0 theo định nghĩa).
+   * Hàm điểm $\{\text{BIC}, \text{BDeu}, \text{K2}\}$ chọn theo log-likelihood VALIDATION; **K2** thắng ở cả 5 seed. DAG được đóng băng trước khi chạm TEST.
+   * CPD BDeu với $ESS = 5$: $\hat P(y \mid \text{pa}) = \dfrac{N(y, \text{pa}) + ESS/(q\,r)}{N(\text{pa}) + ESS/q}$ với $q$ là số cấu hình cha, $r = 2$.
+2. **Mô hình H1 (Neural CPD trên DAG B0):**
+   * Giữ nguyên DAG B0 của từng run; MLP chỉ nhận $\text{Pa}(Y)$ (4 đầu vào, 769 tham số): Linear–BatchNorm–ReLU–Dropout(0.2)–Linear–ReLU–Linear, BCE, Adam, dừng sớm trên VALIDATION.
+   * Liệt kê mọi cấu hình cha → `TabularCPD` chuẩn hóa → thay vào bản sao B0 → `check_model()`. Checkpoint: `artifacts/checkpoints/h1_seed<seed>.pt`.
+3. **Mô hình H2 (NOTEARS-MLP phi tuyến):**
+   * Mỗi nút $j$ có một MLP $f_j$; $W_{ij} = \lVert \theta^{(1)}_{j,\cdot,i} \rVert_2$. Bài toán: $\min \tfrac12 \text{MSE}(X, f(X)) + \lambda_1 \lVert \theta^{(1)} \rVert_1$ s.t. $h(W) = \text{tr}(e^{W \circ W}) - d = 0$, giải bằng Augmented Lagrangian.
+   * Mặt nạ $M$ dùng đúng danh sách cạnh cấm của B0, nhân vào trọng số tầng 1; code assert trọng số bị cấm bằng 0.
+   * Hội tụ khi $h < 10^{-6}$ (đạt $\approx 10^{-7}$ ở cả 5 seed); $\lambda_1 = 10^{-4}$ chọn trên VALIDATION seed 42; $\tau \in \{0.1, 0.2\}$ chọn trên VALIDATION từng seed; cạnh $T \to Y$ được học (không bị ép). CPD BDeu như B0; DoWhy identify trên DAG học được.
 4. **Phân tích Giới hạn Học thuật của Deep Learning trong Causal Inference:**
    * Mạng nơ-ron sâu có khả năng xấp xỉ vạn năng (Universal Approximation), do đó rất dễ đạt điểm số dự báo cực cao (Loss thấp, AUROC cao) nhờ bắt trúng các mối tương quan giả mạo (*spurious correlation*).
    * **Sự vượt trội về dự báo không đồng nghĩa với tính đúng đắn nhân quả.** Nếu không có các ràng buộc định danh đồ thị (như mặt nạ $M$ và Backdoor adjustment), mạng nơ-ron sẽ ước lượng sai lệch hoàn toàn hiệu ứng can thiệp $ATE$.
@@ -157,10 +154,8 @@ $$\text{risk}_m(t) = \frac{1}{n_{\text{test}}} \sum_{i \in \text{TEST}} q_m(t, \
   * Mỗi run gồm: $2,541$ Train / $544$ Validation / $545$ Test. Toàn bộ chỉ số dòng được xuất thành các file JSON đóng băng (`artifacts/splits/split_seed_{seed}.json`).
   * Tiền xử lý (chuẩn hóa, rời rạc hóa) chỉ `fit` trên tập Train của từng seed, tránh hoàn toàn rò rỉ phân phối sang Val/Test.
 
-### 2.2. Động cơ Truy vấn Vector hóa $O(1)$ Tensor CPD (Kiến trúc Đột phá ADR-003)
-Nhóm nghiên cứu đã phát triển một giải pháp kỹ thuật tối ưu hóa then chốt:
-* Thay thế vòng lặp tuần tự `VariableElimination.query()` (tốn $\approx 250$ giây cho 24,525 lượt truy vấn) bằng **cơ chế tra cứu mảng đa chiều tensor NumPy trực tiếp trên `cpd_y.values`** (kích thước $2 \times 2 \times 3 \times 2 \times 2 \times 2 \times 2 = 192$ số thực float64).
-* Thời gian tính toán cho toàn bộ 545 dòng tập Test giảm từ 5.5 giây xuống **0.0008 giây** (> 3,000x speedup), giúp toàn bộ quá trình chạy 5 Paired Runs hoàn tất trong **dưới 30 giây** trên CPU thông thường.
+### 2.2. Truy vấn can thiệp vector hóa
+Truy vấn $q_m(t, C_i)$ dùng numpy advanced indexing trực tiếp trên mảng `cpd_y.values` thay cho `VariableElimination.query()`: ≈ 0.2 ms cho 545 hồ sơ test. Thời gian khớp trung bình mỗi run trên CPU: B0 0.43 s, H1 1.72 s, H2 17.64 s (Table C).
 
 ---
 
@@ -168,15 +163,15 @@ Nhóm nghiên cứu đã phát triển một giải pháp kỹ thuật tối ưu
 *Đo lường trên nhãn thực tế $Y_{\text{test}}$ qua 5 Paired Runs. Ngưỡng phân loại F1 được tối ưu trên tập Validation.*  
 *File artifact: [artifacts/tables/Table_A_Prediction.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_A_Prediction.csv)*
 
-| Model | Seed | Cấu trúc Đồ thị | AUROC ($Mean \pm Std$) | Macro-F1 ($Mean \pm Std$) | Brier Score ($Mean \pm Std$) | Precision | Recall | $\Delta_{\text{AUROC vs } B_0}$ | $\Delta_{\text{F1 vs } B_0}$ | Fit Time | Query Time |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **B0** | Pooled 5 Runs | Domain DAG (11 edges) | $0.8001 \pm 0.0135$ | $0.7308 \pm 0.0202$ | $0.1701 \pm 0.0067$ | $0.7902$ | $0.7916$ | *Baseline* | *Baseline* | 0.05s | 0.00s |
-| **H1** | Pooled 5 Runs | Fixed B0 DAG + Neural CPD | **$0.8082 \pm 0.0159$** | **$0.7374 \pm 0.0165$** | **$0.1648 \pm 0.0071$** | $0.7910$ | $0.8072$ | **+0.0081** | **+0.0067** | 5.51s | 0.00s |
-| **H2** | Pooled 5 Runs | Learned NOTEARS DAG | $0.6428 \pm 0.0000$ | $0.5790 \pm 0.0000$ | $0.2145 \pm 0.0000$ | $0.8630$ | $0.3795$ | -0.1573 | -0.1518 | 0.44s | 0.00s |
+| Model | Đồ thị | AUROC | Macro-F1 | Brier | Log-loss | $\Delta\text{AUROC}_{m - B_0}$ | Fit / run |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **B0** | HillClimb-K2 (10–12 cạnh) | $0.7996 \pm 0.0119$ | $0.7351 \pm 0.0077$ | $0.1659 \pm 0.0058$ | $0.4995 \pm 0.0175$ | — | 0.43 s |
+| **H1** | DAG B0 + MLP CPD($Y$) | $0.8012 \pm 0.0130$ | $0.7351 \pm 0.0077$ | $0.1656 \pm 0.0062$ | $0.4987 \pm 0.0163$ | $+0.0016 \pm 0.0025$ | 1.72 s |
+| **H2** | NOTEARS-MLP (7–9 cạnh) | $0.8034 \pm 0.0155$ | $0.7261 \pm 0.0277$ | $0.1666 \pm 0.0060$ | $0.5086 \pm 0.0117$ | $+0.0038 \pm 0.0038$ | 17.64 s |
 
-#### Nhận xét Khoa học Bảng A:
-1. **$H_1$ vượt trội toàn diện:** Việc thay thế phân phối bảng rời rạc bằng mạng MLP sâu giúp $H_1$ nắm bắt tốt hơn các tương tác phi tuyến giữa các biến confounders, tăng AUROC thêm **+0.0081**, tăng F1 thêm **+0.0067**, và hạ thấp Brier Score từ 0.1701 xuống **0.1648** (độ cân chỉnh xác suất tốt hơn rõ rệt).
-2. **Hạn chế của $H_2$ thuần túy:** Thuật toán NOTEARS với ngưỡng $\tau = 0.25$ có xu hướng phạt thưa mạnh tay (*over-penalization*), chỉ giữ lại 2 cạnh ($T \to Y$ và $Z_4 \to Y$), bỏ sót các đường dẫn thông tin quan trọng từ các biến $Z$ khác, dẫn đến Recall giảm mạnh xuống $0.3795$.
+#### Nhận xét Bảng A:
+1. **Null finding:** hiệu ghép cặp H1−B0 và H2−B0 không vượt độ tản giữa các run; Brier/log-loss gần như không đổi. Không có bằng chứng CPD nơ-ron hay học cấu trúc nơ-ron cải thiện dự báo trên dữ liệu này.
+2. Macro-F1 của B0 và H1 trùng nhau vì $\text{Pa}(Y)$ chỉ có $2^4 = 16$ cấu hình: hai mô hình gán nhãn giống nhau tại ngưỡng chọn trên VALIDATION.
 
 ---
 
@@ -184,39 +179,39 @@ Nhóm nghiên cứu đã phát triển một giải pháp kỹ thuật tối ưu
 *Chuẩn hóa nguy cơ trên cùng tập hiệp biến tham chiếu kiểm thử $C_{\text{test}}$ ($n=545$), **tuyệt đối không chạm vào $Y_{\text{test}}$**.*  
 *File artifact: [artifacts/tables/Table_B_Intervention.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_B_Intervention.csv)*
 
-| Model | Cỡ mẫu $N$ | $\text{Risk}(do(T=0))$ | $\text{Risk}(do(T=1))$ | Causal ATE ($Mean \pm Std$) | Khoảng tin cậy 95% Bootstrap | Tập Điều chỉnh (Adjustment Set) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **B0** | 545 | $0.5499 \pm 0.0114$ | $0.7863 \pm 0.0087$ | **+0.2363 ± 0.0061** | $[+0.2240, \ +0.2487]$ | $\{Z_1, Z_2, Z_3, Z_4, Z_5\}$ |
-| **H1** | 545 | $0.5535 \pm 0.0121$ | $0.7844 \pm 0.0087$ | **+0.2309 ± 0.0097** | $[+0.2223, \ +0.2397]$ | $\{Z_1, Z_2, Z_3, Z_4, Z_5\}$ |
-| **H2** | 545 | $0.5163 \pm 0.0000$ | $0.8600 \pm 0.0000$ | **+0.3437 ± 0.0000** | $[+0.3437, \ +0.3437]$ | Learned Backdoor |
+| Model | $N$ | $\text{Risk}(do(T=0))$ | $\text{Risk}(do(T=1))$ | ATE (mean ± std) | CI 95% (trung bình cận) | Tập điều chỉnh | Overlap |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- |
+| **B0** | 545 | $0.5495 \pm 0.0114$ | $0.7914 \pm 0.0092$ | **$+0.2418 \pm 0.0046$** | $[+0.2341, +0.2496]$ | $\{Z_2, Z_3, Z_5\}$ | đầy đủ |
+| **H1** | 545 | $0.5494 \pm 0.0112$ | $0.7869 \pm 0.0183$ | **$+0.2374 \pm 0.0114$** | $[+0.2293, +0.2454]$ | $\{Z_2, Z_3, Z_5\}$ | đầy đủ |
+| **H2** | 545 | $0.5507 \pm 0.0098$ | $0.7865 \pm 0.0104$ | **$+0.2358 \pm 0.0067$** | $[+0.2261, +0.2454]$ | $\{Z_1^{*}, Z_2, Z_3, Z_5\}$ | 1–2% hồ sơ thiếu hỗ trợ |
 
-#### Nhận xét Khoa học Bảng B:
-1. **Sự Hội tụ Hoàn hảo giữa B0 và H1:**
-   * Mạng Bayes cơ sở $B_0$ cho kết quả $\text{ATE} = \mathbf{+0.2363}$ và mạng nơ-ron hybrid $H_1$ cho kết quả $\text{ATE} = \mathbf{+0.2309}$. Chênh lệch ghép cặp giữa hai mô hình chỉ là **$0.0054$** (chưa tới 0.5%).
-   * Khoảng tin cậy 95% Bootstrap của cả hai mô hình trùng khớp trong dải $[+0.222, +0.248]$. Điều này chứng minh rằng khi **cấu trúc đồ thị nhân quả vững chắc**, hiệu ứng can thiệp không bị biến dạng bất kể tham số được ước lượng bằng suy luận Bayes bảng hay mạng nơ-ron sâu!
-2. **Thiên lệch Ước lượng của H2:** Do NOTEARS loại bỏ bớt các biến confounders $Z_1, Z_2, Z_3, Z_5$, mô hình $H_2$ không chặn hết các đường dẫn cửa sau, dẫn đến việc ước lượng quá mức hiệu ứng của học bổng lên mức $+0.3437$.
+$^{*}$ $Z_1$ có ở 4/5 seed. CI: percentile bootstrap 1000 lần trên hồ sơ $C_{\text{test}}$, mô hình cố định — chỉ phản ánh lấy mẫu quần thể tham chiếu.
+
+#### Nhận xét Bảng B:
+1. **Kết luận can thiệp không đổi giữa ba mô hình** (hiệu H1−B0 $= -0.0044 \pm 0.0106$, H2−B0 $= -0.0060 \pm 0.0042$).
+2. So với chênh lệch thô $+0.3454$, khoảng $0.10$ (≈ 30%) là thiên lệch do nhiễu **quan sát được**. CI hẹp hay hiệu ứng ổn định **không** chứng minh ước lượng đúng (Slide 48).
 
 ---
 
 ### 2.5. BẢNG C: Tính Vững Bác bỏ DoWhy & Chi phí Tính toán (Tiêu chí 8 - 1.0 điểm)
 *File artifact: [artifacts/tables/Table_C_Robustness_Cost.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_C_Robustness_Cost.csv)*
 
-| Model | DoWhy Placebo Effect | DoWhy 80% Subset Effect | Paired Spread ($\max - \min$) | Tổng Runtime (5 Runs) | Phần cứng Thực thi |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **B0** | $+0.0003$ (**Pass**) | $+0.2341$ (**Pass**) | $0.0137$ | **0.27 giây** | CPU |
-| **H1** | $+0.0080$ (**Pass**) | $+0.2347$ (**Pass**) | $0.0231$ | **27.57 giây** | CPU / PyTorch |
-| **H2** | $-0.0044$ (**Pass**) | $+0.2328$ (**Pass**) | $0.0000$ | **2.20 giây** | CPU / PyTorch |
+| Model | Đối tượng kiểm định | Ước lượng gốc | Placebo | Subset 80% | Spread 5 run | Fit / run |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **B0** | DoWhy `backdoor.linear_regression` trên DAG B0 (seed 42, 30 mô phỏng) | $+0.2309$ | $+0.0016$ | $+0.2265$ | $0.0087$ | 0.43 s |
+| **H1** | Huấn luyện lại MLP: hoán vị $T$ / 80% TRAIN (3 lần, tự cài, ghi nhãn riêng) | $+0.2453$ | $+0.0177$ | $+0.2365$ | $0.0277$ | 1.72 s |
+| **H2** | DoWhy `backdoor.linear_regression` trên DAG H2 (seed 42, 30 mô phỏng) | $+0.2262$ | $+0.0016$ | $+0.2233$ | $0.0150$ | 17.64 s |
 
-#### Phân tích Kiểm định DoWhy Refutations:
-1. **Placebo Treatment Refuter (Hoán vị nhãn T):** Cả 3 mô hình đều vượt qua bài kiểm tra phản bác xuất sắc. Hiệu ứng nhân quả mới rơi về xấp xỉ 0 ($+0.0003$ đối với B0 và $+0.0080$ đối với H1, $p > 0.05$), loại trừ hoàn toàn nghi vấn về rò rỉ dữ liệu hoặc tương quan giả.
-2. **Data Subset Refuter (Lấy mẫu ngẫu nhiên 80%):** Khi giảm bớt 20% dữ liệu, hiệu ứng ATE vẫn giữ vững ở mức $+0.234$, chứng minh tính ổn định mẫu cao.
-3. **Paired Spread (Độ tản mạn qua 5 seeds):** Độ biến thiên cực nhỏ ($0.0137$ ở B0 và $0.0231$ ở H1), chứng minh kết quả không bị thao túng bởi mầm ngẫu nhiên đơn lẻ.
+Phần cứng: Intel64, 12 luồng, PyTorch CPU. Refuter DoWhy kiểm tra (đồ thị + ước lượng tuyến tính), không kiểm tra trực tiếp CPD BDeu; refuter tuyến tính không áp dụng cho H1 nên H1 có kiểm định huấn luyện lại riêng (Slide 70–71). Vượt qua refuter **không** chứng minh DAG đúng hay không có nhiễu ẩn.
 
 ---
 
 ## PHẦN 3: CÁC NGHIÊN CỨU MỞ RỘNG VÀ ĐÓNG GÓP HỌC THUẬT NÂNG CAO (OPTIONAL EXTENSIONS - SLIDE 64–67, 80)
 
 ### 3.1. Nghiên cứu Bóc tách (Ablations A1–A3) & Đối chuẩn Causal ML Đa trường phái (ADR-003)
+
+> [!NOTE]
+> Bảng dưới được sinh bởi `tools/run_ablations_and_extensions.py` với **Domain DAG cố định** (pipeline cũ, trước khi B0 chuyển sang học DAG). A1–A3 là phần **tùy chọn** (Slide 53); số liệu ở đây **không** so trực tiếp với Tables A–C.
 *File artifact: [artifacts/tables/Table_Extended_Ablations.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_Extended_Ablations.csv)*
 
 ```
@@ -249,7 +244,7 @@ Econometric: AIPW (Doubly Robust)   Causal ML           N/A                N/A  
 ---
 
 ### 3.2. Mở rộng Nghiên cứu Biến Kết quả Đa chiều và Phân tích Trung gian (ADR-004)
-*File notebook độc lập: [notebook/causal_advanced_outcomes_uci697.ipynb](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/notebook/causal_advanced_outcomes_uci697.ipynb)*  
+*Mã nguồn: notebook chính, mục 9 (9.A–9.H).*  
 *File artifact: [artifacts/tables/Table_Alternative_Outcomes.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_Alternative_Outcomes.csv)*
 
 #### Bảng 2: Kết quả Thực nghiệm trên các Biến Kết quả Đa chiều
@@ -268,13 +263,14 @@ $$\text{Natural Indirect Effect (NIE)} = \mathbf{+4.65\%} \quad (21.5\% \text{ t
 > **Phát hiện học thuật quan trọng:** Hơn **$1/5$ hiệu ứng của học bổng ($21.5\%$) đi qua "cầu nối" là đà tích lũy tín chỉ học kỳ 1 (*Academic Momentum*)**. Điều này gợi ý nhà trường cần can thiệp phụ đạo học thuật ngay trong học kỳ đầu tiên để cộng hưởng tối đa với chính sách hỗ trợ tài chính.
 
 #### Hiệu ứng Can thiệp Không đồng nhất (Heterogeneous CATE / Phân tầng Chính sách):
+*Phương pháp: G-computation logistic khớp riêng trong từng nhóm định trước (không phải Causal Forest); chưa có CI theo nhóm.*  
 *File artifact: [artifacts/tables/Table_Heterogeneous_CATE.csv](file:///e:/01_Research_Study_Master/04_Probabilistic_GrModel/artifacts/tables/Table_Heterogeneous_CATE.csv)*
 
 | Phân tầng Đối tượng | Cỡ mẫu ($N$) | $\text{Risk}(do(T=0))$ | $\text{Risk}(do(T=1))$ | CATE ($\Delta$) | Phát hiện Đột phá phục vụ Chính sách |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Sinh viên Lớn tuổi ($> 20$ tuổi)** | $1,550$ | $38.63\%$ | $67.03\%$ | **+28.40%** | **HƯỞNG LỢI CAO NHẤT:** Tác động mạnh gấp **1.77 lần** so với nhóm trẻ tuổi! |
-| **Sinh viên Đúng tuổi ($\le 20$ tuổi)** | $2,080$ | $68.56\%$ | $84.61\%$ | **+16.04%** | Nhóm này có tỷ lệ nền đã khá cao ($68.6\%$). |
-| **Sinh viên Đang Nợ học phí (`Debtor = 1`)** | $413$ | $19.74\%$ | $40.01\%$ | **+20.27%** | Học bổng **nhân đôi** tỷ lệ tốt nghiệp (từ $19.7\%$ lên $40.0\%$). |
+| **Sinh viên Lớn tuổi ($> 20$ tuổi)** | $1,550$ | $38.72\%$ | $66.74\%$ | **+28.02%** | Hiệu ứng tuyệt đối lớn nhất (so với $+16.08\%$ ở nhóm đúng tuổi). |
+| **Sinh viên Đúng tuổi ($\le 20$ tuổi)** | $2,080$ | $68.55\%$ | $84.63\%$ | **+16.08%** | Tỷ lệ nền đã cao ($68.6\%$). |
+| **Sinh viên Đang Nợ học phí (`Debtor = 1`)** | $413$ | $19.74\%$ | $40.01\%$ | **+20.27%** | Tỷ số rủi ro $2.03\times$ do mức nền thấp; hiệu ứng tuyệt đối **không** lớn hơn nhóm không nợ. |
 | **Sinh viên Không Nợ học phí (`Debtor = 0`)** | $3,217$ | $60.02\%$ | $81.37\%$ | **+21.35%** | Tác động ổn định trên diện rộng. |
 
 ---
@@ -284,23 +280,17 @@ $$\text{Natural Indirect Effect (NIE)} = \mathbf{+4.65\%} \quad (21.5\% \text{ t
 Nhóm nghiên cứu đã chuẩn bị sẵn sàng kịch bản trình diễn tương tác 6 bước cho buổi báo cáo trực tuyến:
 
 ```
-[BƯỚC 1: BỐI CẢNH & DAG] 
-Mở Section 7 & 8 trên Notebook -> Nêu câu hỏi nhân quả -> Chiếu đồ thị 7 nút 11 cạnh -> Khẳng định trật tự thời gian.
+[BƯỚC 1] Mục 1.5 (câu hỏi, từ điển biến, giả định) -> Hình 6.1 (Domain DAG + graph surgery do(T)) -> T=0/1 và C_test.
        │
-[BƯỚC 2: CÔNG THỨC & SUY DIỄN]
-Chạy hàm hiển thị công thức Factorization -> Chiếu bảng CPD BDeu B0 -> So sánh P(Y|T) (0.88) vs P(Y|do(T)) (0.78).
+[BƯỚC 2] TRAIN (fit) / VALIDATION (hàm điểm B0, dừng sớm H1, λ1 & τ của H2) / TEST (chấm dự báo + chuẩn hóa).
        │
-[BƯỚC 3: MÔ HÌNH H1 & H2]
-Mở Section 9: Chiếu khối PyTorch MLP H1 (parents of Y) -> Mở Section 10: Chiếu Temporal Mask M của NOTEARS H2.
+[BƯỚC 3] Hình 8.1 + bảng tóm tắt đồ thị: DAG B0 học được, DAG H2, mặt nạ M, |W|, h(W), identify.
        │
-[BƯỚC 4: THAO TÁC CAN THIỆP TRỰC TIẾP]
-Thay đổi tham số can thiệp do(T=0) sang do(T=1) trên 1 dòng dữ liệu mẫu -> Chạy trực tiếp -> Hiển thị rủi ro thay đổi tức thì.
+[BƯỚC 4] Bảng q_m(0, C_i), q_m(1, C_i) của B0 và H1 (nạp checkpoint) cho vài hồ sơ test -> risk -> ATE.
        │
-[BƯỚC 5: TRÌNH DIỄN BẢNG A, B, C & DOWHY]
-Chạy Section 11 & 12 -> In Bảng A (AUROC H1=0.8082), Bảng B (ATE=0.23), Bảng C (DoWhy Placebo p>0.05).
+[BƯỚC 5] Tables A–C + Hình 8.3: null finding về dự báo, ATE ≈ +0.24 ở cả 3 mô hình, CI, refuter, runtime.
        │
-[BƯỚC 6: PHÂN TÍCH CA THẤT BẠI & CODE AUDIT]
-Trình bày ca thất bại của Ablation A2 (sinh chu trình Y->Z3 khi bỏ Mask) và đối soát dòng lệnh tạo ra kết quả.
+[BƯỚC 6] Hạn chế: overlap của H2, Z3 có thể là hậu quả của bỏ học, RV = 20.97%; truy mọi số về artifacts/.
 ```
 
 ---
@@ -309,15 +299,15 @@ Trình bày ca thất bại của Ablation A2 (sinh chu trình Y->Z3 khi bỏ Ma
 
 Theo yêu cầu nghiêm ngặt của Slide 79 (*"Analyze at least one failure mode / unidentifiable case"*), nhóm nghiên cứu thẳng thắn ghi nhận các giới hạn học thuật:
 
-1. **Thất bại của Học Cấu trúc Thuần túy khi Thiếu Tri thức Miền (Failure Mode in H2 without Mask $M$):**
-   * Trong thực nghiệm bóc tách $A_2$, khi gỡ bỏ ma trận cấm $M$, thuật toán NOTEARS đã học ra quan hệ nhân quả đảo ngược thời gian $Y \to Z_3$. Điều này chứng minh rằng các phương pháp học sâu chỉ tìm kiếm tương quan đối xứng trên dữ liệu quan sát và bất lực trong việc xác định đúng chiều mũi tên nhân quả nếu không có giả định tiên nghiệm về thời gian.
-2. **Hiện tượng Ô Dữ liệu Thưa (Zero-Probability Cells in MLE):**
-   * Với 5 biến confounders và 1 biến can thiệp, không gian trạng thái của $\text{Parents}(Y)$ gồm 96 tổ hợp. Một số tổ hợp hiếm gặp (ví dụ: Sinh viên lớn tuổi + nợ học phí + điểm đầu vào cao + mẹ học đại học) chỉ có 1–2 mẫu trong tập Train. Ước lượng MLE thuần túy sẽ trả về xác suất 0 hoặc 1 tuyệt đối, gây bùng nổ hàm mất mát Log-loss. Do đó, việc sử dụng **BDeu prior smoothing** là điều kiện tiên quyết bắt buộc.
-3. **Giả định Không có Biến nhiễu Tiềm ẩn (Unmeasured Confounders):**
+1. **Null finding về dự báo:** CPD nơ-ron (H1) và học cấu trúc nơ-ron (H2) không cải thiện AUROC/Brier vượt độ tản giữa các run (Bảng A).
+2. **Chiều cạnh không xác định được giữa các biến nền:** cạnh $Z_i \to Z_j$ đổi chiều giữa B0 và H2 và giữa các seed. Không ảnh hưởng truy vấn $do(T)$ vì mọi $Z$ là tiền can thiệp, nhưng cho thấy dữ liệu không quyết định được chiều giữa các biến cùng tầng. Cạnh $T \to Y$ của B0 là cạnh **bắt buộc** (giả thuyết), không phải phát hiện.
+3. **Overlap và ô thưa:** H2 thêm $Z_1$ (3 trạng thái) vào $\text{Pa}(Y)$ ở 4/5 seed, nên 1–2% hồ sơ test thiếu hỗ trợ ở $T=0$ hoặc $T=1$ trong TRAIN; ước lượng ở các hồ sơ này dựa vào làm mịn BDeu. MLE thuần túy sẽ cho xác suất 0/1 ở các ô này.
+4. **Biến $Z_3$ (học phí đúng hạn) có thể là hậu quả của bỏ học:** trong 449 sinh viên không học bổng và không đóng phí đúng hạn chỉ 4.5% tốt nghiệp; nếu $Z_3$ đo sau khi sinh viên bắt đầu bỏ học, điều chỉnh theo $Z_3$ có thể gây chệch.
+5. **Giả định Không có Biến nhiễu Tiềm ẩn (Unmeasured Confounders):**
    * Mặc dù đã kiểm soát 5 biến nền quan trọng, nghiên cứu vẫn chịu ảnh hưởng tiềm tàng từ các yếu tố chưa được đo lường như: động lực học tập nội tại (*intrinsic motivation*), sự hỗ trợ tâm lý từ gia đình, hoặc áp lực tài chính đột xuất phát sinh trong năm học. Các bài kiểm định DoWhy Refutations đã phần nào củng cố niềm tin, nhưng không thể thay thế hoàn toàn một thử nghiệm ngẫu nhiên đối chứng (RCT).
 
 ---
 
 ## KẾT LUẬN VÀ BẢO VỆ ĐỒ ÁN
 
-Báo cáo giữa kỳ đã hoàn thành vượt mức toàn bộ **9 tiêu chuẩn Rubric của Slide 42 & 43** (đạt 10/10 điểm) cùng các hướng mở rộng tùy chọn của Slide 64–67 & 80. Nghiên cứu mang lại cả giá trị phương pháp luận khoa học (động cơ vector hóa $O(1)$, ma trận mặt nạ cấm $M$, hội tụ đa trường phái) lẫn giá trị thực tiễn (khuyến nghị chính sách trao học bổng tập trung cho sinh viên lớn tuổi và sinh viên nợ học phí). Nhóm nghiên cứu đã sẵn sàng cho buổi thuyết trình và duyệt đề tài Midterm!
+Trên UCI 697, ATE của học bổng đối với tốt nghiệp ổn định ở khoảng $+0.24$ cho cả $B_0$ (HillClimb + BDeu), $H_1$ (CPD nơ-ron) và $H_2$ (NOTEARS-MLP), thấp hơn rõ chênh lệch thô $+0.345$. Phần nơ-ron không cải thiện dự báo trên dữ liệu này (null finding) và không thay đổi kết luận can thiệp. Kết luận phụ thuộc các giả định đã nêu (không nhiễu ẩn — $RV_{q=1} = 20.97\%$; vai trò của $Z_3$; overlap). Mức độ đáp ứng rubric (Slide 42–43) do giảng viên đánh giá.

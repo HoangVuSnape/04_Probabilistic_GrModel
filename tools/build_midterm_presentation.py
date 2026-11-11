@@ -77,7 +77,7 @@ def build_presentation():
     p = tf1.add_paragraph()
     p.text = "• Giảng viên hướng dẫn: TS. Nguyễn Chí Thiện (Nguyen Chi Thien, Ph.D.)\n" \
              "• Nhóm học viên: Nhóm Nghiên cứu Causal ML\n" \
-             "• Quy chuẩn thẩm định: Slide 39–44, 51, 53–75, 76–80 (10.0/10.0 điểm Rubric)"
+             "• Đối chiếu yêu cầu: Slide 39–44, 53–75, 76–79 của học phần (Tables A–C, 5 paired runs)"
     p.font.size = Pt(13)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(28)
@@ -116,12 +116,12 @@ def build_presentation():
     p.text = "• Can thiệp (T): Scholarship holder (0 = Không, 1 = Có học bổng) — Đo lường tại thời điểm nhập học (t1)\n" \
              "• Kết quả (Y): Target (1 = Graduate: 60.85%, 0 = Dropout: 39.15%) — Đo lường tại kết thúc khóa học (t2)\n" \
              "• Biến gây nhiễu Confounders (Z) xác lập trước khi nhập học (t0 < t1):\n" \
-             "    - Z1 (Tuổi nhập học): Rời rạc 3 nhóm {0: Trẻ <=20, 1: Trung bình 21-25, 2: Lớn >25}\n" \
-             "    - Z2 (Điểm xét tuyển đầu vào): Nhị phân theo trung vị {0: < Median, 1: >= Median}\n" \
-             "    - Z3 (Trình độ học vấn của mẹ): Nhị phân {0: Phổ thông, 1: Đại học / Sau đại học}\n" \
-             "    - Z4 (Tình trạng nợ học phí): Nhị phân {0: Không nợ, 1: Có nợ học phí lúc nhập học}\n" \
-             "    - Z5 (Đóng học phí đúng hạn): Nhị phân {0: Chưa đóng, 1: Đã hoàn tất đóng học phí}\n" \
-             "• Quy tắc Kiểm toán Chống rò rỉ (No-Leakage): Toàn bộ 12 biến tín chỉ HK1/HK2 bị loại khỏi Z vì diễn ra sau T!"
+             "    - Z1 (Điểm xét tuyển): 3 nhóm {<120, 120–140, >=140}\n" \
+             "    - Z2 (Debtor — nợ khi nhập học): 0/1\n" \
+             "    - Z3 (Đóng học phí đúng hạn): 0/1 — thời điểm đo mơ hồ, có thể là hậu quả của bỏ học (giả định)\n" \
+             "    - Z4 (Học vấn của mẹ): {0: dưới đại học, 1: đại học trở lên (mã >= 13)}\n" \
+             "    - Z5 (Tuổi nhập học): {0: <= 20, 1: > 20}\n" \
+             "• Chống rò rỉ: các biến tín chỉ HK1/HK2 xảy ra sau T nên KHÔNG đưa vào Z (M1 chỉ dùng cho phân tích trung gian)."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(6)
@@ -137,7 +137,7 @@ def build_presentation():
     tf3.word_wrap = True
 
     p = tf3.paragraphs[0]
-    p.text = "CẤU TRÚC ĐỒ THỊ CHUYÊN GIA 7 NÚT & 11 CẠNH CÓ HƯỚNG:"
+    p.text = "DOMAIN DAG THAM CHIẾU 7 NÚT & 11 CẠNH (B0 HỌC DAG RIÊNG TRÊN TRAIN — XEM SLIDE SAU):"
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = PRIMARY
@@ -162,8 +162,8 @@ def build_presentation():
     p.text = "• Xác suất Quan sát P(Y=1 | T=t): Bị ô nhiễm bởi các đường dẫn cửa sau T <- Z -> Y (chọn lọc tự nhiên)\n" \
              "• Xác suất Can thiệp P(Y=1 | do(T=t)): Phẫu thuật đồ thị (Graph Surgery) cắt bỏ các cạnh đi vào T:\n" \
              "    P(Y=1 | do(T=t)) = ∑_z P(Y=1 | T=t, Z=z) * P(Z=z)\n" \
-             "• Chuẩn hóa Nguy cơ trên tập Test: risk(t) = (1/n_test) * ∑_i P(Y=1 | T=t, Z=z_i)\n" \
-             "• ATE = risk(1) - risk(0). TUYỆT ĐỐI KHÔNG DÙNG Y_test ĐỂ TÍNH HIỆU ỨNG CAN THIỆP!"
+             "• Chuẩn hóa trên tập Test: q_m(t, C_i) = P_m(Y=1 | T=t, Pa(Y)\\T = C_i), risk_m(t) = (1/n_test) * ∑_i q_m(t, C_i)\n" \
+             "• ATE_m = risk_m(1) - risk_m(0). Y_test chỉ dùng chấm điểm dự báo, KHÔNG dùng để tính hiệu ứng can thiệp."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(4)
@@ -185,20 +185,17 @@ def build_presentation():
     p.font.color.rgb = PRIMARY
 
     p = tf4.add_paragraph()
-    p.text = "1. MÔ HÌNH B0 (Baseline Discrete CBN):\n" \
-             "   - Đồ thị: Primary Domain DAG (11 cạnh chuyên gia định trước).\n" \
-             "   - Tham số hóa: Bảng phân phối rời rạc (Tabular CPD) với tiên nghiệm BDeu prior (ESS = 5).\n" \
-             "   - Cơ chế: Chống chia cho 0 tại các ô dữ liệu thưa (sparse cells).\n\n" \
-             "2. MÔ HÌNH H1 (Hybrid Neural CPD):\n" \
-             "   - Đồ thị: Giữ nguyên 100% cấu trúc DAG của B0 (cô lập biến số kiểm soát).\n" \
-             "   - Tham số hóa: Thay thế bảng CPD của nút Y bằng mạng nơ-ron PyTorch MLP (Linear -> ReLU -> Dropout 0.2 -> Linear).\n" \
-             "   - Ràng buộc Markov: Mạng MLP CHỈ NHẬN DUY NHẤT các nút cha Parents(Y) = {T, Z1..Z5}.\n" \
-             "   - Ánh xạ: Dự báo 96 cấu hình theo thứ tự row-major C-order chuẩn hóa gắn ngược lại vào PGM.\n\n" \
-             "3. MÔ HÌNH H2 (Neural Causal Discovery via NOTEARS):\n" \
-             "   - Đồ thị: Tối ưu gradient liên tục hàm phạt vi phân h(W) = Tr(exp(W ∘ W)) - d = 0.\n" \
-             "   - Ma trận Mặt nạ Cấm cạnh Thời gian (Temporal Forbidden Mask M): W_eff = M ⊙ W.\n" \
-             "     Triệt tiêu tuyệt đối các cạnh đi ngược thời gian (Y -> T, Y -> Zk, T -> Zk).\n" \
-             "   - Tham số hóa: Khớp CPDs Bayes BDeu trên đồ thị học được sau khi sửa chu trình."
+    p.text = "Ràng buộc chung (khai báo trước khi học): cấm Y -> {T, Z}, cấm T -> Z; bắt buộc T -> Y (giả thuyết cần ước lượng).\n\n" \
+             "1. B0 (CBN truyền thống):\n" \
+             "   - Đồ thị: pgmpy HillClimbSearch trên TRAIN; hàm điểm {BIC, BDeu, K2} chọn theo log-likelihood VALIDATION (K2 ở cả 5 seed).\n" \
+             "   - Tham số: CPD rời rạc BDeu (ESS = 5). DAG học được: Pa(Y) = {T, Debtor, Học phí, Tuổi}.\n\n" \
+             "2. H1 (Neural CPD trên DAG B0):\n" \
+             "   - Giữ nguyên DAG B0 của từng run; thay CPD của Y bằng MLP PyTorch chỉ nhận Pa(Y) (4 đầu vào, 769 tham số).\n" \
+             "   - BCE loss, Adam, dropout 0.2, dừng sớm trên VALIDATION; liệt kê mọi cấu hình cha -> TabularCPD -> check_model().\n\n" \
+             "3. H2 (Neural discovery — NOTEARS-MLP phi tuyến):\n" \
+             "   - Mỗi nút một MLP; W_ij = chuẩn trọng số tầng 1 từ i vào j; ràng buộc h(W) = tr(exp(W∘W)) - d = 0 (Augmented Lagrangian).\n" \
+             "   - Cùng mặt nạ M như B0 (trọng số cấm = 0, có assert); hội tụ khi h < 1e-6 (đạt ~1e-7 ở mọi seed).\n" \
+             "   - λ1 và ngưỡng τ chọn trên VALIDATION; CPD BDeu như B0; DoWhy identify trên DAG học được."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(4)
@@ -228,7 +225,8 @@ def build_presentation():
              "• Nguyên tắc Đánh giá Tách bạch:\n" \
              "   - Đánh giá Dự báo: So sánh P(Y=1 | T, Z) với nhãn thực tế Y_test (đo AUROC, F1, Brier Score).\n" \
              "   - Đánh giá Can thiệp: Chuẩn hóa P(Y=1 | do(T)) trên tập hiệp biến tham chiếu C_test (n = 545 SV).\n" \
-             "• Đột phá Kỹ thuật: Động cơ Tensor CPD Query Vector hóa O(1) tăng tốc > 3,000 lần, chạy 5 runs < 30 giây!"
+             "• Chọn thiết lập trên VALIDATION (hàm điểm B0, dừng sớm H1, λ1/τ của H2), đóng băng trước khi chạm TEST.\n" \
+             "• Lưu artifact: split JSON, DAG từng seed (artifacts/graphs), checkpoint H1 (artifacts/checkpoints), Tables A–C (CSV)."
     p.font.size = Pt(13)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(6)
@@ -253,20 +251,20 @@ def build_presentation():
     p.text = "======================================================================================================\n" \
              "Model    Cấu trúc Đồ thị        AUROC (Mean±Std)     Macro-F1 (Mean±Std)   Brier Score (Mean±Std)   Δ_AUROC\n" \
              "------------------------------------------------------------------------------------------------------\n" \
-             "B0       Domain DAG (11 edges)  0.8001 ± 0.0135      0.7308 ± 0.0202       0.1701 ± 0.0067          Baseline\n" \
-             "H1       Fixed DAG + MLP CPD    0.8082 ± 0.0159      0.7374 ± 0.0165       0.1648 ± 0.0071          +0.0081*\n" \
-             "H2       NOTEARS Learned DAG    0.6428 ± 0.0000      0.5790 ± 0.0000       0.2145 ± 0.0000          -0.1573\n" \
+             "B0       HillClimb-K2 DAG       0.7996 ± 0.0119      0.7351 ± 0.0077       0.1659 ± 0.0058          Baseline\n" \
+             "H1       B0 DAG + MLP CPD(Y)    0.8012 ± 0.0130      0.7351 ± 0.0077       0.1656 ± 0.0062          +0.0016 ± 0.0025\n" \
+             "H2       NOTEARS-MLP DAG        0.8034 ± 0.0155      0.7261 ± 0.0277       0.1666 ± 0.0060          +0.0038 ± 0.0038\n" \
              "======================================================================================================\n" \
-             "(*) H1 đạt chênh lệch ghép cặp dương trên 100% các seeds kiểm thử!"
+             "Test n = 545 mỗi seed; ngưỡng F1 chọn trên VALIDATION; Δ là hiệu ghép cặp cùng seed (mean ± std qua 5 run)."
     p.font.size = Pt(11)
     p.font.name = "Consolas"
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(4)
 
     p = tf6.add_paragraph()
-    p.text = "NHẬN XÉT KHOA HỌC BẢNG A:\n" \
-             "1. H1 vượt trội toàn diện: Mạng MLP nắm bắt các tương tác phi tuyến, cải thiện AUROC (+0.0081), Macro-F1 (+0.0067), và giảm Brier Score xuống 0.1648 (hiệu chuẩn xác suất tốt hơn rõ rệt).\n" \
-             "2. Hạn chế của H2: NOTEARS với ngưỡng tau = 0.25 bị phạt thưa quá mức (over-penalization), chỉ giữ lại 2 cạnh (T->Y và Z4->Y), bỏ sót các đường dẫn từ Z1, Z2, Z5, dẫn đến Recall giảm mạnh."
+    p.text = "NHẬN XÉT BẢNG A (NULL FINDING):\n" \
+             "1. Hiệu ghép cặp H1−B0 và H2−B0 nhỏ hơn hoặc ngang độ tản giữa các run; Brier gần như không đổi -> không có bằng chứng phần nơ-ron cải thiện dự báo.\n" \
+             "2. Macro-F1 của B0 và H1 trùng nhau vì Pa(Y) chỉ có 16 cấu hình: hai mô hình gán nhãn giống nhau tại ngưỡng chọn trên VALIDATION; khác biệt chỉ ở xác suất."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(10)
@@ -291,20 +289,21 @@ def build_presentation():
     p.text = "======================================================================================================\n" \
              "Model    Risk(do(T=0))        Risk(do(T=1))        Causal ATE (Mean±Std)   95% Bootstrap CI       Adjustment\n" \
              "------------------------------------------------------------------------------------------------------\n" \
-             "B0       0.5499 ± 0.0114      0.7863 ± 0.0087      +0.2363 ± 0.0061        [+0.2240, +0.2487]     {Z1..Z5}\n" \
-             "H1       0.5535 ± 0.0121      0.7844 ± 0.0087      +0.2309 ± 0.0097        [+0.2223, +0.2397]     {Z1..Z5}\n" \
-             "H2       0.5163 ± 0.0000      0.8600 ± 0.0000      +0.3437 ± 0.0000        [+0.3437, +0.3437]     Backdoor\n" \
-             "======================================================================================================"
+             "B0       0.5495 ± 0.0114      0.7914 ± 0.0092      +0.2418 ± 0.0046        [+0.2341, +0.2496]     {Z2,Z3,Z5}\n" \
+             "H1       0.5494 ± 0.0112      0.7869 ± 0.0183      +0.2374 ± 0.0114        [+0.2293, +0.2454]     {Z2,Z3,Z5}\n" \
+             "H2       0.5507 ± 0.0098      0.7865 ± 0.0104      +0.2358 ± 0.0067        [+0.2261, +0.2454]     {Z1?,Z2,Z3,Z5}\n" \
+             "======================================================================================================\n" \
+             "CI: percentile bootstrap 1000 lần trên hồ sơ C_test, mô hình cố định (trung bình cận theo seed). Z1? = có ở 4/5 seed."
     p.font.size = Pt(11)
     p.font.name = "Consolas"
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(4)
 
     p = tf7.add_paragraph()
-    p.text = "PHÁT HIỆN HỌC THUẬT TRỌNG TÂM TỪ BẢNG B:\n" \
-             "1. Sự Hội tụ Hoàn hảo B0 vs H1: B0 ước lượng ATE = +0.2363, H1 ước lượng ATE = +0.2309. Chênh lệch ghép cặp chỉ là 0.0054 (chưa tới 0.5%)!\n" \
-             "2. Nguyên lý Bất biến Cấu trúc: Khi đồ thị nhân quả vững chắc, giá trị ước lượng ATE không bị biến dạng bởi việc tham số hóa bằng bảng Bayes hay mạng nơ-ron sâu.\n" \
-             "3. Thiên lệch của H2: Do NOTEARS loại bỏ các biến Z1, Z2, Z5, đường dẫn cửa sau không được chặn hết, dẫn đến ước lượng phóng đại ATE lên +0.3437."
+    p.text = "NHẬN XÉT BẢNG B:\n" \
+             "1. Kết luận can thiệp không đổi giữa B0, H1, H2: ATE ≈ +0.24 (hiệu H1−B0 = -0.0044 ± 0.0106, H2−B0 = -0.0060 ± 0.0042).\n" \
+             "2. So với chênh lệch thô +0.3454, khoảng 0.10 (≈ 30%) là thiên lệch do nhiễu QUAN SÁT được; nhiễu ẩn đánh giá bằng RV = 20.97%.\n" \
+             "3. Overlap: H2 thêm Z1 (3 trạng thái) nên 1–2% hồ sơ test thiếu hỗ trợ ở T=0 hoặc T=1 (báo trong Table B). CI hẹp không chứng minh ước lượng đúng."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(10)
@@ -327,22 +326,24 @@ def build_presentation():
 
     p = tf8.add_paragraph()
     p.text = "======================================================================================================\n" \
-             "Model    DoWhy Placebo Effect     DoWhy 80% Subset Effect    Paired Spread (Max-Min)   Tổng Runtime 5 Runs\n" \
+             "Model  Đối tượng kiểm định                 Placebo     Subset 80%   Spread 5 run   Fit / run (CPU)\n" \
              "------------------------------------------------------------------------------------------------------\n" \
-             "B0       +0.0003 (Pass, p>0.05)   +0.2341 (Pass)             0.0137                    0.27 giây\n" \
-             "H1       +0.0080 (Pass, p>0.05)   +0.2347 (Pass)             0.0231                    27.57 giây\n" \
-             "H2       -0.0044 (Pass, p>0.05)   +0.2328 (Pass)             0.0000                    2.20 giây\n" \
-             "======================================================================================================"
+             "B0     DoWhy LR trên DAG B0 (seed 42)      +0.0016     +0.2265      0.0087         0.43 s\n" \
+             "H1     Huấn luyện lại MLP (tự cài)         +0.0177     +0.2365      0.0277         1.72 s\n" \
+             "H2     DoWhy LR trên DAG H2 (seed 42)      +0.0016     +0.2233      0.0150         17.64 s\n" \
+             "======================================================================================================\n" \
+             "Ước lượng gốc: B0 +0.2309, H1 +0.2453, H2 +0.2262. Placebo DoWhy 30 mô phỏng; H1 3 lần huấn luyện lại. Truy vấn ~0.2 ms."
     p.font.size = Pt(11)
     p.font.name = "Consolas"
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(4)
 
     p = tf8.add_paragraph()
-    p.text = "KẾT LUẬN KIỂM ĐỊNH ĐỘ TIN CẬY:\n" \
-             "• Placebo Refuter (Hoán vị nhãn T): Hiệu ứng nhân quả lập tức sụp đổ về xấp xỉ 0 (B0: +0.0003; H1: +0.0080), loại trừ giả thuyết tương quan ngẫu nhiên.\n" \
-             "• Data Subset Refuter (Lấy mẫu ngẫu nhiên 80%): ATE giữ vững ở mức +0.234, chứng minh tính ổn định mẫu cao.\n" \
-             "• Paired Spread qua 5 seeds: Rất nhỏ (0.0137 ở B0, 0.0231 ở H1), chứng minh kết quả không bị thao túng bởi mầm ngẫu nhiên đơn lẻ."
+    p.text = "DIỄN GIẢI (SLIDE 70–71):\n" \
+             "• Refuter DoWhy kiểm tra (đồ thị + ước lượng tuyến tính), không kiểm tra trực tiếp CPD BDeu; refuter tuyến tính không kiểm tra được H1,\n" \
+             "  nên H1 có kiểm định huấn luyện lại riêng, ghi nhãn rõ.\n" \
+             "• Placebo về ~0 và subset ổn định: ước lượng không phụ thuộc vào một mẫu con cụ thể.\n" \
+             "• Vượt qua refuter KHÔNG chứng minh DAG đúng hay không có nhiễu ẩn."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(10)
@@ -351,7 +352,7 @@ def build_presentation():
     # SLIDE 9: ABLATION EXPERIMENTS A1 - A3
     # -------------------------------------------------------------
     s9 = prs.slides.add_slide(blank_layout)
-    add_header(s9, "8. Nghiên cứu Bóc tách Ablations A1–A3 & Hội tụ Đa trường phái")
+    add_header(s9, "8. Phụ lục tùy chọn: Ablations A1–A3 & Bộ ước lượng khác")
 
     tb9 = s9.shapes.add_textbox(Inches(0.8), Inches(1.6), Inches(11.733), Inches(5.2))
     tf9 = tb9.text_frame
@@ -364,15 +365,13 @@ def build_presentation():
     p.font.color.rgb = PRIMARY
 
     p = tf9.add_paragraph()
-    p.text = "1. Ablation A1 (H1 gỡ bỏ Dropout): Brier Score tăng từ 0.1667 lên 0.1674 (Dropout chống overfit hiệu quả).\n" \
-             "2. Ablation A2 (H2 gỡ bỏ Mặt nạ Cấm M): NOTEARS học ra cạnh ngược thời gian Y -> Z3 (Tốt nghiệp gây ra Trình độ học vấn của Mẹ!) và sinh chu trình Y -> Z3 -> T -> Y làm vỡ mô hình Bayes! -> Minh chứng sống còn cho vai trò của Tri thức miền.\n" \
-             "3. Ablation A3 (B0 dùng MLE không làm mịn): Thất bại do chia cho 0 tại các ô thưa -> Chứng minh tính bắt buộc của BDeu smoothing.\n\n" \
-             "SỰ HỘI TỤ ĐA TRƯỜNG PHÁI CAUSAL ML:\n" \
-             "• B0 (Bayesian CBN): ATE = +0.2370\n" \
-             "• H1 (Hybrid Neural): ATE = +0.2228\n" \
-             "• AIPW (Doubly Robust): ATE = +0.2299\n" \
-             "• IPW (Propensity Weighting): ATE = +0.2580\n" \
-             "=> Bốn trường phái thống kê nhân quả độc lập cùng hội tụ về mức tăng trưởng ~ 23%!"
+    p.text = "A1–A3 là phần TÙY CHỌN (Slide 53) và được chạy bằng script riêng tools/run_ablations_and_extensions.py với\n" \
+             "Domain DAG cố định (pipeline trước khi B0 chuyển sang học DAG) — chỉ đọc như phụ lục, không so trực tiếp với Tables A–C.\n\n" \
+             "1. A1 (bỏ dropout của H1), A2 (bỏ mặt nạ M của H2), A3 (MLE thay BDeu): kết quả chi tiết trong artifacts/tables/Table_Extended_Ablations.csv.\n" \
+             "2. Ví dụ trực tiếp trong notebook chính (mục 3.3): khi KHÔNG có ràng buộc, HillClimb học ra Target -> Admission_grade\n" \
+             "   (kết cục gây ra điểm đầu vào) — minh họa vì sao cần ràng buộc thời gian cho cả B0 và H2.\n\n" \
+             "ĐỐI CHIẾU CÁC BỘ ƯỚC LƯỢNG KHÁC CHO T = HỌC BỔNG (Table Multi-Treatment, C_test):\n" \
+             "• LPM +0.218, G-computation +0.218, Outcome Regression (T-learner) +0.231 — cùng bậc với B0/H1/H2 (≈ +0.24)."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(6)
@@ -394,13 +393,12 @@ def build_presentation():
     p.font.color.rgb = PRIMARY
 
     p = tf10.add_paragraph()
-    p.text = "1. Thất bại của Học Cấu trúc Thuần túy khi Thiếu Tri thức Miền (Failure Mode in H2 without Mask M):\n" \
-             "   - Khi gỡ bỏ mặt nạ cấm M, thuật toán tối ưu liên tục bắt trúng tương quan thống kê đối xứng giữa Y và Z3, gán sai chiều mũi tên Y -> Z3.\n" \
-             "   - Bài học: Deep Learning không tự động giải quyết được bài toán phân biệt nguyên nhân - kết quả nếu thiếu giả định tiên nghiệm về thời gian.\n\n" \
-             "2. Hiện tượng Ô Dữ liệu Thưa (Sparse Cells in Discrete CPDs):\n" \
-             "   - Với 96 tổ hợp cha của Y, một số phân khúc hiếm gặp (SV lớn tuổi + nợ học phí + điểm cao) chỉ có 1-2 mẫu. MLE thuần túy ném lỗi hoặc gán xác suất cực đoan (0 hoặc 1), làm bùng nổ hàm mất mát Log-loss.\n\n" \
-             "3. Giả định Không có Biến nhiễu Tiềm ẩn (Unmeasured Confounding):\n" \
-             "   - Mô hình kiểm soát 5 biến nền quan trọng, nhưng vẫn có khả năng tồn tại biến ẩn (động lực học tập nội tại, biến cố gia đình). Kiểm định DoWhy củng cố niềm tin nhưng không thể thay thế hoàn toàn thử nghiệm ngẫu nhiên đối chứng (RCT)."
+    p.text = "1. Null finding về dự báo: CPD nơ-ron (H1) và học cấu trúc nơ-ron (H2) không cải thiện AUROC/Brier vượt độ tản giữa các run.\n\n" \
+             "2. Chiều cạnh giữa các biến nền không xác định được: Z_i -> Z_j đổi chiều giữa B0/H2 và giữa các seed\n" \
+             "   (không ảnh hưởng do(T) vì mọi Z đều là tiền can thiệp). Cạnh T -> Y của B0 là cạnh BẮT BUỘC (giả thuyết), không phải phát hiện.\n\n" \
+             "3. Overlap: 1–2% hồ sơ test của H2 thiếu hỗ trợ ở T=0 hoặc T=1 trong TRAIN -> ước lượng dựa vào làm mịn BDeu.\n\n" \
+             "4. Z3 'Học phí đúng hạn' có thể là hậu quả của bỏ học (nhân quả ngược); điều chỉnh theo Z3 có thể gây chệch.\n\n" \
+             "5. Nhiễu ẩn: RV_{q=1} = 20.97% — kết luận vững với nhiễu yếu hơn biến quan sát mạnh nhất, nhưng không miễn nhiễm; refuter không thay thế RCT."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(6)
@@ -425,10 +423,10 @@ def build_presentation():
 
     p = tf11.add_paragraph()
     p.text = "HIỆU ỨNG CAN THIỆP KHÔNG ĐỒNG NHẤT (CATE SUBGROUPS):\n" \
-             "• Theo Độ tuổi: Sinh viên Lớn tuổi (>20 tuổi) hưởng lợi CATE = +28.40%, MẠNH GẤP 1.77 LẦN so với sinh viên đúng tuổi (CATE = +16.04%)!\n" \
-             "• Theo Nợ học phí: Sinh viên có nợ (Debtor = 1) tăng gấp đôi tỷ lệ tốt nghiệp (từ 19.74% lên 40.01%, Relative Risk 2.03x) khi được cấp học bổng.\n\n" \
-             "Ý NGHĨA HOẠCH ĐỊNH CHÍNH SÁCH ĐẠI HỌC:\n" \
-             "Chính sách hỗ trợ tài chính nên ưu tiên tập trung cho sinh viên lớn tuổi và sinh viên có nợ học phí để tối đa hóa hiệu quả sử dụng ngân sách của nhà trường."
+             "• Phương pháp: G-computation logistic theo NHÓM định trước (không phải Causal Forest); chưa có CI cho từng nhóm.\n" \
+             "• Theo tuổi: >20 tuổi CATE = +28.02% so với +16.08% ở nhóm <=20.\n" \
+             "• Theo nợ: Debtor = 1 có hiệu ứng tuyệt đối +20.27%, KHÔNG lớn hơn Debtor = 0 (+21.35%); chỉ tỷ số rủi ro cao hơn (2.03x) vì mức nền thấp.\n\n" \
+             "Ý NGHĨA: gợi ý ưu tiên nhóm nhập học lớn tuổi, cần thí điểm có kiểm soát trước khi áp dụng."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(8)
@@ -450,12 +448,12 @@ def build_presentation():
     p.font.color.rgb = PRIMARY
 
     p = tf12.add_paragraph()
-    p.text = "• BƯỚC 1: Mở Section 7 & 8 trên Notebook -> Nêu câu hỏi nhân quả -> Chiếu đồ thị 7 nút 11 cạnh -> Khẳng định trật tự thời gian.\n" \
-             "• BƯỚC 2: Chạy hàm hiển thị công thức Factorization -> Chiếu bảng CPD BDeu B0 -> So sánh P(Y|T) (0.88) vs P(Y|do(T)) (0.78).\n" \
-             "• BƯỚC 3: Mở Section 9: Chiếu khối PyTorch MLP H1 (parents of Y) -> Mở Section 10: Chiếu Temporal Mask M của NOTEARS H2.\n" \
-             "• BƯỚC 4: Thao tác can thiệp trực tiếp: Thay đổi tham số do(T=0) sang do(T=1) trên 1 dòng dữ liệu mẫu, chạy lại để hiển thị rủi ro thay đổi tức thì.\n" \
-             "• BƯỚC 5: Chạy Section 11 & 12: In Bảng A (AUROC H1 = 0.8082), Bảng B (ATE = +0.23), và Bảng C (DoWhy Placebo p > 0.05).\n" \
-             "• BƯỚC 6: Trình bày ca thất bại của Ablation A2 (sinh chu trình ngược thời gian Y -> Z3 khi bỏ Mask) và đối soát dòng lệnh tạo ra kết quả."
+    p.text = "• BƯỚC 1: Mục 1.5 (câu hỏi, từ điển biến, giả định) -> Hình 6.1 (Domain DAG + graph surgery) -> giá trị T=0/1 và C_test.\n" \
+             "• BƯỚC 2: Nêu TRAIN (fit) / VALIDATION (chọn hàm điểm B0, dừng sớm H1, λ1/τ H2) / TEST (chấm dự báo + chuẩn hóa).\n" \
+             "• BƯỚC 3: Hình 8.1 + bảng tóm tắt đồ thị: DAG B0 học được, DAG H2, mặt nạ M, |W|, h(W), kết quả identify.\n" \
+             "• BƯỚC 4: Bảng q_m(0, C_i), q_m(1, C_i) của B0 và H1 cho vài hồ sơ test -> trung bình ra risk và ATE.\n" \
+             "• BƯỚC 5: Tables A–C + Hình 8.3: AUROC (null finding), ATE ≈ +0.24 ở cả 3 mô hình, CI, refuter, runtime.\n" \
+             "• BƯỚC 6: Ca hạn chế: overlap của H2, Z3 có thể là hậu quả, RV = 20.97%; truy mọi số về file trong artifacts/."
     p.font.size = Pt(13)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(8)
@@ -471,23 +469,20 @@ def build_presentation():
     tf13.word_wrap = True
 
     p = tf13.paragraphs[0]
-    p.text = "TỔNG KẾT ĐỐI SOÁT RUBRIC CHẤM ĐIỂM (SLIDE 42 & 43):"
+    p.text = "ĐỐI CHIẾU BẰNG CHỨNG VỚI RUBRIC (SLIDE 42 & 43) — tự đánh giá, điểm do giảng viên quyết định:"
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = PRIMARY
 
     p = tf13.add_paragraph()
-    p.text = "✓ Tiêu chí 1: Biểu diễn nhân quả (DAG, Factorization, 3 giả định Backdoor) [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 2: Vai trò học tham số BDeu & học sâu MLP, giới hạn Deep Learning [2.0 / 2.0 đ]\n" \
-             "✓ Tiêu chí 3: Phân biệt quan sát P(Y|T) vs can thiệp P(Y|do(T)), chuẩn hóa C_test [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 4: Lựa chọn bài toán & kiểm toán dữ liệu UCI ID 697, chống rò rỉ [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 5: Cài đặt mã nguồn tái lập 100%, 5 Paired Runs, Vector hóa O(1) [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 6: Bảng A - Đối sánh dự báo ngoài mẫu (AUROC, F1, Brier) [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 7: Bảng B - Đối sánh can thiệp chuẩn hóa (ATE, 95% Bootstrap CI) [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 8: Bảng C - Tính vững bác bỏ DoWhy Refutations & Runtime [1.0 / 1.0 đ]\n" \
-             "✓ Tiêu chí 9: Kết luận khách quan, phân tích trung thực ca thất bại & Q&A [1.0 / 1.0 đ]\n\n" \
-             "TỔNG ĐIỂM ĐẠT ĐƯỢC: 10.0 / 10.0 ĐIỂM (ĐẠT CHUẨN XUẤT SẮC)\n" \
-             "Toàn bộ Notebooks, Báo cáo và Slide đã sẵn sàng cho buổi duyệt đề tài Midterm!"
+    p.text = "• Biểu diễn nhân quả: biến, Domain DAG, factorization, giả định (mục 1.5, 6)\n" \
+             "• Học & vai trò DL: B0 HillClimb + BDeu, H1 MLP CPD, H2 NOTEARS-MLP; giới hạn định danh (mục 8.1–8.2c)\n" \
+             "• Suy luận: P(Y|T) vs P(Y|do(T)), DoWhy identify trên từng DAG, q_m(t, C_i) (mục 2, 7, 8)\n" \
+             "• Bài toán & dữ liệu UCI 697: nguồn, checksum, luồng loại trừ, trùng lặp, overlap (mục 1)\n" \
+             "• Cài đặt chạy được: notebook chuyên sâu (≈ 3–4 phút CPU) + notebook chính; phiên bản thư viện & git revision\n" \
+             "• Table A (dự báo, hiệu ghép cặp), Table B (risk, ATE, CI, tập điều chỉnh, overlap), Table C (refuter, spread, runtime, phần cứng)\n" \
+             "• Kết luận: ATE ≈ +0.24 ổn định giữa B0/H1/H2; phần nơ-ron không cải thiện dự báo (null finding); hạn chế đã nêu ở slide 9\n\n" \
+             "Số liệu trong slide lấy từ artifacts/tables/*.csv sinh bởi notebook chính 00_MASTER_Causal_PGM_Educational_Intervention.ipynb (mục 8–10)."
     p.font.size = Pt(12)
     p.font.color.rgb = DARK_TEXT
     p.space_before = Pt(6)

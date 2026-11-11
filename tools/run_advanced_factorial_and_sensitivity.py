@@ -300,7 +300,9 @@ for seed in SEEDS:
             'AUROC': metrics.roc_auc_score(y_true, p_arr),
             'Macro_F1': metrics.f1_score(y_true, (p_arr >= 0.5).astype(int), average='macro'),
             'Brier': metrics.brier_score_loss(y_true, p_arr),
-            'ATE': float(np.mean(q1_arr) - np.mean(q0_arr))
+            'ATE': float(np.mean(q1_arr) - np.mean(q0_arr)),
+            'Edges': len(dag_h2.edges()) if 'Learned' in struct_type else 11,
+            'PaY': ','.join(sorted(dag_h2.predecessors('Y'))) if 'Learned' in struct_type else 'T,Z1,Z2,Z3,Z4,Z5'
         })
 
 df_fact = pd.DataFrame(factorial_records)
@@ -308,7 +310,9 @@ summary_fact = []
 for m, sub in df_fact.groupby('Model', sort=False):
     summary_fact.append({
         'Model': m,
-        'Structure': sub['Structure'].iloc[0],
+        # Không lấy nhãn của seed đầu tiên: báo cáo khoảng số cạnh qua 5 seed và tập cha của Y
+        'Structure': (sub['Structure'].iloc[0] if 'Learned' not in sub['Structure'].iloc[0]
+                      else f"Learned MLP-NOTEARS DAG ({sub['Edges'].min()}-{sub['Edges'].max()} edges; Pa(Y)={{{sub['PaY'].iloc[0]}}})"),
         'Parameterization': sub['Parameterization'].iloc[0],
         'AUROC': f"{sub['AUROC'].mean():.4f} ± {sub['AUROC'].std():.4f}",
         'Macro_F1': f"{sub['Macro_F1'].mean():.4f} ± {sub['Macro_F1'].std():.4f}",
@@ -338,7 +342,9 @@ r2_yd_z = (t_stat ** 2) / (t_stat ** 2 + df_res)
 # Robustness Value (RV) for q=1 (bringing point estimate to 0)
 f_stat = np.abs(t_stat) / np.sqrt(df_res)
 rv_q1 = (np.sqrt(f_stat**2 + 1) - 1) / f_stat if f_stat > 0 else 0.0 # Standard Cinelli-Hazlett formula
-rv_exact = (np.abs(t_stat) - 0.0) / (np.abs(t_stat) + np.sqrt(df_res)) # Robustness value approximation
+# Cinelli & Hazlett (2020), Eq. 18: RV_q = 1/2 * (sqrt(f_q^4 + 4 f_q^2) - f_q^2), f_q = q*|t|/sqrt(df)
+# (Bản cũ dùng t/(t+sqrt(df)) — KHÔNG phải công thức Cinelli–Hazlett, cho 23.40% thay vì 20.97%.)
+rv_exact = 0.5 * (np.sqrt(f_stat**4 + 4 * f_stat**2) - f_stat**2)
 
 # Benchmark Confounders Partial R2
 benchmarks = []

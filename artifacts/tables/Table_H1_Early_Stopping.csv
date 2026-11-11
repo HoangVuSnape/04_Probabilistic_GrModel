@@ -1,0 +1,11 @@
+Seed,Bản H1,Epoch_đã_chạy,Trọng_số_lấy_ở_epoch,AUROC_TRAIN,LogLoss_TRAIN,AUROC_VAL,LogLoss_VAL,AUROC_TEST,LogLoss_TEST,ATE_TEST,Checkpoint
+42,Có early stopping,18,3,0.8023,0.4959,0.787,0.5267,0.8105,0.4854,0.2453,h1_seed42_early_stop.pt
+42,Không early stopping,150,150,0.8026,0.4954,0.7805,0.5351,0.8063,0.4886,0.2609,h1_seed42_no_early_stop.pt
+43,Có early stopping,39,24,0.7993,0.5018,0.8029,0.4904,0.8086,0.4943,0.2389,h1_seed43_early_stop.pt
+43,Không early stopping,150,150,0.7993,0.5021,0.8029,0.492,0.8086,0.494,0.2321,h1_seed43_no_early_stop.pt
+44,Có early stopping,17,2,0.799,0.5029,0.8001,0.5021,0.8124,0.4885,0.2175,h1_seed44_early_stop.pt
+44,Không early stopping,150,150,0.8005,0.499,0.7988,0.5075,0.807,0.4932,0.2278,h1_seed44_no_early_stop.pt
+45,Có early stopping,19,4,0.8008,0.5017,0.8139,0.4858,0.7905,0.4991,0.2422,h1_seed45_early_stop.pt
+45,Không early stopping,150,150,0.801,0.5013,0.8138,0.4915,0.7905,0.5029,0.2343,h1_seed45_no_early_stop.pt
+46,Có early stopping,18,3,0.8056,0.4958,0.7981,0.4926,0.7839,0.5264,0.2433,h1_seed46_early_stop.pt
+46,Không early stopping,150,150,0.8058,0.4943,0.798,0.4925,0.7837,0.5281,0.2224,h1_seed46_no_early_stop.pt

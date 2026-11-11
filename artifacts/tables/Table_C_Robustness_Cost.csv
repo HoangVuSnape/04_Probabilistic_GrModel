@@ -1,4 +1,4 @@
-Model,Placebo_Effect,Subset_Effect,Paired_Spread_Max_Min,Delta_ATE_vs_B0,Total_Runtime_5_Runs,Hardware
-B0,+0.0003 (Pass: True),+0.2341 (Pass: True),0.0137,---,0.27s,CPU / PyTorch MPS/CUDA
-H1,+0.0080 (Pass: True),+0.2347 (Pass: True),0.0231,-0.0054,27.57s,CPU / PyTorch MPS/CUDA
-H2,-0.0044 (Pass: True),+0.2328 (Pass: True),0.0000,+0.1074,2.20s,CPU / PyTorch MPS/CUDA
+Model,Refuter_Target,Refuter_Seed,Simulations,Original_Effect,Placebo_Effect,Subset_Effect,ATE_Mean_±_Std_5_Runs,Paired_Spread_Max_Min,Delta_ATE_vs_B0,Fit_Time_mean_s,Query_Time_mean_s,Hardware
+B0,"DoWhy LR on B0 DAG, backdoor {Z3, Z5}",42,30,+0.2309,+0.0016 (Pass: True),+0.2265 (Pass: True),+0.2418 ± 0.0046,0.0087,---,0.68,0.0004,"Intel64 Family 6 Model 186 Stepping 2, GenuineIntel | 12 logical CPUs | torch 2.15.0+cpu (CPU only)"
+H1,"Custom retraining of H1 MLP (permuted T / 80% TRAIN), ATE on C_test",42,3,+0.2453,+0.0177 (Pass: True),+0.2365 (Pass: True),+0.2374 ± 0.0114,0.0277,-0.0044 ± 0.0106,3.32,0.0006,"Intel64 Family 6 Model 186 Stepping 2, GenuineIntel | 12 logical CPUs | torch 2.15.0+cpu (CPU only)"
+H2,"DoWhy LR on H2 DAG, backdoor {Z3, Z5}",42,30,+0.2262,+0.0016 (Pass: True),+0.2233 (Pass: True),+0.2358 ± 0.0067,0.0150,-0.0060 ± 0.0042,39.31,0.0006,"Intel64 Family 6 Model 186 Stepping 2, GenuineIntel | 12 logical CPUs | torch 2.15.0+cpu (CPU only)"
