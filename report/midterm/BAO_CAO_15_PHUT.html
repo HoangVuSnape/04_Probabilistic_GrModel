@@ -312,7 +312,7 @@ P(y | do(t)) = Σ_z P(y | t, z) · P(z)</div>
       <tr><td><b>Học đồ thị</b></td><td>HillClimb trên TRAIN; chọn hàm điểm BIC/BDeu/K2 theo log-likelihood VAL (K2 thắng cả 5 seed)</td><td>Dùng lại DAG B0 của cùng run</td><td>Tối ưu liên tục, mặt nạ M cấm cạnh, ràng buộc h(W)=0</td></tr>
       <tr><td><b>Học CPD của Y</b></td><td>Bảng đếm + BDeu, ESS = 5</td><td>MLP: đầu vào <b>chỉ Pa(Y)</b>, loss BCE, dừng sớm trên VAL</td><td>Bảng BDeu như B0</td></tr>
       <tr><td><b>Pa(Y) học được</b></td><td class="n">{T, Z2, Z3, Z5}</td><td class="n">giống B0</td><td class="n">{T, Z1, Z2, Z3, Z5} (4/5 seed)</td></tr>
-      <tr><td><b>Thời gian fit</b></td><td class="n">0.68 s</td><td class="n">3.32 s</td><td class="n">39.3 s</td></tr>
+      <tr><td><b>Thời gian fit</b></td><td class="n">0.32 s</td><td class="n">1.30 s</td><td class="n">15.0 s</td></tr>
     </table></div>
 
     <div class="grid2">
@@ -396,9 +396,9 @@ ATE_m      = risk_m(1) − risk_m(0)</div>
     <h3>Bảng C — kiểm định bác bỏ và chi phí</h3>
     <div class="tbl"><table>
       <tr><th>Mô hình</th><th>Placebo (→ 0?)</th><th>Subset 80% (ổn định?)</th><th>Độ tản max−min</th><th>Fit</th></tr>
-      <tr><td>B0 (DoWhy LR trên DAG B0)</td><td class="n good">+0.0016 ✓</td><td class="n good">+0.2265 ✓</td><td class="n">0.009</td><td class="n">0.68 s</td></tr>
-      <tr><td>H1 (huấn luyện lại MLP)</td><td class="n good">+0.0177 ✓</td><td class="n good">+0.2365 ✓</td><td class="n">0.028</td><td class="n">3.32 s</td></tr>
-      <tr><td>H2 (DoWhy LR trên DAG H2)</td><td class="n good">+0.0016 ✓</td><td class="n good">+0.2233 ✓</td><td class="n">0.015</td><td class="n">39.3 s</td></tr>
+      <tr><td>B0 (DoWhy LR trên DAG B0)</td><td class="n good">+0.0016 ✓</td><td class="n good">+0.2265 ✓</td><td class="n">0.009</td><td class="n">0.32 s</td></tr>
+      <tr><td>H1 (huấn luyện lại MLP)</td><td class="n good">+0.0177 ✓</td><td class="n good">+0.2365 ✓</td><td class="n">0.028</td><td class="n">1.30 s</td></tr>
+      <tr><td>H2 (DoWhy LR trên DAG H2)</td><td class="n good">+0.0016 ✓</td><td class="n good">+0.2233 ✓</td><td class="n">0.015</td><td class="n">15.0 s</td></tr>
     </table></div>
     <p style="font-size:13px;color:var(--muted)">Phần cứng: Intel 12 luồng, chỉ CPU, torch 2.15.0+cpu.</p>
 
@@ -496,7 +496,7 @@ RV = ½ (√(f⁴ + 4f²) − f²)</div>
     </table></div>
 
     <details class="qa"><summary><span class="lbl">Hỏi</span> Vậy nên dùng B0 hay mô hình nơ-ron?</summary><div class="in">
-      <p>Trên dữ liệu này: B0. Dự báo ngang nhau, nhưng B0 nhanh hơn ~60 lần so với H2, minh bạch hơn (mỗi giả định nằm trên đồ thị, mỗi xác suất đọc được trong bảng). CPD nơ-ron chỉ đáng cân nhắc khi số biến cha tăng lên khiến bảng CPD bùng nổ và thưa.</p>
+      <p>Trên dữ liệu này: B0. Dự báo ngang nhau, nhưng B0 nhanh hơn ~45 lần so với H2 (0.32 s so với 15 s), minh bạch hơn (mỗi giả định nằm trên đồ thị, mỗi xác suất đọc được trong bảng). CPD nơ-ron chỉ đáng cân nhắc khi số biến cha tăng lên khiến bảng CPD bùng nổ và thưa.</p>
     </div></details>
 
     <details class="qa"><summary><span class="lbl">Hỏi</span> Debtor = 1 có hưởng lợi gấp đôi không (RR 2.03×)?</summary><div class="in">
@@ -524,20 +524,6 @@ RV = ½ (√(f⁴ + 4f²) − f²)</div>
   </div>
 </section>
 
-<!-- ============ fix before ============ -->
-<section class="seg" id="fix">
-  <div class="seg-head"><h2>Nên sửa trong notebook trước buổi báo cáo</h2></div>
-  <div class="seg-body">
-    <p>Khi đọc notebook để viết bản này, mình thấy vài chỗ lệch nhau. Giảng viên mở notebook ra là thấy ngay, nên sửa trước thì an toàn hơn.</p>
-    <ul class="tight">
-      <li><b>Mục lục không khớp nội dung.</b> Mục lục ghi "10. Tối ưu hóa Phân bổ Chính sách &amp; Kaggle" và "11. Tổng kết", nhưng notebook thực tế dừng ở "10. Tổng kết". Mục 1.1b cũng ghi "được trả lời ở mục 11".</li>
-      <li><b>Con số +164 SV chưa được tính trong notebook.</b> Khuyến nghị 1 ở mục 10.2 và mục 1.1 nhắc tới <code>Table_Policy_Learning.csv</code>, nhưng không có cell nào sinh ra bảng đó: nó do script <code>tools/run_advanced_factorial_and_sensitivity.py</code> sinh ra. Hoặc thêm lại phần đó vào notebook, hoặc ghi rõ đây là bảng phụ lục từ script riêng.</li>
-      <li><b>Thời gian chạy lệch với Bảng C.</b> Mục 8.3 viết H2 "≈ 14–20 s/run", B0 "≈ 0.3–0.4 s", nhưng Bảng C ghi 39.3 s và 0.68 s.</li>
-      <li><b>Chỉ số Z ở mục 2.2</b> (Z2 = điểm vào, Z3 = Debtor…) khác với pipeline mục 8 (Z1 = điểm vào, Z2 = Debtor…).</li>
-      <li><b>Git revision</b> lần chạy ghi "9540a7e (+ thay đổi chưa commit)". Nên commit rồi <i>Restart &amp; Run All</i> lại để revision sạch (tiêu chí 5).</li>
-    </ul>
-  </div>
-</section>
 
 <footer>
   Nguồn: <code>notebook/00_MASTER_Causal_PGM_Educational_Intervention.ipynb</code>, <code>artifacts/tables/*.csv</code>, <code>docs/requirements/midterm/checklist.md</code>. Bản tra cứu đầy đủ (mọi bảng, hình, giải thích code) vẫn nằm ở <code>SO_TAY_BAO_VE.html</code>.

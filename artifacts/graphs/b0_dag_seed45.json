@@ -88,5 +88,5 @@
       ]
     }
   ],
-  "identification": "Estimand type: EstimandType.NONPARAMETRIC_ATE\n\n### Estimand : 1\nEstimand name: backdoor\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n\n### Estimand : 2\nEstimand name: iv\nNo such variable(s) found!\n\n### Estimand : 3\nEstimand name: frontdoor\nNo such variable(s) found!\n\n### Estimand : 4\nEstimand name: general_adjustment\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n"
+  "identification": "Estimand type: EstimandType.NONPARAMETRIC_ATE\n\n### Estimand : 1\nEstimand name: backdoor\nEstimand expression:\n d              \n────(E[Y|Z5,Z3])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z5,Z3,U) = P(Y|T,Z5,Z3)\n\n### Estimand : 2\nEstimand name: iv\nNo such variable(s) found!\n\n### Estimand : 3\nEstimand name: frontdoor\nNo such variable(s) found!\n\n### Estimand : 4\nEstimand name: general_adjustment\nEstimand expression:\n d              \n────(E[Y|Z3,Z5])\nd[T]            \nEstimand assumption 1, Unconfoundedness: If U→{T} and U→Y then P(Y|T,Z3,Z5,U) = P(Y|T,Z3,Z5)\n"
 }
