@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kịch bản thuyết trình 15 phút</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6f4ef;--paper:#fffdf8;--ink:#1d2228;--muted:#5d6670;--line:#ddd7cb;--accent:#0f6b5c;--soft:#e1efe9;--gold:#8a6a12;--goldsoft:#f3ecd6;--fs:21}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14181c;--paper:#1b2026;--ink:#e7e3da;--muted:#9aa3ad;--line:#2f363e;--accent:#5cc3a9;--soft:#1d3530;--gold:#e0bf63;--goldsoft:#332c18}}
+:root[data-theme="dark"]{--bg:#14181c;--paper:#1b2026;--ink:#e7e3da;--muted:#9aa3ad;--line:#2f363e;--accent:#5cc3a9;--soft:#1d3530;--gold:#e0bf63;--goldsoft:#332c18}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Be Vietnam Pro",system-ui,sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 140px}
+header{padding:22px 0 8px}
+h1{font-size:clamp(22px,3.4vw,30px);margin:0 0 4px}
+.sub{margin:0 0 10px;color:var(--muted);font-size:14.5px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.tools button{font:600 13px "Be Vietnam Pro",sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:4px 10px;cursor:pointer}
+.bar{position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+.tl{display:flex;height:28px;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--paper)}
+.tl .seg{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);min-width:0}
+.tl .seg:last-child{border-right:0}
+.tl .seg.on{background:var(--accent);color:var(--paper)}
+.scale{display:flex;justify-content:space-between;font:11px "JetBrains Mono",monospace;color:var(--muted);margin-top:3px}
+.sc{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:12px;padding:16px 20px 12px;margin:18px 0;opacity:.55;transition:opacity .2s,border-color .2s;scroll-margin-top:96px}
+.sc.cur{opacity:1;border-left-color:var(--accent);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.ph{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.ph h2{margin:0;font-size:18px;flex:1;min-width:200px}
+.chip{font:600 12px "JetBrains Mono",monospace;background:var(--soft);color:var(--accent);padding:3px 9px;border-radius:5px}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:11.5px "JetBrains Mono",monospace;color:var(--muted)}
+.cue{margin:8px 0 10px;padding:7px 12px;background:var(--goldsoft);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cue::before{content:"MÀN HÌNH SHARE";font:700 10px "JetBrains Mono",monospace;letter-spacing:.06em;color:var(--gold);white-space:nowrap}
+.chieu{font:600 12.5px "Be Vietnam Pro",sans-serif;border:1px solid var(--accent);background:var(--accent);color:var(--paper);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap}
+.chieu:hover{filter:brightness(1.1)}
+.say p{font:500 calc(var(--fs)*1px)/1.7 "Source Serif 4",Georgia,serif;margin:.45em 0}
+.say::before{content:"LỜI THOẠI GIẢI THÍCH";display:block;margin-bottom:3px;color:var(--accent);font:700 10px "JetBrains Mono",monospace;letter-spacing:.06em}
+.smooth9{margin:10px 0;padding:10px 14px;background:var(--paper);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:8px}
+.smooth9::before{content:"LỜI THOẠI BỔ SUNG — NÓI MƯỢT";display:block;margin-bottom:4px;color:var(--accent);font:700 10px "JetBrains Mono",monospace;letter-spacing:.06em}
+.smooth9 p{font:500 calc(var(--fs)*1px)/1.7 "Source Serif 4",Georgia,serif;margin:.45em 0}
+.extra{margin:10px 0 0;padding:9px 12px;background:var(--soft);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;font-size:14px}
+.extra b{color:var(--accent);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.extra ul{margin:5px 0 0;padding-left:20px}.extra li{margin:3px 0}
+.focus{display:none;margin:10px 0 0;padding:8px 12px;background:var(--goldsoft);border-left:3px solid var(--gold);border-radius:8px;font-size:14px}
+.focus.on{display:block}.focus b{color:var(--gold);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.primary{margin:10px 0;padding:12px 14px;background:var(--accent-soft,var(--soft));border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:8px;font-size:14px;line-height:1.55}
+.primary>b{display:block;margin-bottom:8px;color:var(--accent);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.primary .p-label{display:block;margin:8px 0 3px;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.primary .formula{margin:4px 0 8px;padding:9px 11px;background:var(--bg);border:1px solid var(--line);border-radius:7px;overflow-x:auto;color:var(--ink);font:500 13px/1.55 "JetBrains Mono",Consolas,monospace;white-space:pre-wrap}
+.primary .result{padding:7px 10px;background:var(--paper);border-radius:7px;font-weight:600}
+.sources{margin:10px 0 0;padding:9px 12px;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;font-size:13px;line-height:1.5}
+.sources>b{display:block;margin-bottom:4px;color:var(--gold);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.sources ul{margin:4px 0 0;padding-left:20px}.sources li{margin:3px 0}.sources a{color:var(--accent);font-weight:600}
+details.qa{border:1px solid var(--line);border-radius:10px;margin:10px 0;background:var(--bg)}
+details.qa>summary{cursor:pointer;padding:8px 12px;font-weight:600;font-size:14.5px;list-style:none}
+details.qa>summary::-webkit-details-marker{display:none}
+details.qa>summary::before{content:"+ ";color:var(--accent);font-family:"JetBrains Mono",monospace}
+details.qa[open]>summary::before{content:"− "}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#2b5c8a;margin-right:6px}
+@media (prefers-color-scheme: dark){.lbl{color:#8ab6e0}}
+.in{padding:0 14px 8px} .in p{margin:.3em 0;font-size:15.5px}
+@media print{.bar,#syncPill{display:none} .sc{opacity:1;break-inside:avoid-page}}
+
+#syncPill{position:fixed;right:12px;bottom:14px;z-index:25;display:flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);
+  border-radius:999px;padding:5px 8px 5px 12px;box-shadow:0 2px 10px rgba(0,0,0,.2);font:600 12.5px "Be Vietnam Pro",sans-serif;color:var(--ink)}
+#syncPill button{font:600 12.5px "Be Vietnam Pro",sans-serif;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+#syncPill button:hover{background:var(--soft)}
+#syncDot{width:10px;height:10px;border-radius:50%;background:#c0392b;display:inline-block}
+#syncDot.on{background:#1f9d6b}
+#syncPill .lbl{color:var(--muted);font-weight:600}
+.blk,.sc{position:relative}
+.syncMark{position:absolute;top:6px;right:10px;z-index:4;border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:999px;
+  padding:2px 10px;font:600 11.5px "Be Vietnam Pro",sans-serif;cursor:pointer;opacity:0;transition:opacity .12s;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+.syncMark::before{content:"\21C4  Đồng bộ tới đây"}
+.blk:hover>.syncMark,.sc:hover>.syncMark,.syncMark:focus-visible{opacity:.95}
+.syncMark:hover{background:var(--soft);color:var(--ink)}
+.cur>.syncMark{opacity:1;background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.cur>.syncMark::before{content:"\25CF  Đang xem"}
+.peer:not(.cur)>.syncMark{opacity:1;background:var(--goldsoft,#f3ecd6);color:var(--gold,#8a6a12);border-color:var(--gold,#8a6a12)}
+.peer:not(.cur)>.syncMark::before{content:"\25C0  Cửa sổ kia đang ở đây"}
+.blk.peer:not(.cur){outline:2px dashed var(--gold,#8a6a12);outline-offset:2px}
+.sc.peer:not(.cur){border-left-color:var(--gold,#8a6a12);opacity:.85}
+.blk,.sc{cursor:pointer}
+.blk a,.blk summary,.blk img,.blk .zoom,.sc summary{cursor:revert}
+@media (hover:none){.syncMark{opacity:.6}}
+#syncToast{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:60;max-width:min(92vw,560px);background:#1d2228;color:#fff;border-radius:10px;
+  padding:9px 16px;font:600 13.5px "Be Vietnam Pro",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .15s}
+#syncToast.on{opacity:1}
+#syncToast.warn{background:#9c3b12}
+@media print{#syncPill{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Kịch bản thuyết trình 15 phút</h1>
+  <p class="sub">Dùng song song với <code>BAO_CAO_15_PHUT_TRICH_NOTEBOOK.html</code>. Bản share chỉ hiển thị bảng, hình và output; file này là lời thoại để giải thích đúng khối đang nhìn. Cuộn bên này thì bản trình chiếu tự cuộn theo, và ngược lại. Mỗi thẻ ghi rõ mã khối present tương ứng. Tốc độ ước lượng 200 từ/phút, tổng khoảng 2989 từ.</p>
+  <div class="tools"><span>Cỡ chữ</span><button id="fsDn" type="button">A−</button><button id="fsUp" type="button">A+</button></div>
+  <div class="cue" style="margin-top:12px"><span><b>Quy tắc đọc:</b> nhìn bảng/hình ở dòng “Màn hình share”, sau đó đọc phần “Lời thoại giải thích” ngay bên dưới; không đọc lại nguyên văn toàn bộ bảng.</span></div>
+</header>
+<div class="bar"><div class="tl"><a class="seg" data-part="A" style="flex:2.0" href="#pA-b0" title="A. Đặt câu hỏi và định nghĩa biến · 0:00–2:00">A</a><a class="seg" data-part="B" style="flex:1.5" href="#pB-b0" title="B. Kiểm toán dữ liệu · 2:00–3:30">B</a><a class="seg" data-part="C" style="flex:1.0" href="#pC-b0" title="C. Học cấu trúc và ràng buộc thời gian · 3:30–4:30">C</a><a class="seg" data-part="D" style="flex:2.0" href="#pD-b0" title="D. DAG nhân quả và DoWhy · 4:30–6:30">D</a><a class="seg" data-part="E" style="flex:2.5" href="#pE-b0" title="E. Ba mô hình B0, H1, H2 · 6:30–9:00">E</a><a class="seg" data-part="F" style="flex:1.5" href="#pF-b0" title="F. Đồ thị học được · 9:00–10:30">F</a><a class="seg" data-part="G" style="flex:1.0" href="#pG-b0" title="G. Kết quả chính: Bảng A, B, C · 10:30–11:30">G</a><a class="seg" data-part="H" style="flex:2.0" href="#pH-b0" title="H. Phân tích mở rộng (mục 9) · 11:30–13:30">H</a><a class="seg" data-part="I" style="flex:1.5" href="#pI-b0" title="I. Kết luận và khuyến nghị · 13:30–15:00">I</a></div><div class="scale"><span>0:00</span><span>5:00</span><span>10:00</span><span>15:00</span></div></div>
+<article class="sc" id="pA-b0" data-ids="pA-b0 pA-b1" data-part="A"><div class="ph"><span class="chip">0:00–2:00</span><h2>A. Đặt câu hỏi và định nghĩa biến</h2></div><div class="meta"><span>Khớp khối pA-b0–pA-b1</span><span>234 từ · khoảng 70 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng câu hỏi nghiên cứu; dừng ở dòng RQ0.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Em chào thầy. Câu hỏi của em xuất phát từ một quyết định có thật của nhà trường: nếu cấp học bổng ngay lúc nhập học, xác suất sinh viên tốt nghiệp thay đổi bao nhiêu? Đây là câu hỏi về can thiệp, không phải dự báo: dự báo chỉ cho biết ai có khả năng tốt nghiệp, còn em hỏi nếu nhà trường đổi quyết định thì kết quả khác đi thế nào.</p><p>Em viết nó thành ATE, là hiệu giữa xác suất tốt nghiệp khi cấp và khi không cấp. Từ câu hỏi gốc, em đặt bốn giả thuyết để kiểm chứng, và cuối bài em sẽ trả lời đúng từng dòng của bảng này.</p><p>Giả thuyết một: chênh lệch thô có bị nhiễu thổi phồng không; em dự đoán ATE đã điều chỉnh sẽ nhỏ hơn. Hai: nơ-ron H1 có dự báo tốt hơn B0 và đổi kết luận không; em dự đoán dự báo tốt hơn nhưng ATE không đổi. Ba: H2, học cấu trúc bằng nơ-ron, có ra đồ thị hợp lệ và đổi kết luận không; em dự đoán H2 hội tụ, tôn trọng mặt nạ, ATE gần B0. Bốn: kết luận vững đến đâu trước nhiễu ẩn; em dự đoán các bài bác bỏ đều đạt và chỉ nhiễu rất mạnh mới xóa được hiệu ứng. Giả thuyết năm, về kênh tác động, là phần mở rộng.</p></div></article><article class="sc" id="pA-b2" data-ids="pA-b2 pA-b3" data-part="A"><div class="meta"><span>Khớp khối pA-b2–pA-b3</span><span>129 từ · khoảng 38 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Cuộn qua bảng từ điển biến; chỉ vào cột “Thời điểm đo”.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Dữ liệu là bộ UCI số 697, toàn bộ là hồ sơ hành chính thật, không dùng dữ liệu giả lập. Gốc có 4.424 sinh viên; em loại 794 người còn đang học vì chưa có kết cục, còn 3.630 sinh viên, gồm 2.209 người tốt nghiệp và 1.421 người bỏ học.</p><p>Biến can thiệp là học bổng, kết cục là tốt nghiệp, năm biến nền đều đo trước hoặc lúc nhập học: điểm vào, nợ học phí, học phí đúng hạn, học vấn của mẹ và tuổi. Số tín chỉ học kỳ một xảy ra sau học bổng nên chỉ là biến trung gian, không đưa vào tập điều chỉnh. Học phí đúng hạn có thời điểm đo mơ hồ, nên em chỉ giữ như một giả định.</p></div><details class="qa"><summary><span class="lbl">Nếu thầy hỏi</span> Bỏ 794 sinh viên đang học có gây chệch không?</summary><div class="in"><p>Có thể. Nên ở phần mở rộng em tính lại trên cả 4.424 sinh viên, với kết cục là chưa bỏ học, và hiệu ứng vẫn dương, cộng 16,87 điểm phần trăm.</p></div></details></article><article class="sc" id="pA-b4" data-ids="pA-b4 pA-b5" data-part="A"><div class="meta"><span>Khớp khối pA-b4–pA-b5</span><span>58 từ · khoảng 17 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào phần định nghĩa chính sách (mục 2.2): thời điểm can thiệp và hai mức do(T).</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Chính sách được định nghĩa rõ: đối tượng là tân sinh viên đã nhập học, thời điểm can thiệp là tuần định hướng, trước mọi buổi học; can thiệp một là cấp học bổng, can thiệp không là không cấp. Tuổi, giới tính, học vấn của mẹ nhà trường không thể can thiệp, nên chỉ là biến nền.</p></div></article><article class="sc" id="pB-b0" data-ids="pB-b0 pB-b1" data-part="B"><div class="ph"><span class="chip">2:00–3:30</span><h2>B. Kiểm toán dữ liệu</h2></div><div class="meta"><span>Khớp khối pB-b0–pB-b1</span><span>50 từ · khoảng 15 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng 1.6a: 24 biến nền, 12 biến sau nhập học.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Bốn kiểm tra đầu tiên. Thứ nhất là thời điểm đo. Trong ba mươi sáu cột, hai mươi bốn biến là biến nền, được phép làm Z. Mười hai biến tín chỉ và điểm của hai học kỳ xảy ra sau học bổng, nên bị loại khỏi tập điều chỉnh.</p></div></article><article class="sc" id="pB-b2" data-ids="pB-b2 pB-b3" data-part="B"><div class="meta"><span>Khớp khối pB-b2–pB-b3</span><span>98 từ · khoảng 29 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào hình bên phải (tỷ lệ tốt nghiệp theo nhóm), rồi cột tỷ lệ học bổng trong bảng.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Thứ hai là ngưỡng điểm vào. Em chốt trước hai ngưỡng 120 và 140, không dò trên dữ liệu, và có ba nhóm đều đủ mẫu: 1.075, 1.869 và 686 sinh viên. Nhóm dưới 120 tốt nghiệp thấp hơn rõ, 52,6% so với khoảng 64% ở hai nhóm còn lại.</p><p>Điều bất ngờ nằm ở cột học bổng: tỷ lệ nhận là 23%, 30%, rồi lại 23%. Nghĩa là học bổng ở đây không đi theo điểm số. Điểm vào vẫn liên quan tới cả học bổng lẫn tốt nghiệp, nên vẫn đúng vai trò một biến nhiễu.</p></div></article><article class="sc" id="pB-b4" data-ids="pB-b4 pB-b5" data-part="B"><div class="meta"><span>Khớp khối pB-b4–pB-b5</span><span>92 từ · khoảng 27 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào cột đầu tiên của biểu đồ: học phí đúng hạn.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Thứ ba là mutual information, đo mức liên kết giữa từng biến nền và kết cục. Biến nổi nhất là học phí đúng hạn, mạnh hơn cả học bổng. Em đọc đó là tín hiệu cảnh báo: rất có thể học phí đúng hạn là hậu quả của việc bỏ học, vì sinh viên đã bỏ thì thôi đóng phí, chứ không phải nguyên nhân.</p><p>Mutual information chỉ đo liên kết, không phải nhân quả, nên nó giúp em biết phải thận trọng ở đâu chứ không giúp chọn biến điều chỉnh.</p></div></article><article class="sc" id="pB-b6" data-ids="pB-b6 pB-b7 pB-b8" data-part="B"><div class="meta"><span>Khớp khối pB-b6–pB-b8</span><span>80 từ · khoảng 24 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng overlap: dòng nhỏ nhất, 44 sinh viên.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Thứ tư là overlap: mỗi nhóm phải có cả người nhận lẫn không nhận học bổng. Cả sáu tầng điểm vào nhân tuổi đều thỏa, tầng nhỏ nhất vẫn có 44 sinh viên nhận học bổng. Một chi tiết đáng chú ý là sinh viên trên 20 tuổi nhận học bổng chỉ 12 đến 16%, so với 30 đến 38% ở nhóm còn lại. Tuổi liên quan mạnh tới việc được nhận học bổng, nên phải điều chỉnh theo tuổi.</p></div></article><article class="sc" id="pC-b0" data-ids="pC-b0 pC-b1" data-part="C"><div class="ph"><span class="chip">3:30–4:30</span><h2>C. Học cấu trúc và ràng buộc thời gian</h2></div><div class="meta"><span>Khớp khối pC-b0–pC-b1</span><span>133 từ · khoảng 39 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào hình bên trái (hai mũi tên đỏ), rồi hình bên phải (mũi tên từ học bổng sang nợ học phí).</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Sang bước học cấu trúc. Em thử HillClimb với điểm BIC trên bốn biến. Khi học tự do, thuật toán cho ra hai cạnh vô lý: tốt nghiệp gây ra điểm vào, và tốt nghiệp gây ra nợ học phí, tức kết cục cuối khóa gây ra quá khứ. Dữ liệu cho biết hai biến liên quan, nhưng không tự cho biết chiều.</p><p>Khi cấm các cạnh đi ra từ kết cục, hai cạnh đó biến mất, nhưng vẫn còn một cạnh từ học bổng sang nợ học phí, vì em chưa cấm cạnh từ T sang các biến nền. Bài học là ràng buộc phải phủ đủ mọi tầng. Vì vậy ở B0 và H2, em cấm cả kết cục đi vào mọi nút, lẫn học bổng đi vào các biến nền.</p></div></article><article class="sc" id="pC-b2" data-ids="pC-b2 pC-b3" data-part="C"><div class="meta"><span>Khớp khối pC-b2–pC-b3</span><span>44 từ · khoảng 13 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ lướt bốn ràng buộc, không đọc hết.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Em cũng dựng bộ bốn ràng buộc để kiểm tra mọi đồ thị: không có chu trình, đúng phân tầng thời gian, đúng tri thức chuyên gia, và d-separation, tức tập Z phải chặn hết đường cửa sau từ học bổng sang tốt nghiệp.</p></div></article><article class="sc" id="pD-b0" data-ids="pD-b0 pD-b1 pD-b2 pD-b3" data-part="D"><div class="ph"><span class="chip">4:30–6:30</span><h2>D. DAG nhân quả và DoWhy</h2></div><div class="meta"><span>Khớp khối pD-b0–pD-b3</span><span>157 từ · khoảng 47 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ Hình 6.1: bên trái đồ thị gốc, bên phải sau do(T); chỉ vào các mũi tên bị cắt.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Đây là đồ thị nhân quả của bài, gồm bốn tầng thời gian: biến nền Z, rồi học bổng T, rồi số tín chỉ học kỳ một là biến trung gian M một, rồi tốt nghiệp Y. Tám nút, mười ba cạnh, và cả bốn kiểm tra ràng buộc đều đạt.</p><p>Hình bên trái là đồ thị gốc. Mỗi biến nền đều có mũi tên vào cả T lẫn Y, nên tồn tại đường cửa sau, và đó chính là nguồn của chênh lệch thô cộng 34,54%. Hình bên phải là sau can thiệp do T. Em cắt toàn bộ cạnh đi vào T, vì bây giờ nhà trường quyết định T chứ không còn do các biến nền quyết định.</p><p>Lúc này T chỉ còn tác động tới Y qua hai đường: trực tiếp, và qua M một. Điều chỉnh theo Z, tức backdoor adjustment, tái tạo đúng phân phối này từ dữ liệu quan sát.</p></div></article><article class="sc" id="pD-b4" data-ids="pD-b4 pD-b5" data-part="D"><div class="meta"><span>Khớp khối pD-b4–pD-b5</span><span>111 từ · khoảng 33 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào output DoWhy: tập backdoor, hai dòng ATE, rồi ba dòng bác bỏ (đều VƯỢT QUA).</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Tiếp theo là DoWhy, với bốn bước: dựng mô hình, xác định tập chặn cửa sau, ước lượng, và bác bỏ. DoWhy tự tìm đúng năm biến nền làm tập backdoor, và M một không nằm trong đó. Hai cách ước lượng độc lập cho hai con số gần nhau: hồi quy tuyến tính 24,12%, trọng số xu hướng 25,16%.</p><p>Ở dưới là kết quả ba bài bác bỏ, và cả ba đều vượt qua. Random common cause: hiệu ứng gốc 0,2412, sau bác bỏ 0,2411, gần như không đổi. Placebo treatment: hiệu ứng rơi từ 0,2412 xuống 0,0047, gần không. Data subset với 80% dữ liệu: 0,2447, vẫn ổn định.</p></div></article><article class="sc" id="pD-b6" data-ids="pD-b6 pD-b7 pD-b8" data-part="D"><div class="meta"><span>Khớp khối pD-b6–pD-b8</span><span>158 từ · khoảng 47 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng ba kiểm định; đọc theo hàng “Bên trong làm gì” và “Ý nghĩa”.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Ba bài này làm gì? Random common cause thêm một biến nhiễu ngẫu nhiên vào dữ liệu rồi ước lượng lại; nếu ước lượng đáng tin thì phải không đổi. Placebo thay biến học bổng bằng một biến giả, hoán vị ngẫu nhiên; nếu hiệu ứng thật sự đến từ học bổng thì lúc này phải về gần không. Data subset chỉ dùng ngẫu nhiên 80% dữ liệu, để xem hiệu ứng có phụ thuộc vài hồ sơ đặc biệt không.</p><p>Đầu vào cả ba là dữ liệu gốc và ước lượng gốc 0,2412, đầu ra là hiệu ứng mới; ngưỡng là chênh lệch dưới 0,02, riêng placebo dưới 0,03.</p><p>Nhưng em phải nói rõ giới hạn: ba bài này chỉ kiểm tra độ ổn định của bộ ước lượng, chúng không chứng minh không có nhiễu ẩn ngoài năm biến đã quan sát. Để trả lời câu đó, em dùng phân tích độ nhạy ở phần sau.</p></div><details class="qa"><summary><span class="lbl">Nếu thầy hỏi</span> Refuter đạt thì đồ thị đúng à?</summary><div class="in"><p>Không. Placebo đạt chỉ nói là không có hiệu ứng tự sinh khi biến can thiệp vô nghĩa; subset đạt chỉ nói là ước lượng ổn định. Cả hai không kiểm tra được nhiễu ẩn hay chiều cạnh. Refuter còn chạy trên ước lượng tuyến tính, nên kiểm tra đồ thị cộng ước lượng tuyến tính, không kiểm tra trực tiếp bảng xác suất.</p></div></details></article><article class="sc" id="pE-b0" data-ids="pE-b0 pE-b1" data-part="E"><div class="ph"><span class="chip">6:30–9:00</span><h2>E. Ba mô hình B0, H1, H2</h2></div><div class="meta"><span>Khớp khối pE-b0–pE-b1</span><span>118 từ · khoảng 35 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào ba gạch đầu dòng B0, H1, H2.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Phần chính của bài là ba mô hình, và nguyên tắc là mỗi lần chỉ đổi đúng một yếu tố. B0 là mạng Bayes truyền thống: học đồ thị bằng HillClimb, học tham số bằng BDeu. H1 giữ nguyên đồ thị của B0 và chỉ thay bảng xác suất của Y bằng một mạng nơ-ron. H2 giữ cách tính tham số nhưng thay cách học đồ thị bằng NOTEARS.</p><p>Cả ba dùng cùng bảy biến, cùng cách chia dữ liệu, cùng ràng buộc thời gian. Học bổng là can thiệp chính. Hai can thiệp còn lại em chỉ báo cáo như phân tích khám phá, vì một cái có nguy cơ nhân quả ngược, cái kia thiếu positivity.</p></div></article><article class="sc" id="pE-b2" data-ids="pE-b2 pE-b3 pE-b4 pE-b5" data-part="E"><div class="meta"><span>Khớp khối pE-b2–pE-b5</span><span>94 từ · khoảng 28 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng năm dòng đã mã hóa và dòng chia 2.541, 544, 545.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Dữ liệu vào mô hình là 3.630 sinh viên, bảy cột: năm biến nền, T và Y. Em chia 70, 15, 15, phân tầng theo cả kết cục và học bổng, với năm seed từ 42 đến 46, nên lần nào cũng là 2.541 train, 544 validation và 545 test.</p><p>Train để khớp mô hình. Validation để chọn cấu hình. Test được đóng băng, chỉ dùng một lần ở cuối. Cả ba mô hình dùng cùng file chia nên so sánh là ghép cặp, và năm lần chạy cho em biết độ dao động.</p></div></article><article class="sc" id="pE-b6" data-ids="pE-b6 pE-b7" data-part="E"><div class="meta"><span>Khớp khối pE-b6–pE-b7</span><span>58 từ · khoảng 17 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng ba hàm điểm ứng viên: K2 được chọn.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>B0 thử ba hàm điểm là BIC, BDeu và K2, mỗi hàm cho một đồ thị. Em chọn theo log-likelihood trên validation, và K2 thắng ở cả năm seed. Cạnh từ học bổng sang tốt nghiệp là cạnh bắt buộc, vì đó chính là giả thuyết cần đo. Nếu không ép, ATE sẽ bằng không theo định nghĩa.</p></div></article><article class="sc" id="pE-b8" data-ids="pE-b8 pE-b9" data-part="E"><div class="meta"><span>Khớp khối pE-b8–pE-b9</span><span>72 từ · khoảng 21 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào dòng Pa(Y) và “best epoch” trong output H1.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>H1 là một mạng nơ-ron nhỏ, đầu vào chỉ gồm các biến cha của Y, mất mát BCE, dừng sớm trên validation. Nó thường dừng ở epoch hai đến bốn. Lý do là cha của Y chỉ có bốn biến nhị phân, tức mười sáu tổ hợp. Mạng thực chất chỉ học mười sáu con số, nên bảng đếm đã làm được hết, và mạng không còn gì để khai thác thêm.</p></div><details class="qa"><summary><span class="lbl">Nếu thầy hỏi</span> Dừng ở epoch 2–4 có phải huấn luyện lỗi không?</summary><div class="in"><p>Không. Em có chạy thêm bản không dừng sớm, đủ 150 epoch: loss validation và test cao hơn chút, AUROC test thấp hơn chút, dấu hiệu overfit nhẹ, còn ATE trung bình gần như không đổi.</p></div></details></article><article class="sc" id="pE-b10" data-ids="pE-b10 pE-b11" data-part="E"><div class="meta"><span>Khớp khối pE-b10–pE-b11</span><span>52 từ · khoảng 15 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào bảng tau: số cạnh giảm dần khi tau tăng.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>H2 học đồ thị bằng tối ưu liên tục. Có hai thứ quan trọng: ràng buộc phi chu trình h của W bằng không, và mặt nạ M cấm cạnh ngược thời gian. Lambda và ngưỡng cạnh tau được chọn trên validation, không nhìn test. Tau càng lớn thì càng ít cạnh.</p></div></article><article class="sc" id="pE-b12" data-ids="pE-b12 pE-b13" data-part="E"><div class="meta"><span>Khớp khối pE-b12–pE-b13</span><span>102 từ · khoảng 30 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào năm dòng ATE: khoảng 0,22 đến 0,25.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Đây là năm lần chạy. ATE của cả ba mô hình ở mọi seed đều nằm trong khoảng 0,22 đến 0,25, nên hiệu ứng không do một seed may mắn. B0 chọn K2 ở cả năm seed. Tập cha của Y ổn định là học bổng, nợ học phí, học phí đúng hạn và tuổi. Điểm vào và học vấn của mẹ không được nối vào Y.</p><p>Seed 44 cho giá trị thấp nhất, 0,2175 ở H1, và độ lệch đó nhỏ hơn độ tản giữa các seed, nên em luôn báo cả độ lệch chuẩn chứ không chỉ một con số.</p></div></article><article class="sc" id="pF-b0" data-ids="pF-b0 pF-b1 pF-b2" data-part="F"><div class="ph"><span class="chip">9:00–10:30</span><h2>F. Đồ thị học được</h2></div><div class="meta"><span>Khớp khối pF-b0–pF-b2</span><span>119 từ · khoảng 35 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào ô (a) của Hình 8.1; chỉ ba nhóm ô đỏ.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Đây là bảng tóm tắt năm seed và Hình 8.1. Ô (a) là mặt nạ M, ma trận bảy nhân bảy: hàng là nút nguồn, cột là nút đích, ô đỏ nghĩa là cấm cạnh. Có ba nhóm ô đỏ: đường chéo, cả hàng Y, tức kết cục không gây ra gì, và hàng T tại các cột Z, tức học bổng không đổi đặc điểm lúc nhập học.</p><p>B0 đưa mặt nạ này vào danh sách cạnh cấm. H2 nhân nó vào trọng số tầng một, nên gradient của cạnh cấm bằng không. Em kiểm bằng assert, và cột cuối của bảng tóm tắt cho thấy trọng số ở ô cấm bằng đúng không ở cả năm seed.</p></div></article><article class="sc" id="pF-b3" data-ids="pF-b3 pF-b4" data-part="F"><div class="meta"><span>Khớp khối pF-b3–pF-b4</span><span>164 từ · khoảng 49 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào ô (b): các khung đỏ; rồi sang ô (d).</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Ô (b) là độ mạnh của từng cạnh mà H2 học được, càng đậm càng mạnh. Khung đỏ là những ô vượt ngưỡng tau bằng 0,1, chọn trên validation, và chúng trở thành tám cạnh của đồ thị ở ô (d). Cạnh học bổng sang tốt nghiệp được học ra, không bị ép, ở cả năm seed.</p><p>Em xin nhấn mạnh: trọng số này không phải hiệu ứng nhân quả. Hiệu ứng chỉ được tính ở bước sau, bằng truy vấn can thiệp trên đồ thị đã đóng băng. Giữa các biến nền, chiều cạnh đổi theo mô hình và theo seed. Điều đó không ảnh hưởng truy vấn do T vì mọi biến nền đều có trước can thiệp, nhưng nó cho thấy dữ liệu không xác định được chiều giữa các biến cùng tầng.</p><p>Một hạn chế nữa: H2 thêm điểm vào làm cha của Y ở bốn trên năm seed, nên một đến hai phần trăm hồ sơ test thiếu overlap.</p></div></article><article class="sc" id="pG-b0" data-ids="pG-b0 pG-b1" data-part="G"><div class="ph"><span class="chip">10:30–11:30</span><h2>G. Kết quả chính: Bảng A, B, C</h2></div><div class="meta"><span>Khớp khối pG-b0–pG-b1</span><span>142 từ · khoảng 42 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Hình 8.3 trước, rồi lướt ba dòng Bảng A, B, C.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Giờ là kết quả chính. Bảng A, dự báo trên test: AUROC của B0 là 0,7996, H1 là 0,8012 và H2 là 0,8034. Chênh lệch ghép cặp so với B0 chỉ là cộng 0,0016 và cộng 0,0038, nhỏ hơn hoặc ngang độ dao động giữa các seed. Vì vậy em kết luận không có bằng chứng rằng nơ-ron cải thiện dự báo ở bộ dữ liệu này. Đây là một kết quả rỗng và em báo cáo đúng như vậy.</p><p>Bảng B, hiệu ứng can thiệp trên tập test mà không dùng nhãn của test: ATE là 0,2418 cho B0, 0,2374 cho H1 và 0,2358 cho H2. Hình 8.3 cho thấy từng seed đều quanh 0,24, cách xa chênh lệch thô 0,345. Bảng C: refuter đạt trên cả ba mô hình, còn H2 đắt hơn B0 hàng chục lần về thời gian.</p></div><details class="qa"><summary><span class="lbl">Nếu thầy hỏi</span> Sao không dùng Y của test để tính ATE?</summary><div class="in"><p>Hiệu ứng can thiệp chỉ cần hồ sơ nền: với mỗi hồ sơ test, em hỏi mô hình hai lần, với T bằng không và T bằng một, rồi lấy trung bình. Nhãn thật không tham gia, nên không trộn đánh giá dự báo vào ước lượng nhân quả. Khoảng tin cậy là bootstrap trên 545 hồ sơ với mô hình cố định, nên chỉ phản ánh lấy mẫu tập tham chiếu.</p></div></details></article><article class="sc" id="pH-b0" data-ids="pH-b0 pH-b1 pH-b2 pH-b3 pH-b4" data-part="H"><div class="ph"><span class="chip">11:30–13:30</span><h2>H. Phân tích mở rộng (mục 9)</h2></div><div class="meta"><span>Khớp khối pH-b0–pH-b4</span><span>95 từ · khoảng 28 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào ô kết quả 9.B: +1,478 và chênh lệch thô +2,63.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Phần mở rộng trả lời hai câu hỏi: học bổng tác động qua đâu, ai hưởng lợi, và kết luận chịu được nhiễu ẩn đến mức nào. Phần này dùng hồi quy trên toàn bộ dữ liệu với bảy hiệp biến, nên cùng bậc nhưng không so trực tiếp với Bảng B.</p><p>Trước hết là điểm học kỳ hai: sau khi điều chỉnh, học bổng gắn với điểm cao hơn 1,478 trên thang hai mươi, khoảng tin cậy từ 1,09 đến 1,86. Chênh lệch thô là 2,63, nên điều chỉnh nhiễu giữ lại khoảng 56%.</p></div></article><article class="sc" id="pH-b5" data-ids="pH-b5 pH-b6 pH-b7" data-part="H"><div class="meta"><span>Khớp khối pH-b5–pH-b7</span><span>75 từ · khoảng 22 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào 64,28% và 81,15%.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Để kiểm tra điểm yếu là bỏ 794 sinh viên đang học, em dùng cả 4.424 sinh viên với kết cục là chưa bỏ học, và ước lượng bền vững kép AIPW: ước lượng vẫn đúng nếu một trong hai mô hình, xác suất nhận học bổng hoặc kết cục, đúng. Tỷ lệ ở lại tăng từ 64,28% lên 81,15%, tức cộng 16,87 điểm, khoảng tin cậy 13,8 đến 19,7. Hướng kết luận không đổi.</p></div></article><article class="sc" id="pH-b8" data-ids="pH-b8 pH-b9 pH-b10" data-part="H"><div class="meta"><span>Khớp khối pH-b8–pH-b10</span><span>81 từ · khoảng 24 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào NDE và NIE.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Về cơ chế, học bổng làm sinh viên đỗ thêm 0,729 tín chỉ ở học kỳ một. Tổng hiệu ứng 21,61% tách thành 16,96% trực tiếp và 4,65% đi qua học kỳ một, khoảng 21,5%. Đa số là trực tiếp, có thể do giảm áp lực tài chính. Khoảng một phần năm đi qua đà học tập, nên kết hợp hỗ trợ học thuật sớm là hợp lý. Giả định thêm là không có nhiễu giữa trung gian và kết cục.</p></div></article><article class="sc" id="pH-b11" data-ids="pH-b11 pH-b12 pH-b13" data-part="H"><div class="meta"><span>Khớp khối pH-b11–pH-b13</span><span>73 từ · khoảng 21 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào hai dòng Debtor: +20,27% và +21,35%.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Về nhóm hưởng lợi, nhóm trên 20 tuổi được cộng 28,02 điểm, so với 16,08 ở nhóm còn lại. Với nhóm nợ học phí, hiệu ứng tuyệt đối là 20,27, không lớn hơn nhóm không nợ là 21,35. Con số 2,03 lần chỉ là tỷ số rủi ro, cao vì mức nền thấp, không phải hưởng lợi gấp đôi. Các nhóm chưa có khoảng tin cậy nên em chỉ đọc là gợi ý.</p></div></article><article class="sc" id="pH-b14" data-ids="pH-b14 pH-b15 pH-b16 pH-b17" data-part="H"><div class="meta"><span>Khớp khối pH-b14–pH-b17</span><span>86 từ · khoảng 25 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chỉ vào RV = 20,97% và partial R² = 10,41% của học phí đúng hạn.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Cuối cùng là nhiễu ẩn, điều mà refuter không kiểm tra được. Em dùng Robustness Value của Cinelli và Hazlett. RV bằng 20,97%: một biến nhiễu ẩn phải giải thích ít nhất khoảng 21% phương sai còn lại của cả học bổng lẫn tốt nghiệp mới kéo ước lượng về không.</p><p>Để so, biến quan sát mạnh nhất là học phí đúng hạn chỉ giải thích 10,41%. Vậy kết luận vững trước nhiễu yếu hơn biến đó, nhưng không miễn nhiễm với nhiễu mạnh gấp đôi.</p></div><details class="qa"><summary><span class="lbl">Nếu thầy hỏi</span> Bản trước ghi RV 23,4%, sao giờ là 21%?</summary><div class="in"><p>Bản trước dùng công thức xấp xỉ, không phải công thức của Cinelli và Hazlett. Em đã sửa và ghi chú ngay trong notebook.</p></div></details></article><article class="sc" id="pI-b0" data-ids="pI-b0" data-part="I"><div class="ph"><span class="chip">13:30–15:00</span><h2>I. Kết luận và khuyến nghị</h2></div><div class="meta"><span>Khớp khối pI-b0</span><span>140 từ · khoảng 42 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Đọc lướt cột “Kết luận” của bảng.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Em quay lại bảng câu hỏi. RQ0: học bổng tăng khoảng 24 điểm phần trăm xác suất tốt nghiệp, dưới các giả định đã nêu. RQ1: chênh lệch thô 34,5 điểm so với 24, nên khoảng 10 điểm, tức khoảng 30%, là thiên lệch do nhiễu quan sát được. RQ2: trái với dự đoán ban đầu, nơ-ron ở bảng xác suất không cải thiện dự báo, và không đổi kết luận.</p><p>RQ3: H2 học ra một đồ thị hợp lệ và tôn trọng mặt nạ, nhưng dự báo không tốt hơn rõ. RQ4: kết luận khá vững, nhưng không miễn nhiễm với nhiễu ẩn mạnh, và refuter không chứng minh đồ thị đúng. RQ5: có bằng chứng gợi ý rằng khoảng một phần năm hiệu ứng đi qua học kỳ một, và nhóm trên 20 tuổi hưởng lợi nhiều hơn.</p></div></article><article class="sc" id="pI-b1" data-ids="pI-b1 pJ-b0" data-part="I"><div class="meta"><span>Khớp khối pI-b1–pJ-b0</span><span>174 từ · khoảng 52 giây</span></div><div class="cue"><span><b>Trên màn hình:</b> Chốt bằng ba ý; nhìn thẳng vào người nghe.</span><button class="chieu" type="button" title="Bản trình chiếu nhảy tới khối này">⇄ Chiếu khối này</button></div><div class="say"><p>Từ đó em đề xuất bốn việc. Một, cân nhắc phân bổ học bổng theo mức hưởng lợi nhân quả, nhưng phải thử nghiệm có kiểm soát trước, vì con số cộng 164 sinh viên chỉ là trong mẫu và giả định không có nhiễu ẩn. Hai, kết hợp học bổng với hỗ trợ học thuật sớm ở học kỳ một. Ba, dùng DoWhy làm chuẩn kiểm định cho chính sách mới. Bốn, dùng mạng Bayes B0 làm lõi cảnh báo sớm, vì nó minh bạch mà dự báo không kém bản nơ-ron.</p><p>Nếu thầy chỉ giữ ba điều. Một: chênh lệch thô 34,5 điểm bị thổi phồng, hiệu ứng nhân quả khoảng 24 điểm. Hai: ba mô hình đồng ý với nhau, và nơ-ron không thêm giá trị ở dữ liệu này, vì bảng xác suất của Y chỉ có mười sáu tổ hợp. Ba: kết luận vững nhưng có điều kiện, nhiễu ẩn phải mạnh gấp đôi biến quan sát mạnh nhất mới xóa được hiệu ứng. Em xin cảm ơn thầy.</p></div></article>
+</div>
+<div id="syncPill"><span id="syncDot" title="Chưa thấy cửa sổ kia"></span><span class="lbl" id="syncLbl">Chưa kết nối</span>
+<button id="syncTgl" type="button">Đồng bộ: Bật</button><button id="syncOpen" type="button">Mở bản trình chiếu ↗</button></div>
+<script>
+(function(){
+  var extra={
+    'pA-b1':['RQ0 là câu hỏi gốc; RQ1–RQ4 là các giả thuyết bắt buộc phải quay lại trả lời ở cuối. RQ5 chỉ là phần mở rộng, không được dùng để làm loãng kết luận chính.'],
+    'pB-b8':['Mutual information chỉ cho biết hai biến liên hệ, không chứng minh nguyên nhân. Học phí đúng hạn có thể là dấu hiệu sau khi sinh viên đã bỏ học, nên không được đọc nó như một nguyên nhân trực tiếp.'],
+    'pC-b3':['Bốn tiêu chuẩn cần nói theo thứ tự: không chu trình, đúng thứ tự thời gian, đúng kiến thức chuyên gia và d-separation. Tiêu chuẩn cuối kiểm tra Z có chặn được đường cửa sau hay chưa.'],
+    'pD-b6':['Đầu vào của DoWhy là dữ liệu, treatment T, outcome Y và DAG. Đầu ra cần đọc là tập biến backdoor, hai ước lượng ATE độc lập, rồi ba cặp kết quả trước/sau refuter.'],
+    'pD-b7':['Random common cause kiểm tra độ ổn định; placebo kiểm tra hiệu ứng giả có về gần 0; data subset kiểm tra kết quả có bị chi phối bởi một nhóm hồ sơ hay không. Cả ba đạt chỉ nói kết quả ổn định, không chứng minh đã loại hết nhiễu ẩn.'],
+    'pE-b3':['Năm seed không phải năm mô hình khác nhau: đó là năm lần chạy cùng quy trình để đo độ dao động. Vì vậy phải đọc trung bình kèm độ lệch chuẩn, không chọn một seed đẹp nhất.'],
+    'pE-b5':['Khi nhìn bảng năm dòng, hãy nhấn mạnh mọi run đều dùng cùng split và cùng ràng buộc. Điều này làm cho chênh lệch giữa B0, H1 và H2 có ý nghĩa so sánh hơn.'],
+    'pE-b13':['ATE nằm quanh 0,22–0,25 ở cả năm seed. Seed thấp nhất không làm thay đổi kết luận; đây là lý do báo cáo cả khoảng dao động thay vì chỉ đọc một con số.'],
+    'pF-b2':['Ở ma trận mặt nạ M, hàng là nút nguồn và cột là nút đích; ô 0 là cạnh bị cấm. Các ô đỏ là đường chéo, hàng Y và hàng T tại các cột Z, thể hiện các cạnh ngược thời gian bị khóa.'],
+    'pF-b3':['Trọng số |W| trong hình chỉ là độ mạnh mà H2 học được, không phải hiệu ứng nhân quả. H2 phải dùng mặt nạ để các cạnh cấm có trọng số đúng 0; hiệu ứng chỉ được tính sau bằng truy vấn do(T).'],
+    'pH-b1':['Các phân tích mục 9 dùng để trả lời cơ chế, kết cục thay thế và dị biệt nhóm. Chúng là phân tích mở rộng, cùng bậc bằng chứng với giả định riêng, không được đặt ngang hàng tuyệt đối với ATE chuẩn ở Bảng B.'],
+    'pH-b4':['Khi thấy kết quả mở rộng, hãy nói rõ mẫu và outcome có thể khác phân tích chính. Vì vậy chỉ dùng để kiểm tra hướng kết luận và gợi ý cơ chế, không dùng để thay thế ước lượng ATE chuẩn.'],
+    'pH-b7':['Phân tích AIPW trên toàn bộ 4.424 hồ sơ xử lý điểm yếu do loại nhóm Enrolled. Kết quả vẫn dương, nhưng cỡ hiệu ứng khác vì outcome và quần thể đã thay đổi.'],
+    'pH-b10':['Phân tích trung gian cho thấy một phần hiệu ứng đi qua tín chỉ học kỳ 1. Đây là gợi ý cơ chế dưới giả định không có nhiễu chưa đo giữa trung gian và kết cục, không phải bằng chứng can thiệp mới.'],
+    'pH-b13':['Các con số theo nhóm là mô tả dị biệt và chưa có khoảng tin cậy đầy đủ. Không được nói nhóm này “chắc chắn hưởng lợi hơn”; chỉ nên nói đây là tín hiệu cần kiểm tra ở nghiên cứu tiếp theo.'],
+    'pH-b16':['RV khoảng 20,97% nên nhiễu ẩn phải khá mạnh mới kéo ATE về 0; biến quan sát mạnh nhất giải thích khoảng 10,41%. Kết luận là tương đối vững trước nhiễu yếu, không phải miễn nhiễm với nhiễu mạnh.'],
+    'pJ-b0':['Phần tổng hợp này nối ba tầng: con số ATE, sự nhất quán giữa các mô hình và giới hạn do giả định. Khi kết thúc, quay lại đúng RQ0–RQ4 thay vì chỉ đọc lại các bảng.']
+  };
+  var focus={
+    'pD-b4':'Đang giải thích output DoWhy: tập backdoor, hai dòng ATE và ba kết quả refuter.',
+    'pD-b5':'Đang giải thích ý nghĩa ba refuter và giới hạn: ổn định không đồng nghĩa đã loại hết nhiễu ẩn.',
+    'pE-b12':'Đang giải thích năm dòng ATE theo seed; chưa chuyển sang kết luận chung của Bảng A–B–C.',
+    'pE-b13':'Đang giải thích cách đọc độ dao động giữa năm seed và vì sao phải báo cáo trung bình ± độ lệch chuẩn.',
+    'pF-b2':'Đang giải thích Hình 8.1(a): mặt nạ M và các ô đỏ là cạnh bị cấm.',
+    'pF-b3':'Đang giải thích Hình 8.1(b): |W| là trọng số học được, không phải hiệu ứng nhân quả.',
+    'pG-b0':'Đang giải thích Hình 8.3: các seed nằm quanh ATE +0,24 và cách xa chênh lệch thô +0,345.',
+    'pG-b1':'Đang giải thích Bảng A, B, C: dự báo, ATE can thiệp và các kiểm tra độ vững.',
+    'pH-b5':'Đang giải thích kết quả AIPW trên toàn bộ dữ liệu, không phải đang đọc ATE chuẩn ở Bảng B.',
+    'pH-b8':'Đang giải thích cơ chế trung gian NDE/NIE, không phải một ATE mới.',
+    'pH-b11':'Đang giải thích dị biệt theo nhóm và phân biệt risk ratio với hiệu ứng tuyệt đối.',
+    'pH-b14':'Đang giải thích Robustness Value và mức nhiễu ẩn cần để xóa hiệu ứng.'
+  };
+  var primary={
+    'pH-b0':'Mục 9.B — Công thức: Y_grade = α + τ_grade T + Zᵀγ + ε; ATE_grade = E[Y_grade | do(T=1)] − E[Y_grade | do(T=0)]. Kết quả: +1,478 điểm GPA, CI 95% [1,093; 1,863], chênh lệch thô +2,63.',
+    'pH-b5':{
+      objective:'Giữ cả 4.424 SV, đặt Y_retain = 1 nếu Graduate hoặc Enrolled (chưa bỏ học), để kiểm tra điểm yếu do loại 794 SV Enrolled.',
+      formula:'ATE_DR = 1/N Σ [ μ̂₁(Z) + T(Y−μ̂₁(Z))/ê(Z) − μ̂₀(Z) − (1−T)(Y−μ̂₀(Z))/(1−ê(Z)) ]',
+      meaning:'μ̂ là mô hình dự đoán kết cục; ê(Z) là xác suất nhận học bổng theo Z. Phần chia cho ê hoặc 1−ê hiệu chỉnh sai số của hai nhóm có đặc điểm nền khác nhau. Cắt ê trong [0,05; 0,95]; bootstrap 1.000 lần để tạo khoảng tin cậy. “Bền vững kép” nghĩa là chỉ cần mô hình propensity hoặc mô hình kết cục đúng là ước lượng vẫn đúng.',
+      result:'do(T=0) 64,28% → do(T=1) 81,15%; ATE +16,87%; CI [13,79%; 19,73%]. Hướng kết luận không đổi, nhưng không so trực tiếp với +24% vì outcome và quần thể đã khác.'
+    },
+    'pH-b8':'Mục 9.E — Công thức: TE = NDE + NIE. Kết quả: T → M tăng +0,729 tín chỉ; TE +21,61% = NDE +16,96% (78,5%) + NIE +4,65% (21,5%).',
+    'pH-b11':'Mục 9.F — Công thức: CATE(x) = E[Y | do(T=1), X=x] − E[Y | do(T=0), X=x]. Kết quả cần đọc thận trọng: nhóm trên 20 tuổi +28,02%; nhóm đúng tuổi +16,08%; chưa có CI theo nhóm.',
+    'pH-b14':'Mục 9.H — Công thức: RV_q = 1/2(√(f_q⁴ + 4f_q²) − f_q²). Kết quả: RV đưa ATE về 0 = 20,97%; RV mất ý nghĩa 5% = 18,37%; biến quan sát mạnh nhất chỉ có partial R² 10,41%.'
+  };
+  var sources={
+    'pH-b0':[
+      '<b>Nguồn phương pháp:</b> OLS và diễn giải hệ số riêng phần — <a href="https://doi.org/10.2307/1907330" target="_blank" rel="noopener">Frisch & Waugh (1933)</a>.',
+      '<b>Nguồn dữ liệu:</b> cấu trúc 4.424 hồ sơ, 36 biến và ba lớp kết cục — <a href="https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success" target="_blank" rel="noopener">UCI Dataset 697</a>.',
+      '<b>Lưu ý:</b> các ATE, CI và p-value trong thẻ này là output tự tính từ notebook của nhóm, không phải con số lấy từ bài báo.'
+    ],
+    'pH-b5':[
+      '<b>AIPW/doubly robust:</b> <a href="https://doi.org/10.1093/biomet/81.3.431" target="_blank" rel="noopener">Robins, Rotnitzky & Zhao (1994)</a>; <a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x" target="_blank" rel="noopener">Bang & Robins (2005)</a>.',
+      '<b>Propensity score:</b> <a href="https://doi.org/10.1093/biomet/70.1.41" target="_blank" rel="noopener">Rosenbaum & Rubin (1983)</a>. Cắt [0,05; 0,95] và bootstrap 1.000 lần là lựa chọn phân tích của notebook.',
+      '<b>Lưu ý:</b> 64,28% → 81,15% và ATE +16,87% là kết quả tự tính; tính “bền vững kép” nên nói là nhất quán tiệm cận dưới các điều kiện, không phải luôn luôn không chệch.'
+    ],
+    'pH-b8':[
+      '<b>Mediation:</b> định nghĩa NDE/NIE và các giả định nhận diện — <a href="https://doi.org/10.1037/a0020761" target="_blank" rel="noopener">Imai, Keele & Tingley (2010)</a>.',
+      '<b>Lưu ý:</b> TE, NDE, NIE và tỷ lệ 21,5% là ước lượng phụ thuộc mô hình của notebook; không được nói là cơ chế đã được chứng minh nếu chưa kiểm tra các giả định mediation.'
+    ],
+    'pH-b11':[
+      '<b>CATE/g-computation:</b> <a href="https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/" target="_blank" rel="noopener">Hernán & Robins (2020)</a>; khái niệm dị biệt hiệu ứng — <a href="https://doi.org/10.1080/01621459.2017.1319839" target="_blank" rel="noopener">Wager & Athey (2018)</a>.',
+      '<b>Lưu ý:</b> nhóm và các con số CATE là phân tích thăm dò tự tính, chưa có CI theo nhóm; không phải kết quả của causal forest.'
+    ],
+    'pH-b14':[
+      '<b>Robustness Value:</b> công thức và cách diễn giải — <a href="https://doi.org/10.1111/rssb.12348" target="_blank" rel="noopener">Cinelli & Hazlett (2020)</a>.',
+      '<b>Lưu ý:</b> RV là benchmark độ nhạy dưới giả định mô hình tuyến tính, không phải xác suất mô hình đúng hay bằng chứng rằng không có nhiễu ẩn. 20,97% và 18,37% là output tự tính.'
+    ]
+  };
+  var smooth9={
+    'pH-b0':[
+      'Ở mục 9, em tách rõ hai quần thể để không trộn hai câu hỏi khác nhau. Quần thể 3.630 sinh viên chỉ gồm Graduate và Dropout, nên phù hợp với các kết cục đã hoàn tất như điểm học kỳ 2, tỷ lệ đạt tín chỉ, mediation và CATE. Quần thể 4.424 sinh viên giữ cả 794 bạn Enrolled, dùng riêng cho câu hỏi giữ chân toàn trường.',
+      'Với điểm học kỳ 2, em dùng hồi quy tuyến tính có điều chỉnh các biến nền đo trước hoặc tại thời điểm nhập học. Kết quả ước lượng là tăng 1,478 điểm, khoảng tin cậy 95% từ 1,093 đến 1,863. Với tốc độ đạt tín chỉ, hiệu ứng là tăng 14,50 điểm phần trăm, CI từ 11,80 đến 17,20. Đây là các kết quả ước lượng trên dữ liệu quan sát; cách diễn giải nhân quả vẫn phụ thuộc các giả định nhận diện.'
+    ],
+    'pH-b5':[
+      'Phần này là kiểm tra độ nhạy cho điểm yếu của quần thể chính. Thay vì bỏ 794 sinh viên Enrolled, em định nghĩa Y giữ chân bằng một nếu sinh viên Graduate hoặc vẫn Enrolled, và bằng không nếu Dropout.',
+      'AIPW kết hợp hai thông tin: xác suất một sinh viên nhận học bổng theo các biến nền, và mô hình dự đoán kết cục riêng cho hai nhóm. Phần hiệu chỉnh có trọng số sẽ sửa sai lệch còn lại giữa dự đoán và kết quả quan sát. Tính chất doubly robust nghĩa là ước lượng nhất quán tiệm cận nếu một trong hai mô hình nuisance được chỉ định đúng, cùng các điều kiện về overlap và regularity.',
+      'Kết quả tăng từ 64,28% lên 81,15%, ATE là 16,87 điểm phần trăm, CI từ 13,79 đến 19,73. Em không gọi đây là cùng một ATE với kết quả tốt nghiệp chính, vì outcome và quần thể đã thay đổi; em dùng nó để kiểm tra hướng kết luận có còn dương hay không.'
+    ],
+    'pH-b8':[
+      'Mediation trả lời câu hỏi học bổng tác động qua đường nào. Ở đây T là học bổng, M là tín chỉ đạt ở học kỳ 1, còn Y là tốt nghiệp. Tổng hiệu ứng được tách thành tác động trực tiếp NDE và tác động gián tiếp NIE đi qua M.',
+      'Kết quả mô hình cho TE 21,61%, NDE 16,96% và NIE 4,65%, tức phần qua tín chỉ học kỳ 1 chiếm khoảng 21,5% trong cách phân rã này. Em trình bày đây là gợi ý cơ chế dưới các giả định mediation, chẳng hạn không có nhiễu chưa đo giữa M và Y và mô hình được chỉ định phù hợp; dữ liệu chưa đo trực tiếp sự an tâm tài chính hay động lực học tập.'
+    ],
+    'pH-b11':[
+      'CATE được dùng để xem hiệu ứng có giống nhau giữa các nhóm hay không. Em chia nhóm trước theo tuổi, Debtor và nơi ở, sau đó dùng g-computation: dự đoán kết quả cho cùng một nhóm người dưới T bằng một và T bằng không, rồi lấy chênh lệch.',
+      'Nhóm trên 20 tuổi có CATE khoảng 28,02%, còn nhóm đúng tuổi khoảng 16,08%. Đây là tín hiệu dị biệt đáng chú ý, nhưng chưa có khoảng tin cậy theo nhóm và không phải kết quả của causal forest. Vì vậy em gọi đây là phân tích thăm dò, chưa kết luận chắc chắn rằng một nhóm chắc chắn hưởng lợi hơn.'
+    ],
+    'pH-b14':[
+      'Cuối cùng là Robustness Value của Cinelli và Hazlett. Câu hỏi không phải là “mô hình có chắc chắn đúng không”, mà là một nhiễu ẩn phải mạnh đến mức nào, xét theo partial R-squared với cả treatment và outcome, mới có thể kéo hiệu ứng về không.',
+      'RV q bằng 1 là 20,97%, còn ngưỡng làm mất ý nghĩa ở mức 5% là 18,37%. Biến quan sát mạnh nhất trong phân tích này có partial R-squared 10,41%. Vì vậy em chỉ kết luận rằng hiệu ứng khá vững trước nhiễu yếu theo benchmark này; RV không chứng minh không có nhiễu ẩn và cũng không phải xác suất mô hình đúng.'
+    ]
+  };
+  document.querySelectorAll('.sc').forEach(function(card){
+    var ids=(card.getAttribute('data-ids')||'').split(/\s+/), items=[];
+    ids.forEach(function(id){if(extra[id]) items=items.concat(extra[id]);});
+    var primaryText=null, primaryData=null;
+    ids.forEach(function(id){if(!primaryText&&primary[id]){primaryText=primary[id];primaryData=primary[id];}});
+    if(primaryText){
+      var primaryBox=document.createElement('div'); primaryBox.className='primary';
+      var primaryTitle=document.createElement('b'); primaryTitle.textContent='Công thức và kết quả cần nói'; primaryBox.appendChild(primaryTitle);
+      if(typeof primaryData==='string'){
+        primaryBox.appendChild(document.createTextNode(primaryText));
+      }else{
+        primaryBox.insertAdjacentHTML('beforeend',
+          '<span class="p-label">Mục tiêu</span><div>'+primaryData.objective+'</div>'+
+          '<span class="p-label">Công thức mục tiêu</span><div class="formula">'+primaryData.formula+'</div>'+
+          '<span class="p-label">Ý nghĩa</span><div>'+primaryData.meaning+'</div>'+
+          '<span class="p-label">Kết quả cần đọc</span><div class="result">'+primaryData.result+'</div>');
+      }
+      var say=card.querySelector('.say'); if(say) card.insertBefore(primaryBox,say); else card.appendChild(primaryBox);
+    }
+    var sourceItems=[];
+    ids.forEach(function(id){if(sources[id]) sourceItems=sourceItems.concat(sources[id]);});
+    if(sourceItems.length){
+      var sourceBox=document.createElement('div'); sourceBox.className='sources';
+      sourceBox.innerHTML='<b>Nguồn tham khảo và phạm vi của con số</b><ul>'+sourceItems.map(function(item){return '<li>'+item+'</li>';}).join('')+'</ul>';
+      var say=card.querySelector('.say'); if(say) card.insertBefore(sourceBox,say); else card.appendChild(sourceBox);
+    }
+    var smoothItems=[];
+    ids.forEach(function(id){if(smooth9[id]) smoothItems=smoothItems.concat(smooth9[id]);});
+    if(smoothItems.length){
+      var smoothBox=document.createElement('div'); smoothBox.className='smooth9';
+      smoothItems.forEach(function(text){var p=document.createElement('p'); p.textContent=text; smoothBox.appendChild(p);});
+      var sourceBox=card.querySelector('.sources'), say=card.querySelector('.say');
+      if(sourceBox) card.insertBefore(smoothBox,sourceBox); else if(say) card.insertBefore(smoothBox,say); else card.appendChild(smoothBox);
+    }
+    if(items.length){
+      var box=document.createElement('div'); box.className='extra';
+      var title=document.createElement('b'); title.textContent='Nói thêm khi đang chỉ hình/bảng'; box.appendChild(title);
+      var list=document.createElement('ul');
+      items.forEach(function(text){var li=document.createElement('li');li.textContent=text;list.appendChild(li);});
+      box.appendChild(list); card.appendChild(box);
+    }
+    Object.keys(focus).forEach(function(id){
+      if(ids.indexOf(id)<0) return;
+      var marker=document.createElement('div'); marker.className='focus'; marker.dataset.block=id;
+      marker.innerHTML='<b>Đang nối đúng khối present</b> '+focus[id]; card.appendChild(marker);
+    });
+  });
+  window.pgmFocusBlock=function(id){
+    document.querySelectorAll('.focus').forEach(function(marker){
+      marker.classList.toggle('on',marker.dataset.block===id);
+    });
+  };
+})();
+</script>
+<script>
+(function(){
+  var KEY='pgm-bc15-fs', fs=21; try{fs=parseInt(localStorage.getItem(KEY))||21}catch(e){}
+  function apply(){document.documentElement.style.setProperty('--fs',fs)}
+  apply();
+  document.getElementById('fsUp').onclick=function(){fs=Math.min(40,fs+2);apply();try{localStorage.setItem(KEY,fs)}catch(e){}};
+  document.getElementById('fsDn').onclick=function(){fs=Math.max(15,fs-2);apply();try{localStorage.setItem(KEY,fs)}catch(e){}};
+  var segs=Array.prototype.slice.call(document.querySelectorAll('.tl .seg'));
+  setInterval(function(){
+    var c=document.querySelector('.sc.cur'); var p=c?c.getAttribute('data-part'):null;
+    segs.forEach(function(s){s.classList.toggle('on',s.getAttribute('data-part')===p)});
+  },250);
+})();
+</script>
+<script>
+(function(){
+  var ROLE='script', OTHER='BAO_CAO_15_PHUT_TRICH_NOTEBOOK.html', KEY='pgm-bc15', OFFSET=90;
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var units=[], byId={};
+  if(ROLE==='report'){
+    $$('.blk[id]').forEach(function(el){var u={el:el,key:el.id};units.push(u);byId[el.id]=u});
+  }else{
+    $$('.sc').forEach(function(el){
+      var ids=(el.getAttribute('data-ids')||'').split(/\s+/).filter(Boolean), u={el:el,key:ids[0]};
+      units.push(u); ids.forEach(function(i){byId[i]=u});
+    });
+  }
+  if(!units.length) return;
+  function top(u){return u.el.getBoundingClientRect().top+window.scrollY}
+  function currentUnit(){
+    var y=window.scrollY+OFFSET+30, cur=units[0];
+    for(var i=0;i<units.length;i++){ if(top(units[i])<=y) cur=units[i]; else break; }
+    return cur;
+  }
+  var enabled=true; try{enabled=localStorage.getItem(KEY+'-on')!=='0'}catch(e){}
+  var lastPick=0, needSync=true, prog=false, settleT=null, lastUser=0, lastKey=null, seen={}, peerAt=0, peerWin=null, n=0, marked=null, rafOn=false;
+  var BC=null; try{BC=new BroadcastChannel(KEY)}catch(e){}
+
+  function send(m){
+    m.pgm=KEY; m.src=ROLE; m.n=ROLE+':'+Date.now()+':'+(n++);
+    try{ if(BC) BC.postMessage(m) }catch(e){}
+    try{ localStorage.setItem(KEY+'-msg',JSON.stringify(m)) }catch(e){}
+    try{ if(window.opener&&!window.opener.closed) window.opener.postMessage(m,'*') }catch(e){}
+    try{ if(peerWin&&!peerWin.closed) peerWin.postMessage(m,'*') }catch(e){}
+  }
+  function recv(m){
+    if(!m||m.pgm!==KEY||m.src===ROLE||seen[m.n]) return;
+    var ts=+String(m.n).split(':')[1]; if(ts&&Date.now()-ts>5000) return;           // tin quá cũ: bỏ
+    seen[m.n]=1; peerAt=Date.now(); paint();
+    if(m.type==='hello'){ send({type:'pos',id:currentUnit().key,reply:true}); return; }
+    if(m.reply&&Date.now()-lastPick<1500) return;     // vừa bấm chọn khối: bỏ qua câu trả lời cũ của cửa sổ kia
+    if(m.type==='ack'){ clearTimeout(ackT); toast('\u2713 Cửa sổ kia đã nhảy tới '+m.id); return; }
+    if(m.type==='pos'){
+      needSync=false; peerMark(byId[m.id]);
+      if(enabled||m.force){ goTo(m.id,false,m.force); if(m.force) send({type:'ack',id:m.id}); }
+    }
+  }
+  // ---- thông báo ngắn: xác nhận đã đồng bộ, hoặc cảnh báo khi chưa thấy cửa sổ kia
+  var toastEl=null, toastT=null, ackT=null;
+  function toast(msg,warn){
+    if(!toastEl){ toastEl=document.createElement('div'); toastEl.id='syncToast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=msg; toastEl.className=warn?'on warn':'on';
+    clearTimeout(toastT); toastT=setTimeout(function(){ toastEl.className='' },warn?4200:1800);
+  }
+  if(BC) BC.onmessage=function(e){recv(e.data)};
+  addEventListener('storage',function(e){ if(e.key===KEY+'-msg'&&e.newValue){ try{recv(JSON.parse(e.newValue))}catch(x){} } });
+  addEventListener('message',function(e){ recv(e.data) });
+  var lastRaw=null; try{ lastRaw=localStorage.getItem(KEY+'-msg') }catch(e){}   // bỏ qua tin cũ còn lưu từ lần mở trước
+  // kênh dự phòng: hỏi localStorage mỗi 300ms (phòng khi sự kiện storage không tới)
+  setInterval(function(){
+    try{ var raw=localStorage.getItem(KEY+'-msg'); if(raw&&raw!==lastRaw){ lastRaw=raw; recv(JSON.parse(raw)); } }catch(e){}
+  },300);
+
+  function mark(u){
+    if(marked===u) return;
+    if(marked) marked.el.classList.remove('cur');
+    marked=u; u.el.classList.add('cur');
+  }
+  var peerU=null;
+  function peerMark(u){                              // khối mà cửa sổ kia đang hiển thị
+    if(!u||peerU===u) return;
+    if(peerU) peerU.el.classList.remove('peer');
+    peerU=u; u.el.classList.add('peer');
+  }
+  function pick(u){                                  // bấm vào một khối: cửa sổ kia nhảy tới khối này (kể cả khi đang tắt đồng bộ)
+    lastPick=Date.now(); mark(u); lastKey=u.key; setHash(u.key); peerMark(u); if(window.pgmFocusBlock) window.pgmFocusBlock(u.key);
+    send({type:'pos',id:u.key,force:true});
+    clearTimeout(ackT);
+    ackT=setTimeout(function(){ toast('Chưa nhận phản hồi từ cửa sổ kia. Hãy bấm “'+opn.textContent.replace(/\s*\u2197\s*$/,'')+'” để nối hai cửa sổ.',true) },1500);
+  }
+  units.forEach(function(u){
+    var b=document.createElement('button'); b.type='button'; b.className='syncMark';
+    b.setAttribute('aria-label','Đồng bộ cửa sổ kia tới khối này'); u.el.appendChild(b);
+    b.addEventListener('click',function(e){ e.stopPropagation(); pick(u) });
+    $$('.chieu',u.el).forEach(function(c){ c.addEventListener('click',function(e){ e.stopPropagation(); pick(u) }) });
+    u.el.addEventListener('click',function(e){
+      if(e.target.closest('a,button,summary,input,textarea,select,img,figure')) return;
+      if(window.getSelection&&String(window.getSelection()).length>0) return;   // đang bôi đen chữ: không tính là bấm
+      pick(u);
+    });
+  });
+  function setHash(k){ try{ history.replaceState(null,'','#'+k) }catch(e){} }
+  function armSettle(){
+    clearTimeout(settleT);
+    settleT=setTimeout(function(){ prog=false; var u=currentUnit(); lastKey=u.key; mark(u); setHash(u.key) },180);
+  }
+  function goTo(id,instant,force){
+    var u=byId[id]; if(!u) return;
+    if(window.pgmFocusBlock) window.pgmFocusBlock(id);
+    if(!force&&Date.now()-lastUser<350) return;    // người dùng đang cuộn ở cửa sổ này: không giật lại
+    var target=Math.max(0,top(u)-OFFSET);
+    if(Math.abs(window.scrollY-target)<8){ mark(u); lastKey=u.key; return; }
+    prog=true; window.scrollTo({top:target,behavior:'instant'}); armSettle();   // nhảy tức thì: chắc chắn tới đúng chỗ, không phụ thuộc hiệu ứng cuộn mượt
+  }
+  function onScroll(){
+    rafOn=false;
+    var u=currentUnit(); mark(u); if(window.pgmFocusBlock) window.pgmFocusBlock(u.key);
+    if(prog){ armSettle(); return; }
+    lastUser=Date.now();
+    if(u.key!==lastKey){ lastKey=u.key; setHash(u.key); if(enabled) send({type:'pos',id:u.key}); }
+  }
+  addEventListener('scroll',function(){ if(!rafOn){ rafOn=true; requestAnimationFrame(onScroll) } },{passive:true});
+  var userTouched=false;
+  ['wheel','touchmove','keydown','mousedown'].forEach(function(t){
+    addEventListener(t,function(){ userTouched=true; if(prog){ prog=false; clearTimeout(settleT) } lastUser=Date.now() },{passive:true});
+  });
+
+  // ---- thanh trạng thái
+  var dot=document.getElementById('syncDot'), lbl=document.getElementById('syncLbl'), tgl=document.getElementById('syncTgl'), opn=document.getElementById('syncOpen');
+  function paint(){
+    var on=Date.now()-peerAt<6500;
+    dot.className=on?'on':''; dot.title=on?'Đã kết nối với cửa sổ kia':'Chưa thấy cửa sổ kia';
+    lbl.textContent=on?(enabled?'Đang đồng bộ':'Đã kết nối (tắt)'):'Chưa kết nối';
+    tgl.textContent='Đồng bộ: '+(enabled?'Bật':'Tắt');
+  }
+  tgl.onclick=function(){
+    enabled=!enabled; try{localStorage.setItem(KEY+'-on',enabled?'1':'0')}catch(e){}
+    paint(); if(enabled) send({type:'hello'});
+  };
+  opn.onclick=function(){
+    peerWin=window.open(OTHER+'#'+currentUnit().key,'pgm-'+(ROLE==='report'?'script':'report'));
+  };
+  setInterval(function(){ send({type:'beat'}) },2500); setInterval(paint,1000);
+
+  // ---- khởi động: theo #hash nếu có, rồi hỏi cửa sổ kia đang ở đâu
+  var h=decodeURIComponent((location.hash||'').slice(1));
+  if(h&&byId[h]){
+    var u0=byId[h];
+    var place=function(){                       // nhảy tới khối trong #hash; chạy lại khi bố cục còn đổi (ảnh nạp xong)
+      if(userTouched) return;
+      prog=true; window.scrollTo({top:Math.max(0,top(u0)-OFFSET),behavior:'instant'}); mark(u0); lastKey=u0.key; armSettle();
+    };
+    place(); setTimeout(place,80); setTimeout(place,350);
+    addEventListener('load',function(){ place(); setTimeout(place,300) });
+  } else { var u1=currentUnit(); mark(u1); lastKey=u1.key; }
+  paint();
+  // hỏi "bạn đang ở đâu" và hỏi lại cho tới khi có trả lời (cửa sổ kia có thể nạp chậm hơn)
+  var tries=0, askT=setInterval(function(){
+    if(!needSync||++tries>40){ clearInterval(askT); return; }
+    send({type:'hello'});
+  },700);
+  setTimeout(function(){ send({type:'hello'}) },300);
+})();
+</script>
+</body>
+</html>

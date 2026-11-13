@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chương: Câu chuyện và giải pháp cho nhà trường</title>
+<style>
+:root{--bg:#f6f4ef;--paper:#fffdf8;--ink:#1d2228;--muted:#5d6670;--line:#ddd7cb;--accent:#0f6b5c;--soft:#e1efe9;--warn:#9c3b12;--warnsoft:#f7e6db}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14181c;--paper:#1b2026;--ink:#e7e3da;--muted:#9aa3ad;--line:#2f363e;--accent:#5cc3a9;--soft:#1d3530;--warn:#ef9a6b;--warnsoft:#3a271d}}
+:root[data-theme="dark"]{--bg:#14181c;--paper:#1b2026;--ink:#e7e3da;--muted:#9aa3ad;--line:#2f363e;--accent:#5cc3a9;--soft:#1d3530;--warn:#ef9a6b;--warnsoft:#3a271d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 "Segoe UI",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:36px 18px 80px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:30px;line-height:1.25;margin:.3em 0 .6em}
+h2{font-size:21px;margin:2em 0 .5em;color:var(--accent)}
+p{margin:.7em 0}
+.story{background:var(--paper);border-left:4px solid var(--accent);padding:16px 20px;border-radius:0 10px 10px 0;margin:18px 0}
+.note{font-size:14px;color:var(--muted);margin-top:8px}
+.num{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.num div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.num b{display:block;font-size:26px;color:var(--accent)}
+.num span{font-size:13px;color:var(--muted)}
+ol.steps li{margin:12px 0}
+.warn{background:var(--warnsoft);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:0 10px 10px 0;padding:12px 16px;margin:18px 0}
+.decide{background:var(--soft);border-radius:10px;padding:14px 18px;margin:18px 0}
+.decide li{margin:6px 0}
+@media (max-width:600px){.num{grid-template-columns:1fr}h1{font-size:25px}}
+@media print{body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="eyebrow">Chương · Từ dữ liệu đến quyết định</div>
+<h1>Học bổng đang đi đến đâu, và nên đi đến đâu</h1>
+
+<h2>1. Một câu chuyện ghép</h2>
+<div class="story">
+<p>Hãy hình dung hai sinh viên năm nhất, cùng điểm đầu vào trung bình. <b>Sinh viên A</b> vừa tròn 18 tuổi, nhà có điều kiện ổn định, và không nhận học bổng. <b>Sinh viên B</b> đã 24 tuổi, vừa đi làm để tự trang trải học phí, và được xét học bổng vì hồ sơ đầy đủ.</p>
+<p>Ai trong hai người được hưởng lợi nhiều nhất nếu nhà trường cấp học bổng?</p>
+<p>Dữ liệu trả lời: <b>sinh viên lớn tuổi như B</b>. Nhưng trong thực tế, sinh viên như B lại là nhóm ít được nhận học bổng nhất.</p>
+</div>
+<p class="note">Đây là nhân vật ghép để minh họa, không phải một hồ sơ thật.</p>
+
+<h2>2. Nghịch lý trong dữ liệu</h2>
+<p>Trên 3.630 sinh viên đã có kết cục (tốt nghiệp hoặc bỏ học), học bổng đang được phân bổ như sau:</p>
+<ul>
+<li>Sinh viên từ 20 tuổi trở xuống nhận học bổng với tỷ lệ <b>30–38%</b>.</li>
+<li>Sinh viên trên 20 tuổi chỉ nhận với tỷ lệ <b>12–16%</b>.</li>
+</ul>
+<p>Trong khi đó, khi ước lượng hiệu ứng nhân quả của học bổng (đã điều chỉnh các yếu tố nền như điểm vào, nợ học phí, học phí đúng hạn, học vấn của mẹ), nhóm trên 20 tuổi có mức tăng xác suất tốt nghiệp <b>+28 điểm phần trăm</b>, cao hơn nhóm còn lại (<b>+16 điểm</b>).</p>
+<p>Nói ngắn gọn: <b>học bổng hiện không đến với những người mà nó tạo ra nhiều thay đổi nhất.</b></p>
+
+<h2>3. Ba con số cần nhớ</h2>
+<div class="num">
+<div><b>+24%</b><span>Tác động trung bình của học bổng lên xác suất tốt nghiệp (đã điều chỉnh)</span></div>
+<div><b>+28% / +16%</b><span>Tác động ở nhóm trên 20 tuổi / nhóm còn lại</span></div>
+<div><b>+164 SV</b><span>Số sinh viên tốt nghiệp thêm nếu phân bổ theo mức hưởng lợi, cùng ngân sách 969 suất</span></div>
+</div>
+<p class="note">Con số +24% là ước lượng từ dữ liệu quan sát, đã qua ba kiểm định bác bỏ. Con số +164 là kết quả trong mẫu, chưa được kiểm chứng trên dữ liệu mới.</p>
+
+<h2>4. Giải pháp</h2>
+<ol class="steps">
+<li><b>Phân bổ học bổng theo mức hưởng lợi, không chỉ theo thành tích quá khứ.</b> Giữ nguyên tổng số suất. Ưu tiên nhóm có mức tác động dự đoán cao, trong đó có sinh viên lớn tuổi đang đi làm.</li>
+<li><b>Gắn học bổng với hỗ trợ học thuật ngay học kỳ đầu.</b> Khoảng 21% tác động của học bổng đi qua số tín chỉ đạt được ở học kỳ một. Nghĩa là tiền học bổng thôi chưa đủ. Cần kèm cặp, cố vấn, và theo dõi tiến độ tín chỉ ngay từ đầu năm.</li>
+<li><b>Thí điểm có đối chứng trước khi mở rộng.</b> Trong nhóm đủ điều kiện, chọn ngẫu nhiên ai được nhận theo cách mới và ai theo cách cũ. So sánh tỷ lệ tín chỉ đạt học kỳ một và tỷ lệ tốt nghiệp sau một năm.</li>
+</ol>
+
+<h2>5. Điều cần nói thật với Ban Giám hiệu</h2>
+<div class="warn">
+<ul>
+<li>Dữ liệu là quan sát, không phải thí nghiệm. Có thể còn yếu tố chưa đo được, ví dụ động lực cá nhân. Phân tích độ nhạy cho thấy kết luận chịu được nhiễu yếu, nhưng không miễn nhiễm với nhiễu mạnh.</li>
+<li>Các con số phân nhóm (+28%, +16%) chưa có khoảng tin cậy riêng cho từng nhóm, nên chỉ nên đọc là gợi ý.</li>
+<li>Dữ liệu không có chi phí hành chính và ngân sách thực tế của từng suất, nên chưa thể tính hiệu quả trên một đồng.</li>
+<li>Học phí đúng hạn có thời điểm đo chưa rõ, có thể là hệ quả của bỏ học. Biến này được giữ như một giả định.</li>
+</ul>
+</div>
+
+<h2>6. Ba quyết định đề nghị</h2>
+<div class="decide">
+<ol>
+<li>Phê duyệt một đợt thí điểm phân bổ học bổng theo mức hưởng lợi, trong một khóa tuyển sinh, có nhóm đối chứng ngẫu nhiên.</li>
+<li>Bố trí kèm cặp học thuật bắt buộc cho sinh viên nhận học bổng trong học kỳ đầu.</li>
+<li>Hẹn đánh giá kết quả sau một năm học. Chỉ mở rộng nếu tỷ lệ tín chỉ đạt và tỷ lệ tốt nghiệp của nhóm thí điểm cao hơn nhóm đối chứng có ý nghĩa thống kê.</li>
+</ol>
+</div>
+
+<p class="note">Nguồn số liệu: notebook 00_MASTER (mục 1.6, 8, 9, 10) và artifacts/tables/Table_Policy_Learning.csv. Mọi con số là ước lượng trên dữ liệu UCI 697.</p>
+
+</div>
+</body>
+</html>
